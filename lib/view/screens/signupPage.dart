@@ -12,7 +12,7 @@ class SignUpPage extends StatelessWidget {
       create: (context) => SignUpViewModel(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('회원가입'),
+          title: Text('회원가입'),f
         ),
         body: SignUpForm(),
       ),
