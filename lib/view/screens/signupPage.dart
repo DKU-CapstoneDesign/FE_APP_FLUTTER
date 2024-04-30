@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:capstonedesign/viewModel/signupPage_viewModel.dart'
+import 'package:capstonedesign/viewModel/signupPage_viewModel.dart';
 
 
 class SignUpPage extends StatelessWidget {
@@ -12,7 +12,7 @@ class SignUpPage extends StatelessWidget {
       create: (context) => SignUpViewModel(),
       child: Scaffold(
         appBar: AppBar(
-          title: Text('회원가입'),f
+          title: Text('회원가입'),
         ),
         body: SignUpForm(),
       ),
