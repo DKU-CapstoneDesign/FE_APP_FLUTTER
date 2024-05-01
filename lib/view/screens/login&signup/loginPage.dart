@@ -1,57 +1,72 @@
 //email, password
 
+import 'package:capstonedesign/view/screens/mainPage.dart';
+import 'package:capstonedesign/view/screens/login&signup/signupPage.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:capstonedesign/viewModel/loginPage_viewModel.dart';
 
+void main() {
+  runApp(const LoginPage());
+}
 
-class LoginPage extends StatelessWidget{
+class LoginPage extends StatelessWidget {
+  const LoginPage({super.key});
+
   @override
-  Widget build(BuildContext context){
-    return ChangeNotifierProvider(
-      create: (context) => LoginViewModel(),
-      child : Scaffold(
-        appBar: AppBar(
-          title : Text ('로그인'),
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+      ),
+      body: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            TextField(
+              // controller: _emailController,
+              decoration: InputDecoration(
+                labelText: 'Email',
+              ),
+            ),
+            SizedBox(height: 20),
+            TextField(
+              // controller: _passwordController,
+              obscureText: true,
+              decoration: InputDecoration(
+                labelText: 'Password',
+              ),
+            ),
+            SizedBox(height: 20),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  child: Text("Login"),
+                  onPressed: () => _navigateToMainPage(context),
+                ),
+                ElevatedButton(
+                  child: Text("Sign up"),
+                  onPressed: () => _navigateToSignUpPage(context),
+                ),
+              ],
+            ),
+          ],
         ),
-        body : LoginForm(),
       ),
     );
   }
 }
 
-class LoginForm extends StatelessWidget{
-  @override
-  Widget build(BuildContext context){
-    final viewModel = Provider.of<LoginViewModel>(context);
+void _navigateToMainPage(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => MainPage()),
+  );
+}
 
-    return Padding(
-      padding : const EdgeInsets.all(16.0),
-      child : Form(
-        child : Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children : <Widget>[
-            TextFormField(
-              onChanged : (value) => viewModel.email = value,
-              decoration : InputDecoration(
-                labelText: '이메일',
-              ),
-            ),
-            SizedBox(height: 16),
-            TextFormField(
-              onChanged: (value) => viewModel.password = value,
-              decoration: InputDecoration(
-                labelText: '비밀번호',
-              ),
-            ),
-            SizedBox(height: 24),
-            ElevatedButton(
-                onPressed: () => viewModel.login(),
-                child: Text('로그인하기'),
-            )
-          ]
-        )
-      )
-    );
-  }
+void _navigateToSignUpPage(BuildContext context) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => SignUpPage()),
+  );
 }

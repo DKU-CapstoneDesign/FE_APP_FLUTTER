@@ -22,7 +22,7 @@ class LoginViewModel extends ChangeNotifier {
   Future<void> login() async {
     try {
       User newUser = LoginUser(email: _email, password: _password);
-      await userRepository.login(newUser);
+     // await userRepository.login(newUser);
       // 회원가입 성공 시 처리
     } catch (e) {
       // 오류 처리

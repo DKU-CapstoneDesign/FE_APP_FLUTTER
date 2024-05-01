@@ -2,8 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:capstonedesign/viewModel/signupPage_viewModel.dart';
-
+import 'package:capstonedesign/viewModel/login&signup/signupPage_viewModel.dart';
 
 class SignUpPage extends StatelessWidget {
   @override
@@ -11,9 +10,7 @@ class SignUpPage extends StatelessWidget {
     return ChangeNotifierProvider(
       create: (context) => SignUpViewModel(),
       child: Scaffold(
-        appBar: AppBar(
-          title: Text('회원가입'),
-        ),
+        appBar: AppBar(title: Text('회원가입')),
         body: SignUpForm(),
       ),
     );
