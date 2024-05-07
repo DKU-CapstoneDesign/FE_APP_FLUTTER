@@ -1,4 +1,6 @@
 import 'package:capstonedesign/view/screens/chatBot/chatBotPage.dart';
+import 'package:capstonedesign/view/screens/discover/discoverPage.dart';
+import 'package:capstonedesign/view/screens/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/post/forumPage.dart';
 import 'package:capstonedesign/view/screens/chat/chattingListPage.dart';
@@ -12,11 +14,11 @@ class _MyHomePageState extends State<MainPage> {
   int _selectedIndex = 0;
 
   List<Widget> _widgetOptions = <Widget>[
-    Text('홈 화면 입니당'),
+    HomePage(),
     ChatBotPage(),
     ChattingListPage(),
     ForumPage(),
-    Text('살펴보기 화면'),
+    DiscoverPage(),
   ];
 
   void _onItemTapped(int index) {
