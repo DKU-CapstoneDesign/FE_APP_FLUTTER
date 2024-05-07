@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class ChattingDetailPage extends StatefulWidget {
   final String user;
 
-  ChattingDetailPage({required this.user}); // 생성자 이름 수정
+  ChattingDetailPage({required this.user});
 
   @override
   _ChattingDetailPageState createState() => _ChattingDetailPageState();
