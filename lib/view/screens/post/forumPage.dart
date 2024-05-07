@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'postListPage.dart';
 
-class forumPage extends StatelessWidget {
+class ForumPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

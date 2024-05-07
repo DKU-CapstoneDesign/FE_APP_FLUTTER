@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'post_model.dart';
+import 'package:capstonedesign/model/post.dart';
 
 class PostDetailPage extends StatefulWidget {
   final Post post;

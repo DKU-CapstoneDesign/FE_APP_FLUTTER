@@ -1,5 +1,7 @@
 import 'package:capstonedesign/view/screens/chatBot/chatBotPage.dart';
 import 'package:flutter/material.dart';
+import 'package:capstonedesign/view/screens/post/forumPage.dart';
+import 'package:capstonedesign/view/screens/chat/chattingListPage.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -12,8 +14,8 @@ class _MyHomePageState extends State<MainPage> {
   List<Widget> _widgetOptions = <Widget>[
     Text('홈 화면 입니당'),
     ChatBotPage(),
-    Text('채팅 화면'),
-    Text('게시판 화면'),
+    ChattingListPage(),
+    ForumPage(),
     Text('살펴보기 화면'),
   ];
 

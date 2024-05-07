@@ -1,6 +1,6 @@
 class Message {
-  final String sender;
   final String text;
+  final bool isUserMessage;
 
-  Message({required this.sender, required this.text});
+  Message({required this.text, required this.isUserMessage});
 }
