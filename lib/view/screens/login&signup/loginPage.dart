@@ -1,18 +1,48 @@
-//email, password
-
+import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:capstonedesign/view/screens/mainPage.dart';
 import 'package:capstonedesign/view/screens/login&signup/signupPage.dart';
-import 'package:flutter/material.dart';
 
 void main() {
-  runApp(const LoginPage());
+  runApp(LoginPage());
+}
+
+class AuthService {
+  static const String baseUrl = 'https://true-porpoise-uniformly.ngrok-free.app/api/login';
+
+  Future<bool> login(String email, String password) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl'),
+        body: {
+          'email': email,
+          'password': password,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // 로그인이 성공했을 때 처리할 코드
+        return true;
+      } else {
+        // 로그인이 실패했을 때 처리할 코드
+        return false;
+      }
+    } catch (e) {
+      // 예외가 발생했을 때 처리할 코드
+      return false;
+    }
+  }
 }
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  final AuthService authService = AuthService();
 
   @override
   Widget build(BuildContext context) {
+    String email = '';
+    String password = '';
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Login'),
@@ -23,14 +53,14 @@ class LoginPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextField(
-              // controller: _emailController,
+              onChanged: (value) => email = value,
               decoration: InputDecoration(
                 labelText: 'Email',
               ),
             ),
             SizedBox(height: 20),
             TextField(
-              // controller: _passwordController,
+              onChanged: (value) => password = value,
               obscureText: true,
               decoration: InputDecoration(
                 labelText: 'Password',
@@ -42,7 +72,14 @@ class LoginPage extends StatelessWidget {
               children: [
                 ElevatedButton(
                   child: Text("Login"),
-                  onPressed: () => _navigateToMainPage(context),
+                  onPressed: () async {
+                    bool success = await authService.login(email, password);
+                    if (success) {
+                      _navigateToMainPage(context);
+                    } else {
+                      // 로그인 실패 시 처리
+                    }
+                  },
                 ),
                 ElevatedButton(
                   child: Text("Sign up"),

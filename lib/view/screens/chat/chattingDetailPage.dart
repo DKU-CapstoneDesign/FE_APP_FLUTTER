@@ -1,19 +1,47 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class ChattingDetailPage extends StatefulWidget {
   final String user;
 
-  ChattingDetailPage({required this.user}); // 생성자 이름 수정
+  ChattingDetailPage({required this.user});
 
   @override
   _ChattingDetailPageState createState() => _ChattingDetailPageState();
 }
 
 class _ChattingDetailPageState extends State<ChattingDetailPage> {
-  List<String> messages = [
-  ];
+  List<String> messages = [];
 
   final TextEditingController _messageController = TextEditingController();
+
+  Future<void> _sendMessage(String message) async {
+    final url = 'https://true-porpoise-uniformly.ngrok-free.app/api/chat';
+    final Map<String, dynamic> data = {
+      'sender': 'kyu',
+      'receiver': 'bom',
+      'message': message,
+    };
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: jsonEncode(data),
+    );
+
+    if (response.statusCode == 200) {
+      setState(() {
+        messages.add(message);
+      });
+      _messageController.clear();
+    } else {
+      // Handle error, show error message, etc.
+      print('Failed to send message: ${response.reasonPhrase}');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +56,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
               itemCount: messages.length,
               itemBuilder: (BuildContext context, int index) {
                 String message = messages[index];
-                bool isMyMessage = index % 2 == 0; // Assuming every other message is mine
+                bool isMyMessage = index % 2 == 0;
                 return Padding(
                   padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                   child: Align(
@@ -66,10 +94,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                   onPressed: () {
                     String message = _messageController.text;
                     if (message.isNotEmpty) {
-                      setState(() {
-                        messages.add(message);
-                      });
-                      _messageController.clear();
+                      _sendMessage(message);
                     }
                   },
                 ),
