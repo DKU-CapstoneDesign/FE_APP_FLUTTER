@@ -38,6 +38,7 @@ dependencies:
   provider: ^6.1.2
   http: ^1.2.0
   flutter_svg: ^0.22.0
+  image_picker: ^1.0.8
 
 dev_dependencies:
   build_runner: ^2.3.3
@@ -66,6 +67,7 @@ flutter:
     - assets/koreigner.svg
     - assets/koreignerLogo.svg
     - assets/koreignerLogo.png
+    - assets/다운로드.jpeg
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

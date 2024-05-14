@@ -11,7 +11,7 @@ void main() {
 class AuthService {
   static const String baseUrl = 'https://true-porpoise-uniformly.ngrok-free.app/api/login';
 
-  Future<bool> login(String email, String password) async {
+/*  Future<bool> login(String email, String password) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl'),
@@ -20,7 +20,6 @@ class AuthService {
           'password': password,
         },
       );
-
       if (response.statusCode == 200) {
         // 로그인이 성공했을 때 처리할 코드
         return true;
@@ -30,6 +29,16 @@ class AuthService {
       }
     } catch (e) {
       // 예외가 발생했을 때 처리할 코드
+      return false;
+    }
+  }*/
+
+//강제 로그인
+  Future<bool> login(String email, String password) async {
+    try {
+      await Future.delayed(Duration(seconds: 2));
+      return true;
+    } catch (e) {
       return false;
     }
   }

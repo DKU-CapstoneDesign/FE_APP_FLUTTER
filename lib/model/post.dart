@@ -17,4 +17,3 @@ class Post {
     required this.views,
   });
 }
-//수정

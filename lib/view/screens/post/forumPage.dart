@@ -6,23 +6,74 @@ class ForumPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         centerTitle: true,
-        title: const Text("FORUM"),
+        title: const Text(
+          "FORUM",
+          style: TextStyle(fontSize: 25),
+        ),
       ),
-      body: Center(
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 25.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              padding: EdgeInsets.all(8.0),
+            SizedBox(height: 40.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
               child: const Text(
-                '게시판',
+                '📌 기본 게시판',
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 20,
                 ),
               ),
             ),
+            SizedBox(height: 20.0),
+            Center(
+              child: Container(
+                width: 350,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Column(
+                  children: [
+                    _buildBoardButton(context, '자유 게시판', Icons.push_pin, Colors.black54),
+                    const Divider(color: Colors.grey),
+                    _buildBoardButton(context, '도움 게시판', Icons.push_pin, Colors.black54),
+                    const Divider(color: Colors.grey),
+                    _buildBoardButton(context, '여행 게시판', Icons.push_pin, Colors.black54),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(height: 55.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    '🔥 HOT 게시물',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => PostListPage(boardName: '🔥 HOT 게시물')),
+                      );
+                    },
+                    child: Text('더보기'),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20.0),
             Container(
               width: 350,
               decoration: BoxDecoration(
@@ -31,82 +82,44 @@ class ForumPage extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => PostListPage(boardName: '자유게시판')),
-                      );
-                    },
-                    child: const Text('자유게시판'),
+                  ListTile(
+                    title: Center(child: Text('제목 1')),
                   ),
-                  const Divider(color: Colors.grey),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => PostListPage(boardName: '도움게시판')),
-                      );
-                    },
-                    child: const Text('도움게시판'),
+                  const Divider(indent: 40, endIndent: 40, color: Colors.grey),
+                  ListTile(
+                    title: Center(child: Text('제목 2')),
                   ),
-                  const Divider(color: Colors.grey),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => PostListPage(boardName: '여행게시판')),
-                      );
-                    },
-                    child: const Text('여행게시판'),
+                  const Divider(indent: 40, endIndent: 40, color: Colors.grey),
+                  ListTile(
+                    title: Center(child: Text('제목 3')),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 16.0),
-            Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Text(
-                        'hot게시물',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => PostListPage(boardName: 'hot게시물')),
-                          );
-                        },
-                        child: Text('더보기'),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                Container(
-                  width: 350,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  child: const Column(
-                    children: [
-                      Text("내요요용")
-                    ],
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildBoardButton(BuildContext context, String boardName, IconData iconData, Color color) {
+    return TextButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => PostListPage(boardName: boardName)),
+        );
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(iconData, color: color),
+          SizedBox(width: 8),
+          Text(
+            boardName,
+            style: TextStyle(fontSize: 15, color: color),
+          ),
+        ],
       ),
     );
   }
