@@ -4,13 +4,14 @@ import 'package:capstonedesign/model/post.dart';
 class PostDetailPage extends StatefulWidget {
   final Post post;
 
-  const PostDetailPage({super.key, required this.post});
+  const PostDetailPage({Key? key, required this.post}) : super(key: key);
 
   @override
   _PostDetailPageState createState() => _PostDetailPageState();
 }
 
 class _PostDetailPageState extends State<PostDetailPage> {
+  bool _isLiked = false;
   final TextEditingController _commentController = TextEditingController();
 
   List<String> comments = [];
@@ -19,63 +20,81 @@ class _PostDetailPageState extends State<PostDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('아아아아'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 16.0),
-            Text(
-              widget.post.title,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 20.0,
+        padding: const EdgeInsets.all(25),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      '작성자: ${widget.post.uploaderId}', // 작성자 ID
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                  ),
+                  Expanded(
+                    child: Text(
+                      '작성일: ${widget.post.created_at}', // 작성일자
+                      style: TextStyle(fontSize: 16.0),
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 8.0),
-            Container(
-              alignment: Alignment.center,
-              child: Image.network(
-                'h', //이미지
-                width: 300,
-                height: 200,
-                fit: BoxFit.cover,
+              const SizedBox(height: 16.0),
+              Text(
+                widget.post.title,
+                style: TextStyle(fontSize: 25.0),
               ),
-            ),
-            const SizedBox(height: 16.0),
-            Text(widget.post.content),
-            const SizedBox(height: 16.0),
-            const SizedBox(height: 16.0),
-            Row(
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.thumb_up),
-                  onPressed: () {
-                    setState(() {
-                      widget.post.likes++;
-                    });
-                  },
+              Container(
+                alignment: Alignment.center,
+                child: Image.asset(
+                  'assets/다운로드.jpeg',
+                  width: 300,
+                  height: 200,
+                  fit: BoxFit.cover,
                 ),
-                Text('${widget.post.likes}'),
-              ],
-            ),
-            const Divider(
-              color: Colors.grey,
-              thickness: 1.0,
-            ),
-            const SizedBox(height: 16.0),
-            const Text(
-              '댓글',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
               ),
-            ),
-            const SizedBox(height: 8.0),
-            Expanded(
-              child: ListView.builder(
+              const SizedBox(height: 16.0),
+              Text(
+                widget.post.content,
+                style: TextStyle(fontSize: 16.0),
+              ),
+              const SizedBox(height: 16.0),
+              Row(
+                children: [
+                  IconButton(
+                    icon: _isLiked ? Icon(Icons.thumb_up_alt) : Icon(Icons.thumb_up_alt_outlined),
+                    onPressed: _isLiked
+                        ? null
+                        : () {
+                      setState(() {
+                        _isLiked = true;
+                        widget.post.likes++;
+                      });
+                    },
+                  ),
+                  Text('${widget.post.likes}'),
+                ],
+              ),
+              const Divider(
+                color: Colors.grey,
+                thickness: 1.0,
+              ),
+              const SizedBox(height: 16.0),
+              const Text(
+                '댓글',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18.0,
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              ListView.builder(
+                shrinkWrap: true,
                 itemCount: comments.length,
                 itemBuilder: (context, index) {
                   return Padding(
@@ -91,32 +110,32 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   );
                 },
               ),
-            ),
-            const SizedBox(height: 16.0),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _commentController,
-                    decoration: const InputDecoration(
-                      hintText: '댓글을 입력하세요',
+              const SizedBox(height: 150.0),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _commentController,
+                      decoration: const InputDecoration(
+                        hintText: '댓글을 입력하세요',
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8.0),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      comments.add(_commentController.text);
-                      _commentController.clear();
-                    });
-                  },
-                  child: const Text('댓글 작성'),
-                ),
-              ],
-            ),
-          ],
+                  const SizedBox(width: 8.0),
+                  ElevatedButton(
+                    onPressed: () {
+                      setState(() {
+                        comments.add(_commentController.text);
+                        _commentController.clear();
+                      });
+                    },
+                    child: const Text('댓글 작성'),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
