@@ -23,6 +23,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
   Future<void> fetchFestivals() async {
     final response = await http.get(
+      // Uri.parse('http://ec2-44-223-67-116.compute-1.amazonaws.com:8080/festival/get-festivals/'),
       Uri.parse('http://127.0.0.1:8080/festival/get-festivals/'),
       headers: {
         'Accept': 'application/json; charset=utf-8',
@@ -41,6 +42,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
   Future<void> fetchSights() async {
     final response = await http.get(
+        // Uri.parse('http://ec2-44-223-67-116.compute-1.amazonaws.com:8080/sight/get-sights/'),
         Uri.parse('http://127.0.0.1:8080/sight/get-sights/'),
         headers: {
           'Accept': 'application/json; charset=utf-8',

@@ -25,7 +25,8 @@ class _ChatBotPageState extends State<ChatBotPage> {
   }
 
   Future<String> _getChatBotResponse(String message) async {
-    final url = Uri.parse('http://127.0.0.1:8080/chatbot/get-answer/');
+    // final url = Uri.parse('http://127.0.0.1:8080/chatbot/get-answer/');
+    final url = Uri.parse('http://ec2-44-223-67-116.compute-1.amazonaws.com:8080/chatbot/get-answer/');
     final headers = {'Content-Type' : 'application/json'};
     final body = jsonEncode({'query': message});
 

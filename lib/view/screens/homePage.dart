@@ -17,9 +17,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List festivals = [];
+  String fortune_today = '';
+  String url = 'ec2-44-223-67-116.compute-1.amazonaws.com';
 
   Future<void> fetchFestivals() async {
     final response = await http.get(
+        // Uri.parse('http://ec2-44-223-67-116.compute-1.amazonaws.com:8080/festival/get-festivals/'),
         Uri.parse('http://127.0.0.1:8080/festival/get-festivals/'),
         headers: {
           'Accept': 'application/json; charset=utf-8',
@@ -36,10 +39,31 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> getFortune(String birth_month, String birth_day) async {
+    final url = Uri.parse('http://127.0.0.1:8080/fortune/get-fortune/');
+    final headers = {'Content-Type' : 'application/json'};
+    final body = jsonEncode({'birth_month': birth_month, 'birth_day': birth_day});
+
+    final response = await http.post(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      setState(() {
+        final jsonResponse = jsonDecode(response.body);
+        fortune_today = jsonResponse['answer'];
+        print(fortune_today);
+      });
+    } else {
+      throw Exception("failed to get fortune response");
+    }
+
+  }
+
+
   @override
   void initState() {
     super.initState();
     fetchFestivals();
+    getFortune('1', '22');
   }
 
 
@@ -149,6 +173,16 @@ class _HomePageState extends State<HomePage> {
                   "오늘의 운세",
                   style: TextStyle(
                     fontSize: 24,
+                  ),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(left: 18, right: 18, top: 8),
+                child: Text(
+                  // "더미 운세입니다. 오늘은 변화와 성장의 시기입니다. 개인적인 변화나 새로운 도전에 과감히 나서보세요. 건강을 특히 주의하세요. 블라블라블라~~",
+                  fortune_today,
+                  style: TextStyle(
+                    fontSize: 18
                   ),
                 ),
               ),
