@@ -9,7 +9,7 @@ class ForumPage extends StatelessWidget {
         automaticallyImplyLeading: false,
         centerTitle: true,
         title: const Text(
-          "FORUM",
+          "게시판",
           style: TextStyle(fontSize: 25),
         ),
       ),
