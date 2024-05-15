@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:capstonedesign/view/screens/loginPage.dart';
+import 'package:capstonedesign/view/screens/login&signup/loginPage.dart';
 
 class FirstLogoPage extends StatefulWidget {
   @override

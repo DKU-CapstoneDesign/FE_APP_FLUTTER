@@ -3,13 +3,11 @@ import 'package:capstonedesign/model/user.dart';
 import 'package:capstonedesign/repository/user_repository.dart';
 import 'package:capstonedesign/dataSource/user_dataSource.dart';
 
-class SignUpViewModel extends ChangeNotifier {
+class LoginViewModel extends ChangeNotifier {
   final UserRepository userRepository = UserRepository(userDataSource: UserDataSource());
 
   String _email = '';
   String _password = '';
-  String _nickname = '';
-  String _country = '';
 
   set email(String value) {
     _email = value;
@@ -21,20 +19,10 @@ class SignUpViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  set nickname(String value) {
-    _nickname = value;
-    notifyListeners();
-  }
-
-  set country(String value) {
-    _country = value;
-    notifyListeners();
-  }
-
-  Future<void> signUp() async {
+  Future<void> login() async {
     try {
-      User newUser = User(email: _email, password: _password, nickname: _nickname, country: _country);
-      await userRepository.signUp(newUser);
+      User newUser = LoginUser(email: _email, password: _password);
+     // await userRepository.login(newUser);
       // 회원가입 성공 시 처리
     } catch (e) {
       // 오류 처리
