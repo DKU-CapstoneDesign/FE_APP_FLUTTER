@@ -13,7 +13,7 @@ class PostListView extends StatelessWidget {
         constraints: BoxConstraints(
           maxHeight: MediaQuery.of(context).size.height * 0.4,
         ),
-        child: PageView.builder(
+        child: ListView.builder(
           itemCount: cardForms.length,
           itemBuilder: (context, index) {
             return PostCard(cardForm: cardForms[index]);

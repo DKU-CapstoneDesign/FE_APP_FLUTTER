@@ -7,9 +7,6 @@ import 'dart:convert';
 import '../../../model/cardForm.dart';
 
 
-
-
-
 class DiscoverDetailPage extends StatefulWidget {
   final CardForm cardForm;
   const DiscoverDetailPage({Key? key, required this.cardForm}) : super(key: key);

@@ -1,5 +1,7 @@
 
+import 'package:capstonedesign/model/advertisementForm.dart';
 import 'package:capstonedesign/model/cardForm.dart';
+import 'package:capstonedesign/view/widgets/cards/advertisementListView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -7,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../widgets/cards/postListView.dart';
 import 'myPage.dart';
+import 'dart:math';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,8 +20,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List festivals = [];
+  List advertisements = [];
   String fortune_today = '';
   String url = 'ec2-44-223-67-116.compute-1.amazonaws.com';
+
+  void shuffleList(List list) {
+    var random = Random();
+    for (int i = list.length - 1; i > 0; i--) {
+      int j = random.nextInt(i + 1);
+      var temp = list[i];
+      list[i] = list[j];
+      list[j] = temp;
+    }
+  }
 
   Future<void> fetchFestivals() async {
     final response = await http.get(
@@ -31,8 +45,7 @@ class _HomePageState extends State<HomePage> {
     if (response.statusCode == 200) {
       setState(() {
         festivals = jsonDecode(utf8.decode(response.bodyBytes));
-        print(festivals.runtimeType);
-        print(festivals[1].runtimeType);
+        shuffleList(festivals);
       });
     } else {
       throw Exception('Failed to load festivals');
@@ -50,12 +63,28 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         final jsonResponse = jsonDecode(response.body);
         fortune_today = jsonResponse['answer'];
-        print(fortune_today);
       });
     } else {
       throw Exception("failed to get fortune response");
     }
 
+  }
+
+  Future<void> fetchAdvertisements() async {
+    final response = await http.get(
+        Uri.parse('http://127.0.0.1:8080/advertise/get-advertisements/'),
+        headers: {
+          'Accept': 'application/json; charset=utf-8',
+        }
+    );
+    if (response.statusCode == 200) {
+      setState(() {
+        advertisements = jsonDecode(utf8.decode(response.bodyBytes));
+        shuffleList(advertisements);
+      });
+    } else {
+      throw Exception('Failed to load Advertisements');
+    }
   }
 
 
@@ -64,6 +93,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     fetchFestivals();
     getFortune('1', '22');
+    fetchAdvertisements();
   }
 
 
@@ -98,6 +128,18 @@ class _HomePageState extends State<HomePage> {
         title: title,
         content: content,
         imageUrl: imageUrl,
+      );
+    }).toList();
+
+    List<AdvertisementForm> advertisementPosts = advertisements.map((ads) {
+      final name = ads['name'];
+      final price = ads['price'];
+      final imageUrl = ads['image_url'];
+
+      return AdvertisementForm(
+          name: name,
+          price: price,
+          imageUrl: imageUrl
       );
     }).toList();
 
@@ -164,7 +206,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              PostListView(cardForms: dummyPosts),
+              AdvertisementListView(advertisementForms: advertisementPosts),
               SizedBox(height: 50,),
 
               Padding(

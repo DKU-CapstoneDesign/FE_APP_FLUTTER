@@ -1,3 +1,4 @@
+import 'package:capstonedesign/model/advertisementForm.dart';
 import 'package:capstonedesign/model/cardForm.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -6,9 +7,9 @@ import '../../screens/discover/discoverDetailPage.dart';
 
 
 
-class PostCard extends StatelessWidget {
-  final CardForm cardForm;
-  const PostCard({Key? key, required this.cardForm}) : super(key: key);
+class AdvertisementCard extends StatelessWidget {
+  final AdvertisementForm advertisementForm;
+  const AdvertisementCard({Key? key, required this.advertisementForm}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class PostCard extends StatelessWidget {
       child: GestureDetector(
         onTap: () {
           print("post clicked!!!");
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => DiscoverDetailPage(cardForm: this.cardForm,)));
+          // Navigator.of(context).push(MaterialPageRoute(builder: (context) => DiscoverDetailPage(cardForm: this.cardForm,)));
         },
         child: Card(
           child: Padding(
@@ -29,18 +30,24 @@ class PostCard extends StatelessWidget {
                 Align(
                   alignment: Alignment.center,
                   child: Image.network(
-                    cardForm.imageUrl,
+                    advertisementForm.imageUrl,
                     height: MediaQuery.of(context).size.height * 0.28,
-                  ),
+                  )
                 ),
                 SizedBox(height: 16.0),
                 Text(
-                  cardForm.title,
+                  advertisementForm.name,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 20.0,
                   ),
                 ),
+                Text(
+                  advertisementForm.price + '₩',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                  ),
+                )
                 // SizedBox(height: 8.0),
                 // Text(post.content),
               ],

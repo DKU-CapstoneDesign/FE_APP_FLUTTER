@@ -1,10 +1,14 @@
 
+import 'package:capstonedesign/model/advertisementForm.dart';
 import 'package:capstonedesign/model/cardForm.dart';
+import 'package:capstonedesign/view/screens/discover/discoverSearchPage.dart';
+import 'package:capstonedesign/view/widgets/cards/advertisementListView.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'dart:math';
 
 import '../../widgets/cards/postListView.dart';
 
@@ -20,10 +24,23 @@ class DiscoverPage extends StatefulWidget {
 class _DiscoverPageState extends State<DiscoverPage> {
   List festivals = [];
   List sights = [];
+  List advertisements = [];
+  String _query = "";
+  final _controller = TextEditingController();
+
+  void shuffleList(List list) {
+    var random = Random();
+    for (int i = list.length - 1; i > 0; i--) {
+      int j = random.nextInt(i + 1);
+      var temp = list[i];
+      list[i] = list[j];
+      list[j] = temp;
+    }
+  }
 
   Future<void> fetchFestivals() async {
     final response = await http.get(
-      // Uri.parse('http://ec2-44-223-67-116.compute-1.amazonaws.com:8080/festival/get-festivals/'),
+      // Uri.parse('http://ec2-3-89-106-203.compute-1.amazonaws.com:8080/festival/get-festivals/'),
       Uri.parse('http://127.0.0.1:8080/festival/get-festivals/'),
       headers: {
         'Accept': 'application/json; charset=utf-8',
@@ -32,8 +49,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
     if (response.statusCode == 200) {
       setState(() {
         festivals = jsonDecode(utf8.decode(response.bodyBytes));
-        print(festivals.runtimeType);
-        print(festivals[1].runtimeType);
+        shuffleList(festivals);
       });
     } else {
       throw Exception('Failed to load festivals');
@@ -42,8 +58,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
   Future<void> fetchSights() async {
     final response = await http.get(
-        // Uri.parse('http://ec2-44-223-67-116.compute-1.amazonaws.com:8080/sight/get-sights/'),
-        Uri.parse('http://127.0.0.1:8080/sight/get-sights/'),
+        // Uri.parse('http://ec2-3-89-106-203.compute-1.amazonaws.com:8080/sight/get-sights/'),  // AWS EC2 서버
+        Uri.parse('http://127.0.0.1:8080/sight/get-sights/'),                              // 기존 테스트용 서버
         headers: {
           'Accept': 'application/json; charset=utf-8',
         }
@@ -51,13 +67,30 @@ class _DiscoverPageState extends State<DiscoverPage> {
     if (response.statusCode == 200) {
       setState(() {
         sights = jsonDecode(utf8.decode(response.bodyBytes));
-        print(sights.runtimeType);
-        print(sights[1].runtimeType);
+        shuffleList(sights);
       });
     } else {
       throw Exception('Failed to load sights');
     }
   }
+
+  Future<void> fetchAdvertisements() async {
+    final response = await http.get(
+      Uri.parse('http://127.0.0.1:8080/advertise/get-advertisements/'),
+      headers: {
+        'Accept': 'application/json; charset=utf-8',
+      }
+    );
+    if (response.statusCode == 200) {
+      setState(() {
+        advertisements = jsonDecode(utf8.decode(response.bodyBytes));
+        shuffleList(advertisements);
+      });
+    } else {
+      throw Exception('Failed to load Advertisements');
+    }
+  }
+
 
 
   @override
@@ -65,6 +98,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
     super.initState();
     fetchFestivals();
     fetchSights();
+    fetchAdvertisements();
   }
 
 
@@ -91,6 +125,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
         title: title,
         content: content,
         imageUrl: imageUrl,
+      );
+    }).toList();
+
+    List<AdvertisementForm> advertisementPosts = advertisements.map((ads) {
+      final name = ads['name'];
+      final price = ads['price'];
+      final imageUrl = ads['image_url'];
+
+      return AdvertisementForm(
+        name: name,
+        price: price,
+        imageUrl: imageUrl
       );
     }).toList();
 
@@ -136,10 +182,16 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     width: 300,
                     height: 45,
                     child: TextField(
+                      controller: _controller,
                       decoration: InputDecoration(
                         labelText: "어디로 가세요?",
                         border: OutlineInputBorder(),
                       ),
+                      onChanged: (value) {
+                        setState(() {
+                          _query = value;
+                        });
+                      },
                     ),
                   ),
                   // SizedBox(width: 2,),
@@ -147,7 +199,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     icon: Icon(Icons.search),
                     iconSize: 40,
                     onPressed: () {
-          
+                      if (_query != '') {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => DiscoverSearchPage(typedLocation: _query,)));
+                      }
                     },
                   ),
                 ],
@@ -194,7 +248,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                   ),
                 ),
               ),
-              PostListView(cardForms: dummyPosts),
+              AdvertisementListView(advertisementForms: advertisementPosts),
               SizedBox(height: 50,),
             ],
           ),
