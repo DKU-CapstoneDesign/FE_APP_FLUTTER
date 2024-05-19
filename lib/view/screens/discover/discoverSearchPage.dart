@@ -22,6 +22,8 @@ class _DiscoverSearchPageState extends State<DiscoverSearchPage> {
   bool isFestivalButtonPressed = false;
   bool isSightButtonPressed = false;
   List searchResult = [];
+  List festivalResult = [];
+  List sightResult = [];
 
   void shuffleList(List list) {
     var random = Random();
@@ -44,10 +46,15 @@ class _DiscoverSearchPageState extends State<DiscoverSearchPage> {
     if (response.statusCode == 200) {
       setState(() {
         final jsonResponse = jsonDecode(response.body);
-        print(jsonResponse['answer']);
         searchResult = jsonResponse['answer'];
+        searchResult.forEach((eachResult) {
+          if (eachResult['type'] == 'festival') {
+            festivalResult.add(eachResult);
+          } else {
+            sightResult.add(eachResult);
+          }
+        });
         shuffleList(searchResult);
-        print(searchResult[0]);
       });
     } else {
       throw Exception("failed to get region informations");
@@ -75,6 +82,39 @@ class _DiscoverSearchPageState extends State<DiscoverSearchPage> {
       );
     }).toList();
 
+    List<CardForm> festivalPosts = festivalResult.map((eachResult) {
+      final title = eachResult['name'];
+      final content = eachResult['detail_info'];
+      final imageUrl = eachResult['image_url'];
+
+      return CardForm(
+        title: title,
+        content: content,
+        imageUrl: imageUrl,
+      );
+    }).toList();
+
+    List<CardForm> sightPosts = sightResult.map((eachResult) {
+      final title = eachResult['name'];
+      final content = eachResult['detail_info'];
+      final imageUrl = eachResult['image_url'];
+
+      return CardForm(
+        title: title,
+        content: content,
+        imageUrl: imageUrl,
+      );
+    }).toList();
+
+    List<CardForm> showingPosts = [];
+    if (isFestivalButtonPressed) {
+      showingPosts = festivalPosts;
+    } else if (isSightButtonPressed) {
+      showingPosts = sightPosts;
+    } else {
+      showingPosts = resultPosts;
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text('"' + widget.typedLocation + '"'),
@@ -99,22 +139,52 @@ class _DiscoverSearchPageState extends State<DiscoverSearchPage> {
               child: Row(
                 children: [
                   ElevatedButton(
+                    style: isFestivalButtonPressed
+                        ? ElevatedButton.styleFrom(
+                            backgroundColor: Colors.deepPurpleAccent,
+                            // surfaceTintColor: Colors.deepPurpleAccent,
+                            foregroundColor: Colors.white,
+                        )
+                        : ElevatedButton.styleFrom(
+                            // backgroundColor: Colors.deepPurpleAccent,
+                    ),
                     onPressed: (){
                       isFestivalButtonPressed = !isFestivalButtonPressed;
+                      if (isSightButtonPressed) {
+                        isSightButtonPressed = !isSightButtonPressed;
+                      }
+                      setState(() {
+
+                      });
                     },
                     child: Text("축제"),
                   ),
                   SizedBox(width: 10,),
                   ElevatedButton(
+                    style: isSightButtonPressed
+                        ? ElevatedButton.styleFrom(
+                      backgroundColor: Colors.deepPurpleAccent,
+                      // surfaceTintColor: Colors.deepPurpleAccent,
+                      foregroundColor: Colors.white,
+                    )
+                        : ElevatedButton.styleFrom(
+                      // backgroundColor: Colors.deepPurpleAccent,
+                    ),
                     onPressed: (){
                       isSightButtonPressed = !isSightButtonPressed;
+                      if (isFestivalButtonPressed) {
+                        isFestivalButtonPressed = !isFestivalButtonPressed;
+                      }
+                      setState(() {
+
+                      });
                     },
                     child: Text("명소"),
                   )
                 ],
               ),
             ),
-            VerticalPostListView(cardForms: resultPosts),
+            VerticalPostListView(cardForms: showingPosts),
           ],
         ),
       ),
