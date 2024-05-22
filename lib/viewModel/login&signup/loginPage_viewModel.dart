@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:capstonedesign/model/user.dart';
-import 'package:capstonedesign/repository/user_repository.dart';
 import 'package:capstonedesign/dataSource/user_dataSource.dart';
 
 class LoginViewModel extends ChangeNotifier {
-  final UserRepository userRepository = UserRepository(userDataSource: UserDataSource());
+  final LoginDataSource _userDataSource = LoginDataSource();
 
   String _email = '';
   String _password = '';
+
+  String get email => _email;
+  String get password => _password;
 
   set email(String value) {
     _email = value;
@@ -19,14 +20,12 @@ class LoginViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> login() async {
-    try {
-      User newUser = LoginUser(email: _email, password: _password);
-     // await userRepository.login(newUser);
-      // 회원가입 성공 시 처리
-    } catch (e) {
-      // 오류 처리
-      print('가입 오류: $e');
+  Future<bool> login() async {
+    if (_email.isEmpty || _password.isEmpty) {
+      return false;
     }
+
+    bool success = await _userDataSource.login(_email, _password);
+    return success;
   }
 }

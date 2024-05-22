@@ -1,5 +1,3 @@
-//email, password, nickname, country
-
 class User {
   final String email;
   final String password;
