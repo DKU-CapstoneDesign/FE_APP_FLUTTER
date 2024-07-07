@@ -40,6 +40,7 @@ dependencies:
   flutter_svg: ^0.22.0
   image_picker: ^1.0.8
   flutter_client_sse: ^2.0.1
+  country_picker: ^2.0.26
 
 dev_dependencies:
   build_runner: ^2.3.3
@@ -68,12 +69,23 @@ flutter:
     - assets/koreigner.svg
     - assets/koreignerLogo.svg
     - assets/koreignerLogo.png
-    - assets/다운로드.jpeg
+    - assets/logo/logo_white.png
+    - assets/logo/logo_purple.png
+
+  uses-material-design: true
+
+  fonts:
+    - family: SejonghospitalBold
+      fonts:
+        - asset: assets/fonts/SejonghospitalBold.otf
+    - family: SejonghospitalLight
+      fonts:
+        - asset: assets/fonts/SejonghospitalLight.otf
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
-  uses-material-design: true
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:

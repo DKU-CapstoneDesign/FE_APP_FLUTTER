@@ -1,119 +1,94 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:capstonedesign/view/screens/mainPage.dart';
-import 'package:capstonedesign/view/screens/login&signup/signupPage.dart';
+import 'package:provider/provider.dart';
+import '../../../dataSource/user_dataSource.dart';
+import '../../../viewModel/login&signup/loginPage_viewModel.dart';
+import '../homePage.dart';
+import '../mainPage.dart';
+import 'signupPage.dart';
 
-void main() {
-  runApp(LoginPage());
+class LoginPage extends StatefulWidget{
+  @override
+  _LoginPageState createState() => _LoginPageState();
 }
 
-class AuthService {
-  static const String baseUrl = 'https://true-porpoise-uniformly.ngrok-free.app/api/login';
-
-  Future<bool> login(String email, String password) async {
-    try {
-      final response = await http.post(
-        Uri.parse('$baseUrl'),
-        body: {
-          'email': email,
-          'password': password,
-        },
-      );
-      if (response.statusCode == 200) {
-        // 로그인이 성공했을 때 처리할 코드
-        return true;
-      } else {
-        // 로그인이 실패했을 때 처리할 코드
-        return false;
-      }
-    } catch (e) {
-      // 예외가 발생했을 때 처리할 코드
-      return false;
-    }
-  }
-}
-
-// 강제 로그인
-//   Future<bool> login(String email, String password) async {
-//     try {
-//       await Future.delayed(Duration(seconds: 2));
-//       return true;
-//     } catch (e) {
-//       return false;
-//     }
-//   }
-// }
-
-class LoginPage extends StatelessWidget {
-  final AuthService authService = AuthService();
-
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    String email = '';
-    String password = '';
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            TextField(
-              onChanged: (value) => email = value,
-              decoration: InputDecoration(
-                labelText: 'Email',
+    return ChangeNotifierProvider<LoginViewModel>(
+      create: (context) => LoginViewModel(UserDataSource()),
+      child: Consumer<LoginViewModel>(
+        builder : (context, LoginViewModel, child){
+          return Scaffold(
+            resizeToAvoidBottomInset: false,
+            appBar: AppBar(),
+            body: Padding(
+              padding: EdgeInsets.fromLTRB(40, 0, 40, 0),
+              child: Column(
+                children: <Widget>[
+                  SizedBox(height: 80),
+                  const Text("돌아오셨군요!\n 다시 만나 반가워요 :)",
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontFamily: 'SejonghospitalLight',
+                    ),
+                  ),
+                  SizedBox(height: 80),
+                  TextField(
+                        onChanged: LoginViewModel.setEmail,
+                        decoration: const InputDecoration(
+                          icon: Icon(Icons.email),
+                          labelText: 'Email',
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide: BorderSide(
+                              color : Color.fromRGBO(92, 67, 239, 50),
+                              width: 3
+                            )
+                          )
+                        ),
+                   ),
+                  SizedBox(height: 20),
+                  TextField(
+                        onChanged: LoginViewModel.setPassword,
+                        obscureText: true,
+                        decoration: const InputDecoration(
+                          icon: Icon(Icons.lock),
+                          labelText: 'Password',
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color : Color.fromRGBO(92, 67, 239, 50),
+                                    width: 3
+                                )
+                            )
+                        ),
+                  ),
+                  SizedBox(height: 230),
+                  ElevatedButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context, MaterialPageRoute(builder: (context)=> MainPage())
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Color.fromRGBO(92, 67, 239, 50),
+                              foregroundColor: Colors.white,
+                              padding: EdgeInsets.fromLTRB(130, 15, 130, 15),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)
+                              )
+                          ),
+                          child: const Text("로그인",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontFamily: "SejonghospitalBold"
+                            ),
+                          )
+                  ),
+                ],
               ),
             ),
-            SizedBox(height: 20),
-            TextField(
-              onChanged: (value) => password = value,
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-              ),
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ElevatedButton(
-                  child: Text("Login"),
-                  onPressed: () async {
-                    bool success = await authService.login(email, password);
-                    if (success) {
-                      _navigateToMainPage(context);
-                    } else {
-                      // 로그인 실패 시 처리
-                    }
-                  },
-                ),
-                ElevatedButton(
-                  child: Text("Sign up"),
-                  onPressed: () => _navigateToSignUpPage(context),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+          );
+        }
+      )
     );
   }
-}
-
-void _navigateToMainPage(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => MainPage()),
-  );
-}
-
-void _navigateToSignUpPage(BuildContext context) {
-  Navigator.push(
-    context,
-    MaterialPageRoute(builder: (context) => SignUpPage()),
-  );
 }

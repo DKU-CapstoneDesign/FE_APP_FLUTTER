@@ -1,44 +1,158 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:capstonedesign/model/user.dart';
-import 'package:capstonedesign/repository/user_repository.dart';
-import 'package:capstonedesign/dataSource/user_dataSource.dart';
+import 'package:http/http.dart' as http;
+import '../../dataSource/user_dataSource.dart';
 
 class SignUpViewModel extends ChangeNotifier {
-  // final UserRepository userRepository = UserRepository(userDataSource: UserDataSource());
+  final UserDataSource dataSource;
+  SignUpViewModel(this.dataSource);
+  String email = '';
+  String password = '';
+  String nickname = '';
+  String country = '';
+  // String birthdate = '';
+  bool emailCheck = false;
+  bool nicknameCheck = false;
 
-  String _email = '';
-  String _password = '';
-  String _nickname = '';
-  String _country = '';
+  DateTime birthdate = DateTime.now();
+  final birthdateController = TextEditingController();
 
-  set email(String value) {
-    _email = value;
+  void setBirthdate(DateTime date) {
+    birthdate = date;
+    birthdateController.text = "${date.year}-${date.month}-${date.day}";
     notifyListeners();
   }
-
-  set password(String value) {
-    _password = value;
-    notifyListeners();
+  void setEmailCheck(bool? value) {
+    if (value != null) {
+      emailCheck = value;
+      notifyListeners();
+    }
   }
 
-  set nickname(String value) {
-    _nickname = value;
-    notifyListeners();
+  void setNicknameCheck(bool? value) {
+    if (value != null) {
+      nicknameCheck = value;
+      notifyListeners();
+    }
   }
 
-  set country(String value) {
-    _country = value;
-    notifyListeners();
-  }
-
-  Future<void> signUp() async {
+  Future<bool> checkEmailDuplication(String email) async {
     try {
-      User newUser = User(email: _email, password: _password, nickname: _nickname, country: _country);
-      // await userRepository.signUp(newUser);
-      // 회원가입 성공 시 처리
+      final response = await http.post(
+        Uri.parse('https://true-porpoise-uniformly.ngrok-free.app/api/duplication/email'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'email': email}),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        return data['duplication'];
+      } else {
+        print('이메일 중복 체크 실패: ${response.body}');
+        return true; // 일단 오류 시 중복으로 간주
+      }
     } catch (e) {
-      // 오류 처리
-      print('가입 오류: $e');
+      print('오류 발생: $e');
+      return true; // 오류 시 중복으로 간주
+    }
+  }
+//   if (duplication) {
+//   viewModel.setEmailCheck(true);
+//   ScaffoldMessenger.of(context).showSnackBar(
+//   SnackBar(
+//   content: Text('중복된 이메일입니다.'),
+//   ),
+//   );
+//   } else {
+//   viewModel.setEmailCheck(false);
+//   ScaffoldMessenger.of(context).showSnackBar(
+//   SnackBar(
+//   content: Text('사용할 수 있는 이메일입니다.'),
+//   ),
+//   );
+//   }
+// },
+
+  Future<bool> checkNicknameDuplication(String nickname) async {
+    try {
+      final response = await http.post(
+        Uri.parse('https://true-porpoise-uniformly.ngrok-free.app/api/duplication/nickname'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'nickname': nickname}),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        return data['duplication'];
+      } else {
+        print('닉네임 중복 체크 실패: ${response.body}');
+        return true; // 일단 오류 시 중복으로 간주
+      }
+    } catch (e) {
+      print('오류 발생: $e');
+      return true; // 오류 시 중복으로 간주
+    }
+  }
+  // if (duplication) {
+  // viewModel.setNicknameCheck(true);
+  // ScaffoldMessenger.of(context).showSnackBar(
+  // SnackBar(
+  // content: Text('중복된 닉네임입니다.'),
+  // ),
+  // );
+  // } else {
+  // viewModel.setEmailCheck(false);
+  // ScaffoldMessenger.of(context).showSnackBar(
+  // SnackBar(
+  // content: Text('사용할 수 있는 닉네임입니다.'),
+  // ),
+  // );
+  // }
+
+  Future<void> signUp(BuildContext context) async {
+    final formData = {
+      'email': email,
+      'password': password,
+      'nickname': nickname,
+      'country': country,
+      'birthdate': birthdate,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse('https://true-porpoise-uniformly.ngrok-free.app/api/signup'),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: formData,
+      );
+
+      if (response.statusCode == 200) {
+        // 회원가입 성공
+        print('회원가입 성공');
+        // 여기에 회원가입 성공 시 처리할 내용 추가
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('회원가입 성공'),
+            content: Text('회원가입에 성공하였습니다.'),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('확인'),
+              ),
+            ],
+          ),
+        );
+      } else {
+        // 회원가입 실패
+        print('회원가입 실패: ${response.body}');
+        // 여기에 회원가입 실패 시 처리할 내용 추가
+      }
+    } catch (e) {
+      // 네트워크 오류 등 예외 처리
+      print('오류 발생: $e');
+      // 여기에 오류 발생 시 처리할 내용 추가
     }
   }
 }

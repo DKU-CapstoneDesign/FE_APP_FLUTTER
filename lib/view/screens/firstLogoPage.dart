@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:capstonedesign/view/screens/login&signup/loginPage.dart';
+import 'login&signup/middlePage.dart';
 
 class FirstLogoPage extends StatefulWidget {
   @override
@@ -16,17 +16,22 @@ class _FirstLogoPageState extends State<FirstLogoPage> {
     Timer(Duration(seconds: 3), () {
       Navigator.push(
         context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
+        MaterialPageRoute(builder: (context) => MiddlePage()),
       );
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
+      backgroundColor:Color.fromRGBO(92, 67, 239, 60),
       body: Center(
-        child: Text('koreigner'),
-      ),
+        child: Image(
+          image: AssetImage("assets/logo/logo_white.png"),
+            width: 200,
+            height: 200,),
+
+        )
     );
   }
 }

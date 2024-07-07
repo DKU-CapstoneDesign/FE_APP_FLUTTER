@@ -1,239 +1,257 @@
-import 'dart:convert';
+import 'package:capstonedesign/dataSource/user_dataSource.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import '../../../viewModel/login&signup/signupPage_viewModel.dart';
+import 'package:country_picker/country_picker.dart';
 
-class SignUpViewModel extends ChangeNotifier {
-  String email = '';
-  String password = '';
-  String nickname = '';
-  String country = '';
-  String birthdate = '';
-  bool emailCheck = false;
-  bool nicknameCheck = false;
-
-  void setEmailCheck(bool? value) {
-    if (value != null) {
-      emailCheck = value;
-      notifyListeners();
-    }
-  }
-
-  void setNicknameCheck(bool? value) {
-    if (value != null) {
-      nicknameCheck = value;
-      notifyListeners();
-    }
-  }
-
-  Future<bool> checkEmailDuplication(String email) async {
-    try {
-      final response = await http.post(
-        Uri.parse('https://true-porpoise-uniformly.ngrok-free.app/api/duplication/email'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email}),
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return data['duplication'];
-      } else {
-        print('이메일 중복 체크 실패: ${response.body}');
-        return true; // 일단 오류 시 중복으로 간주
-      }
-    } catch (e) {
-      print('오류 발생: $e');
-      return true; // 오류 시 중복으로 간주
-    }
-  }
-
-  Future<bool> checkNicknameDuplication(String nickname) async {
-    try {
-      final response = await http.post(
-        Uri.parse('https://true-porpoise-uniformly.ngrok-free.app/api/duplication/nickname'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'nickname': nickname}),
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return data['duplication'];
-      } else {
-        print('닉네임 중복 체크 실패: ${response.body}');
-        return true; // 일단 오류 시 중복으로 간주
-      }
-    } catch (e) {
-      print('오류 발생: $e');
-      return true; // 오류 시 중복으로 간주
-    }
-  }
-
-  Future<void> signUp(BuildContext context) async {
-    final formData = {
-      'email': email,
-      'password': password,
-      'nickname': nickname,
-      'country': country,
-      'birthdate': birthdate,
-    };
-
-    try {
-      final response = await http.post(
-        Uri.parse('https://true-porpoise-uniformly.ngrok-free.app/api/signup'),
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: formData,
-      );
-
-      if (response.statusCode == 200) {
-        // 회원가입 성공
-        print('회원가입 성공');
-        // 여기에 회원가입 성공 시 처리할 내용 추가
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('회원가입 성공'),
-            content: Text('회원가입에 성공하였습니다.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('확인'),
-              ),
-            ],
-          ),
-        );
-      } else {
-        // 회원가입 실패
-        print('회원가입 실패: ${response.body}');
-        // 여기에 회원가입 실패 시 처리할 내용 추가
-      }
-    } catch (e) {
-      // 네트워크 오류 등 예외 처리
-      print('오류 발생: $e');
-      // 여기에 오류 발생 시 처리할 내용 추가
-    }
-  }
+class SignUpPage extends StatefulWidget {
+  @override
+  _SignUpPageState createState() => _SignUpPageState();
 }
 
-class SignUpPage extends StatelessWidget {
+class _SignUpPageState extends State<SignUpPage> {
+  String selectedCountry = '클릭하여 국가를 선택하세요';
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<SignUpViewModel>(
-      create: (context) => SignUpViewModel(),
-      child: Scaffold(
-        appBar: AppBar(title: Text('회원가입')),
-        body: SignUpForm(),
-      ),
-    );
-  }
-}
-
-class SignUpForm extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final viewModel = Provider.of<SignUpViewModel>(context);
-
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Form(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            TextFormField(
-              onChanged: (value) => viewModel.email = value,
-              decoration: InputDecoration(
-                labelText: '이메일',
-              ),
-            ),
-            Row(
-              children: [
-                Checkbox(
-                  value: viewModel.emailCheck,
-                  onChanged: (value) async {
-                    final duplication = await viewModel.checkEmailDuplication(viewModel.email);
-                    print("!!!!!!!!!!!$value");
-                    if (duplication) {
-                      viewModel.setEmailCheck(true);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text('중복된 이메일입니다.'),
+      create: (context) => SignUpViewModel(UserDataSource()),
+      child: Consumer<SignUpViewModel>(
+        builder: (context, viewModel, child) {
+          return Scaffold(
+            appBar: AppBar(),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.fromLTRB(50, 0, 40, 100),
+                child: Form(
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(height: 20),
+                      const Text("코리너의 회원이 되어\n사람들과 소통해보세요!",
+                        style: TextStyle(
+                          fontSize: 25,
+                          fontFamily: 'SejonghospitalLight',
+              
+                        ),
+                      ),
+                      SizedBox(height: 60),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Email",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: "SejonghospitalLight"
                           ),
-                      );
-                    } else {
-                      viewModel.setEmailCheck(false);
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('사용할 수 있는 이메일입니다.'),
                         ),
-                      );
-                    }
-                  },
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              onChanged: (value) => viewModel.email = value,
+                              decoration: const InputDecoration(
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color : Color.fromRGBO(92, 67, 239, 50),
+                                          width: 3
+                                      )
+                                  )
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                          ElevatedButton(
+                            onPressed: (){
+                              viewModel.checkEmailDuplication(viewModel.email);
+                            },
+                            style:  ElevatedButton.styleFrom(
+                                backgroundColor: Color.fromRGBO(253, 247, 254, 10),
+                                foregroundColor: Color.fromRGBO(92, 67, 239, 50),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)
+                                ),
+                                padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+                                side: BorderSide(color: Color.fromRGBO(92, 67, 239, 50))
+                            ),
+                            child : Text('중복 확인'),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 70),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Password",
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: "SejonghospitalLight"
+                          ),
+                        ),
+                      ),
+                      TextFormField(
+                        onChanged: (value) => viewModel.password = value,
+                        decoration: const InputDecoration(
+                            focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(
+                                    color : Color.fromRGBO(92, 67, 239, 50),
+                                    width: 3
+                                )
+                            )
+                        ),
+                        obscureText: true,
+                      ),
+                      SizedBox(height: 70),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Nickname",
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: "SejonghospitalLight"
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              maxLength: 6,
+                              onChanged: (value) => viewModel.nickname = value,
+                              decoration: const InputDecoration(
+                                  focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
+                                          color : Color.fromRGBO(92, 67, 239, 50),
+                                          width: 3
+                                      )
+                                  )
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 20),
+                          ElevatedButton(
+                            onPressed: (){
+                              viewModel.checkEmailDuplication(viewModel.email);
+                            },
+                            style:  ElevatedButton.styleFrom(
+                                backgroundColor: Color.fromRGBO(253, 247, 254, 10),
+                                foregroundColor: Color.fromRGBO(92, 67, 239, 50),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5)
+                                ),
+                                padding: EdgeInsets.fromLTRB(15, 10, 15, 10),
+                                side: BorderSide(color: Color.fromRGBO(92, 67, 239, 50))
+                            ),
+                            child : Text('중복 확인'),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 70),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Country",
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: "SejonghospitalLight"
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        width: double.infinity,
+                        height: 50,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            showCountryPicker(
+                              context: context,
+                              showPhoneCode: false,
+                              onSelect: (Country country) {
+                                setState(() {
+                                  selectedCountry = country.displayName;
+                                  viewModel.country = country.displayName;
+                                });
+                              },
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color.fromRGBO(253, 247, 254, 10),
+                            foregroundColor: Color.fromRGBO(92, 67, 239, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            side: BorderSide(color: Color.fromRGBO(92, 67, 239, 50))
+                          ),
+                          child: Text(
+                            selectedCountry,
+                            style: TextStyle(fontSize: 16),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 70),
+                      const Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text("Birthdate",
+                          style: TextStyle(
+                              fontSize: 20,
+                              fontFamily: "SejonghospitalLight"
+                          ),
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextFormField(
+                              controller: viewModel.birthdateController,
+                              readOnly: true,
+                              decoration: const InputDecoration(
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color.fromRGBO(92, 67, 239, 50),
+                                    width: 3,
+                                  ),
+                                ),
+                              ),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.calendar_today),
+                            onPressed: () async {
+                              DateTime? pickedDate = await showDatePicker(
+                                context: context,
+                                initialDate: DateTime.now(),
+                                firstDate: DateTime(1900),
+                                lastDate: DateTime(2100),
+                              );
+                              if (pickedDate != null) {
+                                viewModel.setBirthdate(pickedDate);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-                Text('이메일 중복 체크'),
-              ],
-            ),
-            SizedBox(height: 16.0),
-            TextFormField(
-              onChanged: (value) => viewModel.password = value,
-              decoration: InputDecoration(
-                labelText: '비밀번호',
-              ),
-              obscureText: true,
-            ),
-            SizedBox(height: 16.0),
-            TextFormField(
-              onChanged: (value) => viewModel.nickname = value,
-              decoration: InputDecoration(
-                labelText: '닉네임',
               ),
             ),
-            Row(
-              children: [
-                Checkbox(
-                  value: viewModel.nicknameCheck,
-                  onChanged: (value) async {
-                    final duplication = await viewModel.checkNicknameDuplication(viewModel.nickname);
-                    viewModel.setNicknameCheck(duplication);
-                    if (duplication) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('중복된 닉네임입니다.'),
+            bottomNavigationBar: Container(
+              child:
+                Container(
+                  width: double.infinity,
+                  height: 70,
+                  color: Color.fromRGBO(92, 67, 239, 50),
+                  child: TextButton(
+                      onPressed: () => viewModel.signUp(context),
+                      child: const Text("회원가입",
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontFamily: "SejonghospitalBold",
+                          color: Colors.white
                         ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text('사용할 수 있는 닉네임입니다.'),
-                        ),
-                      );
-                    }
-                  },
+                      )
+                  ),
                 ),
-                Text('닉네임 중복 체크'),
-              ],
-            ),
-            SizedBox(height: 16.0),
-            TextFormField(
-              onChanged: (value) => viewModel.country = value,
-              decoration: InputDecoration(
-                labelText: '국가',
-              ),
-            ),
-            SizedBox(height: 16.0),
-            TextFormField(
-              onChanged: (value) => viewModel.birthdate = value,
-              decoration: InputDecoration(
-                labelText: '생년월일',
-              ),
-            ),
-            SizedBox(height: 24.0),
-            ElevatedButton(
-              onPressed: () => viewModel.signUp(context),
-              child: Text('가입하기'),
-            ),
-          ],
-        ),
+            )
+          );
+        },
       ),
     );
   }
