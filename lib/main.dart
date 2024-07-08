@@ -1,5 +1,5 @@
+import 'package:capstonedesign/view/screens/first/firstLogoPage.dart';
 import 'package:flutter/material.dart';
-import 'package:capstonedesign/view/screens/firstLogoPage.dart';
 
 void main() {
   runApp(const MyApp());

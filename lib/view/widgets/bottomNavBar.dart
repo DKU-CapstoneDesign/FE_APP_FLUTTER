@@ -1,16 +1,16 @@
 import 'package:capstonedesign/view/screens/chatBot/chatBotPage.dart';
 import 'package:capstonedesign/view/screens/discover/discoverPage.dart';
-import 'package:capstonedesign/view/screens/homePage.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/post/forumPage.dart';
 import 'package:capstonedesign/view/screens/chat/chattingListPage.dart';
+import '../screens/first/homePage.dart';
 
-class MainPage extends StatefulWidget {
+class BottomNavBar extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _BottomNavBarState createState() => _BottomNavBarState();
 }
 
-class _MyHomePageState extends State<MainPage> {
+class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
 
   List<Widget> _widgetOptions = <Widget>[

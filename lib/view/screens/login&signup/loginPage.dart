@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../dataSource/user_dataSource.dart';
 import '../../../viewModel/login&signup/loginPage_viewModel.dart';
-import '../homePage.dart';
-import '../mainPage.dart';
+import '../../widgets/bottomNavBar.dart';
 import 'signupPage.dart';
 
 class LoginPage extends StatefulWidget{
@@ -65,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
                   ElevatedButton(
                           onPressed: () {
                             Navigator.push(
-                                context, MaterialPageRoute(builder: (context)=> MainPage())
+                                context, MaterialPageRoute(builder: (context)=> BottomNavBar())
                             );
                           },
                           style: ElevatedButton.styleFrom(

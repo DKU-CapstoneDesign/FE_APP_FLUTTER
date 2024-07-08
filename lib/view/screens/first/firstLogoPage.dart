@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'login&signup/middlePage.dart';
+import '../login&signup/middlePage.dart';
+
 
 class FirstLogoPage extends StatefulWidget {
   @override
