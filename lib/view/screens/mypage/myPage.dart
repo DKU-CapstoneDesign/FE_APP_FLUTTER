@@ -52,7 +52,7 @@ class _MyPageState extends State<MyPage> {
                           "중국",
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 16,
                             color : Colors.white,
                             fontFamily: 'SejonghospitalBold',
                           ),
@@ -60,15 +60,18 @@ class _MyPageState extends State<MyPage> {
                       )
                     ],
                   ),
-                  SizedBox(height: 30),
-                  TextButton(
-                    onPressed: () => user.logout(),
-                    child: const Text(
-                      "로그아웃   >",
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontFamily: "SejonghospitalLight",
-                        color: Colors.black,
+                  SizedBox(height: 20),
+                  Center(
+                    child: TextButton.icon(
+                      icon: Icon(Icons.logout_rounded, color: Colors.black38),
+                      onPressed: () => user.logout(),
+                      label: const Text(
+                        "로그아웃",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: "SejonghospitalLight",
+                          color: Colors.black,
+                        ),
                       ),
                     ),
                   ),
