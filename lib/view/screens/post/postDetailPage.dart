@@ -51,12 +51,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
               ),
               Container(
                 alignment: Alignment.center,
-                child: Image.asset(
-                  'assets/다운로드.jpeg',
-                  width: 300,
-                  height: 200,
-                  fit: BoxFit.cover,
-                ),
+                // child: Image.asset(
+                //   'assets/다운로드.jpeg',
+                //   width: 300,
+                //   height: 200,
+                //   fit: BoxFit.cover,
+                // ),
               ),
               const SizedBox(height: 16.0),
               Text(

@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../../widgets/cards/postListView.dart';
-import 'myPage.dart';
+import '../mypage/myPage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -112,10 +112,10 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Padding(
                     padding: EdgeInsets.only(left: 10),
-                    child: Image.asset(
-                      'assets/koreignerLogo.png',
-                      width: 180,
-                    ),
+                    // child: Image.asset(
+                    //   'assets/koreignerLogo.png',
+                    //   width: 180,
+                    // ),
                   ),
                   IconButton(
                     icon: Icon(Icons.person),

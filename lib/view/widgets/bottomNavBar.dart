@@ -1,5 +1,5 @@
 import 'package:capstonedesign/view/screens/discover/discoverPage.dart';
-import 'package:capstonedesign/view/screens/first/myPage.dart';
+import 'package:capstonedesign/view/screens/mypage/myPage.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/post/forumPage.dart';
 import 'package:capstonedesign/view/screens/chat/chattingListPage.dart';
