@@ -1,6 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter/services.dart';
+import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:uuid/uuid.dart';
 
 class ChattingDetailPage extends StatefulWidget {
   final String user;
@@ -12,226 +15,118 @@ class ChattingDetailPage extends StatefulWidget {
 }
 
 class _ChattingDetailPageState extends State<ChattingDetailPage> {
-  List<String> messages = [];
-
-  final TextEditingController _messageController = TextEditingController();
-
-  Future<void> _sendMessage(String message) async {
-    final url = 'https://true-porpoise-uniformly.ngrok-free.app/api/chat';
-    final Map<String, dynamic> data = {
-      'sender': 'kyu',
-      'receiver': 'bom',
-      'message': message,
-    };
-
-    final response = await http.post(
-      Uri.parse(url),
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: jsonEncode(data),
-    );
-
-    if (response.statusCode == 200) {
-      setState(() {
-        messages.add(message);
-      });
-      _messageController.clear();
-    } else {
-      // Handle error, show error message, etc.
-      print('Failed to send message: ${response.reasonPhrase}');
-    }
-  }
+  List<types.Message> _messages = [];
+  final _user = const types.User(id: 'ss');
+  final TextEditingController _textController = TextEditingController();
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.user),
-      ),
-      body: Column(
-        children: [
+  void initState() {
+    super.initState();
+    _loadMessages();
+  }
+
+  void _addMessage(types.Message message) {
+    setState(() {
+      _messages.insert(0, message);
+    });
+  }
+
+  void _handlePreviewDataFetched(
+      types.TextMessage message,
+      types.PreviewData previewData,
+      ) {
+    final index = _messages.indexWhere((element) => element.id == message.id);
+    final currentMessage = _messages[index] as types.TextMessage;
+    final updatedMessage = currentMessage.copyWith(previewData: previewData);
+
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      setState(() {
+        _messages[index] = updatedMessage;
+      });
+    });
+  }
+
+  void _handleSendPressed(types.PartialText message) {
+    final textMessage = types.TextMessage(
+      author: _user,
+      id: const Uuid().v4(),
+      text: message.text,
+      createdAt: DateTime.now().millisecondsSinceEpoch,
+    );
+
+    _addMessage(textMessage);
+    _textController.clear();
+  }
+
+  void _loadMessages() async {
+    final response = await rootBundle.loadString('assets/messages.json');
+    final messages = (jsonDecode(response) as List)
+        .map((e) => types.Message.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    setState(() {
+      _messages = messages;
+    });
+  }
+
+  Widget _buildCustomInputWidget() {
+    return Container(
+      height: 80,
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      color: Colors.white,
+      child: Row(
+        children: <Widget>[
+          SizedBox(width: 20),
           Expanded(
-            child: ListView.builder(
-              itemCount: messages.length,
-              itemBuilder: (BuildContext context, int index) {
-                String message = messages[index];
-                bool isMyMessage = index % 2 == 0;
-                return Padding(
-                  padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: Align(
-                    alignment: isMyMessage ? Alignment.centerRight : Alignment.centerLeft,
-                    child: Container(
-                      padding: EdgeInsets.all(12.0),
-                      decoration: BoxDecoration(
-                        color: isMyMessage ? Colors.purple : Colors.grey[300],
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: Text(
-                        message,
-                        style: TextStyle(color: isMyMessage ? Colors.white : Colors.black),
-                      ),
-                    ),
-                  ),
-                );
-              },
+            child: TextField(
+              controller: _textController,
+              decoration: InputDecoration.collapsed(
+                hintText: '메시지 입력...',
+              ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: TextField(
-                    controller: _messageController,
-                    decoration: InputDecoration(
-                      hintText: 'Type your message...',
-                    ),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  onPressed: () {
-                    String message = _messageController.text;
-                    if (message.isNotEmpty) {
-                      _sendMessage(message);
-                    }
-                  },
-                ),
-              ],
-            ),
+          IconButton(
+            icon: Icon(Icons.send),
+            onPressed: () {
+              if (_textController.text.isNotEmpty) {
+                _handleSendPressed(types.PartialText(text: _textController.text));
+              }
+            },
           ),
         ],
       ),
     );
   }
-}
 
-//
-// import 'dart:convert';
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:flutter_client_sse/flutter_client_sse.dart';
-//
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       title: 'Chatting App with SSE',
-//       theme: ThemeData(
-//         primarySwatch: Colors.blue,
-//       ),
-//       home: ChattingDetailPage(user: 'User'),
-//     );
-//   }
-// }
-//
-// class ChattingDetailPage extends StatefulWidget {
-//   final String user;
-//
-//   ChattingDetailPage({required this.user});
-//
-//   @override
-//   _ChattingDetailPageState createState() => _ChattingDetailPageState();
-// }
-// class _ChattingDetailPageState extends State<ChattingDetailPage> {
-//
-//   List<String> messages = [];
-//   final TextEditingController _messageController = TextEditingController();
-//   late SSEClient _sseClient;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//   }
-//
-//   void _listenToServerEvents() {
-//     SSEClient.subscribeToSSE(
-//       method: SSERequestType.GET,
-//       url: 'http://ec2-3-35-100-8.ap-northeast-2.compute.amazonaws.com:8080/warn/connect',
-//       header: {
-//         "Cookie": '',
-//         "Accept": "text/event-stream",
-//         "Cache-Control": "",
-//       },
-//     ).listen(
-//           (event) {
-//         var data = json.decode(event.data!);
-//         setState(() {
-//           messages.add(data);
-//         });
-//       },
-//       onError: (error) {
-//         setState(() {
-//           _event = 'Error';
-//           messages.add(error.toString());
-//         });
-//       },
-//     );
-//   }
-//
-//
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(widget.user),
-//       ),
-//       body: Column(
-//         children: [
-//           Expanded(
-//             child: ListView.builder(
-//               itemCount: messages.length,
-//               itemBuilder: (BuildContext context, int index) {
-//                 String message = messages[index];
-//                 bool isMyMessage = true; // Set to true for now
-//                 return Padding(
-//                   padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-//                   child: Align(
-//                     alignment: isMyMessage ? Alignment.centerRight : Alignment.centerLeft,
-//                     child: Container(
-//                       padding: EdgeInsets.all(12.0),
-//                       decoration: BoxDecoration(
-//                         color: isMyMessage ? Colors.purple : Colors.grey[300],
-//                         borderRadius: BorderRadius.circular(20.0),
-//                       ),
-//                       child: Text(
-//                         message,
-//                         style: TextStyle(color: isMyMessage ? Colors.white : Colors.black),
-//                       ),
-//                     ),
-//                   ),
-//                 );
-//               },
-//             ),
-//           ),
-//           Padding(
-//             padding: EdgeInsets.all(8.0),
-//             child: Row(
-//               children: <Widget>[
-//                 Expanded(
-//                   child: TextField(
-//                     controller: _messageController,
-//                     decoration: InputDecoration(
-//                       hintText: 'Type your message...',
-//                     ),
-//                   ),
-//                 ),
-//                 IconButton(
-//                   icon: Icon(Icons.send),
-//                   onPressed: () {
-//                     String message = _messageController.text;
-//                     if (message.isNotEmpty) {
-//                       _sendMessage(message);
-//                     }
-//                   },
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    const customTheme = DefaultChatTheme(
+      primaryColor: Color.fromRGBO(92, 67, 239, 20),
+      secondaryColor: Colors.white,
+      receivedMessageBodyTextStyle: TextStyle(color: Colors.black),
+      sentMessageBodyTextStyle: TextStyle(color: Colors.white),
+      backgroundColor: Color.fromRGBO(92, 67, 239, 450),
+    );
+
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(92, 67, 239, 450),
+        leading: BackButton(
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ),
+      body: Chat(
+        messages: _messages,
+        onPreviewDataFetched: _handlePreviewDataFetched,
+        onSendPressed: _handleSendPressed,
+        user: _user,
+        showUserAvatars: true,
+        showUserNames: true,
+        theme: customTheme,
+        customBottomWidget: _buildCustomInputWidget(),
+      ),
+    );
+  }
+}

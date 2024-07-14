@@ -107,27 +107,6 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(left: 10),
-                    // child: Image.asset(
-                    //   'assets/koreignerLogo.png',
-                    //   width: 180,
-                    // ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.person),
-                    iconSize: 40,
-                    onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => MyPage()));
-                    },
-                  ),
-                ],
-              ),
-              SizedBox(height: 30,),
-
               Padding(
                 padding: EdgeInsets.only(left: 24.0),
                 child: Text(
@@ -153,20 +132,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
               ),
-              SizedBox(height: 50,),
-
-              Padding(
-                padding: EdgeInsets.only(left: 24.0),
-                child: Text(
-                  "광고",
-                  style: TextStyle(
-                    fontSize: 24,
-                  ),
-                ),
-              ),
-              PostListView(cardForms: dummyPosts),
-              SizedBox(height: 50,),
-
+              SizedBox(height: 50),
               Padding(
                 padding: EdgeInsets.only(left: 24.0),
                 child: Text(
