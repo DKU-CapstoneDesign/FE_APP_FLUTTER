@@ -41,12 +41,10 @@ class _ChatBotPageState extends State<ChatBotPage> {
 
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: Text('챗봇 코리'),
       ),
       body: Column(

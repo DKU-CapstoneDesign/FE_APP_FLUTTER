@@ -3,6 +3,7 @@ import 'package:capstonedesign/view/screens/mypage/myPage.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/post/forumPage.dart';
 import 'package:capstonedesign/view/screens/chat/chattingListPage.dart';
+import '../screens/chatBot/chatBotPage.dart';
 import '../screens/first/homePage.dart';
 
 class BottomNavBar extends StatefulWidget {
@@ -12,7 +13,6 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
-
   List<Widget> _pages = <Widget>[
     HomePage(),
     ForumPage(),
@@ -77,7 +77,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
           onTap: _onItemTapped,
         ),
       ),
-      )
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => ChatBotPage()),
+        ),
+        child: Image.asset('assets/img/chatBot.png'),// 하위 위젯 설정
+      ),
     );
   }
 }
