@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.all(20.0),
                     child: Row(
                       children: [
                         IconButton(
@@ -80,7 +80,7 @@ class _HomePageState extends State<HomePage> {
                                     Text(
                                       'DISCOVER',
                                       style: TextStyle(
-                                        fontSize: 22,  // Increase the font size
+                                        fontSize: 20,  // Increase the font size
                                         color: isFestivalSelected ? Color.fromRGBO(92, 67, 239, 60) : Colors.grey,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: 'SejonghospitalBold',
@@ -109,7 +109,7 @@ class _HomePageState extends State<HomePage> {
                                     Text(
                                       'TODAY',
                                       style: TextStyle(
-                                        fontSize: 22,  // Increase the font size
+                                        fontSize: 20,  // Increase the font size
                                         color: !isFestivalSelected ? Color.fromRGBO(92, 67, 239, 60) : Colors.grey,
                                         fontFamily: 'SejonghospitalBold',
                                       ),
@@ -148,34 +148,29 @@ class _HomePageState extends State<HomePage> {
                             }).toList() : dummyPosts)
                                 : [], // Empty list for hot 게시글
                           ),
-                          const SizedBox(height: 50),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                            child: Text(
-                              "오늘의 운세",
-                              style: const TextStyle(fontSize: 23,fontFamily: 'SejonghospitalLight',),
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(5.0),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                                child: Text(
-                                  viewModel.fortuneToday,
-                                  style: const TextStyle(fontSize: 18),
+                          const SizedBox(height: 60),
+                          Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                    " 오늘의 운세 ",
+                                    style: const TextStyle(fontSize: 20, fontFamily: 'SejonghospitalLight'),
+                                  ),
+                                SizedBox(height: 10),
+                                Divider(
+                                  indent: 150,
+                                  endIndent: 150,
                                 ),
-                              ),
+                                SizedBox(height: 10),
+                                Text(
+                                    ' ❝    ${viewModel.fortuneToday} 행운이 깃들것이다    ❞',
+                                    style: const TextStyle(fontSize: 20, fontFamily: 'Sejonghospitallight'),
+                                  ),
+                              ],
                             ),
-                          ),
-                          const SizedBox(height: 50),
+                          )
                         ],
                       ),
                     ),

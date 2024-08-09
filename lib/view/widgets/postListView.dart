@@ -46,8 +46,6 @@ class PostListView extends StatelessWidget {
                         height: 180,
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.white),
-                          borderRadius: BorderRadius.circular(5.0),
-
                         ),
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(30,30, 30, 0),// Slight padding for better text alignment
@@ -57,7 +55,7 @@ class PostListView extends StatelessWidget {
                               Text(
                                 cardForms[index].title,
                                 style: const TextStyle(
-                                  fontSize: 23,
+                                  fontSize: 22,
                                   color: Colors.white,
                                   fontFamily: 'SejonghospitalBold',
                                 ),
@@ -66,6 +64,7 @@ class PostListView extends StatelessWidget {
                               Divider(
                                 color: Colors.white,
                                 thickness: 1,
+
                               ),
                               SizedBox(height: 5.0),
                               const Row(

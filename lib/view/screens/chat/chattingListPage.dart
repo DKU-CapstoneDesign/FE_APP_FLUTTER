@@ -17,6 +17,18 @@ class _ChattingListPageState extends State<ChattingListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(92, 67, 239, 60),
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: Text("채팅하기",
+          style: const TextStyle(
+            fontSize: 22,
+            color: Colors.white,
+            fontFamily: 'SejonghospitalBold',
+          ),
+        ),
+      ),
       body: ListView.builder(
         itemCount: unreadMessages.length,
         itemBuilder: (BuildContext context, int index) {
@@ -24,7 +36,7 @@ class _ChattingListPageState extends State<ChattingListPage> {
           bool hasUnreadMessage = unreadMessages[user] ?? false;
           return Column(
             children: <Widget>[
-              if (index == 0) SizedBox(height: 50.0),
+              if (index == 0) SizedBox(height: 30.0),
               InkWell(
                 onTap: () async {
                   await Navigator.push(
@@ -39,13 +51,13 @@ class _ChattingListPageState extends State<ChattingListPage> {
                   });
                 },
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
                   child: Row(
                     children: [
                       CircleAvatar(
                         child: Text(user[0]),
                       ),
-                      SizedBox(width: 16.0),
+                      SizedBox(width: 26.0),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,7 +102,7 @@ class _ChattingListPageState extends State<ChattingListPage> {
                   ),
                 ),
               ),
-              Divider(color: Colors.grey[300]),
+              SizedBox(height: 20),
             ],
           );
         },

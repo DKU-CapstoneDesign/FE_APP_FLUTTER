@@ -6,11 +6,15 @@ class ForumPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Color.fromRGBO(92, 67, 239, 60),
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: const Text(
-          "게시판",
-          style: TextStyle(fontSize: 25),
+        title: Text("게시판",
+          style: const TextStyle(
+            fontSize: 22,
+            color: Colors.white,
+            fontFamily: 'SejonghospitalBold',
+          ),
         ),
       ),
       body: Padding(
