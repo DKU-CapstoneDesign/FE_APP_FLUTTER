@@ -165,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                                 SizedBox(height: 10),
                                 Text(
-                                    ' ❝    ${viewModel.fortuneToday} 행운이 깃들것이다    ❞',
+                                    ' ❝    ${viewModel.fortuneToday}    ❞',
                                     style: const TextStyle(fontSize: 20, fontFamily: 'Sejonghospitallight'),
                                   ),
                               ],

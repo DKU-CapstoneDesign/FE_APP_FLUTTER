@@ -18,9 +18,9 @@ class PostListView extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 35.0),
             child: Container(
-              width: MediaQuery.of(context).size.width * 0.65, // Adjust width to be 65% of the screen width
+              width: MediaQuery.of(context).size.width * 0.65,
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(14.0), // Rounded corners
+                borderRadius: BorderRadius.circular(14.0),
                 color: Color.fromRGBO(92, 67, 239, 60),
               ),
               child: GestureDetector(
@@ -46,9 +46,10 @@ class PostListView extends StatelessWidget {
                         height: 180,
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.white),
+
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.fromLTRB(30,30, 30, 0),// Slight padding for better text alignment
+                          padding: const EdgeInsets.fromLTRB(30,30, 30, 0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -60,13 +61,13 @@ class PostListView extends StatelessWidget {
                                   fontFamily: 'SejonghospitalBold',
                                 ),
                               ),
-                              SizedBox(height: 20),
+                              SizedBox(height: 10),
                               Divider(
                                 color: Colors.white,
                                 thickness: 1,
 
                               ),
-                              SizedBox(height: 5.0),
+                              SizedBox(height: 10.0),
                               const Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
