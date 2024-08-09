@@ -1,73 +1,24 @@
-
-import 'package:capstonedesign/model/cardForm.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:provider/provider.dart';
+import '../../../dataSource/cardForm_dataSource.dart';
+import '../../../dataSource/fortune_dataSource.dart';
+import '../../../model/cardForm.dart';
+import '../../../viewModel/first/homePage_viewModel.dart';
 import '../../widgets/cards/postListView.dart';
-import '../mypage/myPage.dart';
+import '../discover/discoverPage.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List festivals = [];
-  String fortune_today = '';
-  String url = 'ec2-44-223-67-116.compute-1.amazonaws.com';
+  // Track selected tab
+  bool isFestivalSelected = true;
 
-  Future<void> fetchFestivals() async {
-    final response = await http.get(
-        // Uri.parse('http://ec2-44-223-67-116.compute-1.amazonaws.com:8080/festival/get-festivals/'),
-        Uri.parse('http://127.0.0.1:8080/festival/get-festivals/'),
-        headers: {
-          'Accept': 'application/json; charset=utf-8',
-        }
-    );
-    if (response.statusCode == 200) {
-      setState(() {
-        festivals = jsonDecode(utf8.decode(response.bodyBytes));
-        print(festivals.runtimeType);
-        print(festivals[1].runtimeType);
-      });
-    } else {
-      throw Exception('Failed to load festivals');
-    }
-  }
-
-  Future<void> getFortune(String birth_month, String birth_day) async {
-    final url = Uri.parse('http://127.0.0.1:8080/fortune/get-fortune/');
-    final headers = {'Content-Type' : 'application/json'};
-    final body = jsonEncode({'birth_month': birth_month, 'birth_day': birth_day});
-
-    final response = await http.post(url, headers: headers, body: body);
-
-    if (response.statusCode == 200) {
-      setState(() {
-        final jsonResponse = jsonDecode(response.body);
-        fortune_today = jsonResponse['answer'];
-        print(fortune_today);
-      });
-    } else {
-      throw Exception("failed to get fortune response");
-    }
-
-  }
-
-
-  @override
-  void initState() {
-    super.initState();
-    fetchFestivals();
-    getFortune('1', '22');
-  }
-
-
-
+  // Dummy posts for the 축제 tab
   List<CardForm> dummyPosts = [
     CardForm(
       title: '플러터 개발 시작하기',
@@ -86,76 +37,140 @@ class _HomePageState extends State<HomePage> {
     ),
   ];
 
-
   @override
   Widget build(BuildContext context) {
-    List<CardForm> festivalPosts = festivals.map((festival) {
-      final title = festival['name'];
-      final content = festival['detail_info'];
-      final imageUrl = festival['image_url'];
-
-      return CardForm(
-        title: title,
-        content: content,
-        imageUrl: imageUrl,
-      );
-    }).toList();
-
-    return SafeArea(
+    return ChangeNotifierProvider(
+      create: (_) => HomeViewModel(
+        cardFormDatasource: CardFormDatasource(),
+        fortuneDataSource: FortuneDataSource(),
+      )..loadInitialData(),
       child: Scaffold(
-        body: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 24.0),
-                child: Text(
-                  "축제",
-                  style: TextStyle(
-                    fontSize: 24,
+        body: Consumer<HomeViewModel>(
+          builder: (context, viewModel, child) {
+            return SafeArea(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.search, size: 28),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => DiscoverPage()),
+                            );
+                          },
+                        ),
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isFestivalSelected = true;
+                                  });
+                                },
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      '축제',
+                                      style: TextStyle(
+                                        fontSize: 22,  // Increase the font size
+                                        color: isFestivalSelected ? Color.fromRGBO(92, 67, 239, 60) : Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    if (isFestivalSelected)
+                                      Container(
+                                        margin: const EdgeInsets.only(top: 4),
+                                        height: 3,  // Increase the underline thickness
+                                        width: 40,
+                                        color: Color.fromRGBO(92, 67, 239, 60),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(width: 40),  // Increased spacing between buttons
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isFestivalSelected = false;
+                                  });
+                                },
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      '인기글',
+                                      style: TextStyle(
+                                        fontSize: 22,  // Increase the font size
+                                        color: !isFestivalSelected ? Color.fromRGBO(92, 67, 239, 60) : Colors.grey,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    if (!isFestivalSelected)
+                                      Container(
+                                        margin: const EdgeInsets.only(top: 4),
+                                        height: 3,  // Increase the underline thickness
+                                        width: 40,
+                                        color: Color.fromRGBO(92, 67, 239, 60)
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 28), // Align the layout properly with additional space on the right
+                      ],
+                    ),
                   ),
-                ),
-              ),
-              PostListView(
-                cardForms: festivalPosts != null && festivalPosts.isNotEmpty
-                    ? festivalPosts
-                    : dummyPosts,
-              ),
-              SizedBox(height: 50,),
-
-              Padding(
-                padding: EdgeInsets.only(left: 24.0),
-                child: Text(
-                  "hot 게시글",
-                  style: TextStyle(
-                    fontSize: 24,
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 16),
+                          PostListView(
+                            cardForms: isFestivalSelected
+                                ? (viewModel.festivals.isNotEmpty ? viewModel.festivals.map((festival) {
+                              return CardForm(
+                                title: festival.title,
+                                content: festival.content,
+                                imageUrl: festival.imageUrl,
+                              );
+                            }).toList() : dummyPosts)
+                                : [], // Empty list for hot 게시글
+                          ),
+                          const SizedBox(height: 50),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            child: Text(
+                              "오늘의 운세",
+                              style: const TextStyle(fontSize: 24),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                            child: Text(
+                              viewModel.fortuneToday,
+                              style: const TextStyle(fontSize: 18),
+                            ),
+                          ),
+                          const SizedBox(height: 50),
+                        ],
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-              SizedBox(height: 50),
-              Padding(
-                padding: EdgeInsets.only(left: 24.0),
-                child: Text(
-                  "오늘의 운세",
-                  style: TextStyle(
-                    fontSize: 24,
-                  ),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(left: 18, right: 18, top: 8),
-                child: Text(
-                  // "더미 운세입니다. 오늘은 변화와 성장의 시기입니다. 개인적인 변화나 새로운 도전에 과감히 나서보세요. 건강을 특히 주의하세요. 블라블라블라~~",
-                  fortune_today,
-                  style: TextStyle(
-                    fontSize: 18
-                  ),
-                ),
-              ),
-              SizedBox(height: 50,),
-
-            ],
-          ),
+            );
+          },
         ),
       ),
     );

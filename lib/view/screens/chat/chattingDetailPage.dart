@@ -71,9 +71,9 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
 
   Widget _buildCustomInputWidget() {
     return Container(
-      height: 80,
+      height: 60,
       padding: EdgeInsets.symmetric(horizontal: 8.0),
-      color: Colors.white,
+      color: Color.fromRGBO(211, 211, 211, 40),
       child: Row(
         children: <Widget>[
           SizedBox(width: 20),
@@ -102,15 +102,15 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   Widget build(BuildContext context) {
     const customTheme = DefaultChatTheme(
       primaryColor: Color.fromRGBO(92, 67, 239, 20),
-      secondaryColor: Colors.white,
+      secondaryColor: Color.fromRGBO(211, 211, 211, 40),
       receivedMessageBodyTextStyle: TextStyle(color: Colors.black),
       sentMessageBodyTextStyle: TextStyle(color: Colors.white),
-      backgroundColor: Color.fromRGBO(92, 67, 239, 450),
+      backgroundColor: Colors.white,
     );
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(92, 67, 239, 450),
+        backgroundColor: Colors.white,
         leading: BackButton(
           onPressed: () {
             Navigator.of(context).pop();

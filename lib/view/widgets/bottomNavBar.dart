@@ -13,11 +13,10 @@ class BottomNavBar extends StatefulWidget {
 
 class _BottomNavBarState extends State<BottomNavBar> {
   int _selectedIndex = 0;
-  List<Widget> _pages = <Widget>[
+  final List<Widget> _pages = <Widget>[
     HomePage(),
     ForumPage(),
     ChattingListPage(),
-    DiscoverPage(),
     MyPage()
   ];
 
@@ -38,7 +37,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           hoverColor: Colors.transparent,
      ),
       child: Container(
-        height: 80.0,
+        height: 70.0,
         decoration: const BoxDecoration(
           boxShadow: [
             BoxShadow(
@@ -65,10 +64,6 @@ class _BottomNavBarState extends State<BottomNavBar> {
               label: '채팅',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: '살펴보기',
-            ),
-            BottomNavigationBarItem(
               icon: Icon(Icons.person),
               label: '마이페이지',
             ),
@@ -83,7 +78,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
           context,
           MaterialPageRoute(builder: (context) => ChatBotPage()),
         ),
-        child: Image.asset('assets/img/chatBot.png'),// 하위 위젯 설정
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        highlightElevation: 0,
+        splashColor: Colors.transparent,
+        child: Image.asset('assets/img/chatBot.png'),
       ),
     );
   }

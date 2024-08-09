@@ -1,6 +1,5 @@
 import 'package:capstonedesign/model/cardForm.dart';
 import 'package:flutter/material.dart';
-
 import '../../screens/discover/discoverDetailPage.dart';
 
 
@@ -12,7 +11,7 @@ class PostCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 400,
+      height: 500,
       child: GestureDetector(
         onTap: () {
           print("post clicked!!!");
