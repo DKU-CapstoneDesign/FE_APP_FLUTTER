@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import '../../widgets/cards/postListView.dart';
+import '../../widgets/postListView.dart';
 
 
 

@@ -4,7 +4,7 @@ import '../../../dataSource/cardForm_dataSource.dart';
 import '../../../dataSource/fortune_dataSource.dart';
 import '../../../model/cardForm.dart';
 import '../../../viewModel/first/homePage_viewModel.dart';
-import '../../widgets/cards/postListView.dart';
+import '../../widgets/postListView.dart';
 import '../discover/discoverPage.dart';
 
 class HomePage extends StatefulWidget {
@@ -78,11 +78,12 @@ class _HomePageState extends State<HomePage> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      '축제',
+                                      'DISCOVER',
                                       style: TextStyle(
                                         fontSize: 22,  // Increase the font size
-                                        color: isFestivalSelected ? Color.fromRGBO(92, 67, 239, 60) : Colors.black,
+                                        color: isFestivalSelected ? Color.fromRGBO(92, 67, 239, 60) : Colors.grey,
                                         fontWeight: FontWeight.bold,
+                                        fontFamily: 'SejonghospitalBold',
                                       ),
                                     ),
                                     if (isFestivalSelected)
@@ -106,11 +107,11 @@ class _HomePageState extends State<HomePage> {
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
-                                      '인기글',
+                                      'TODAY',
                                       style: TextStyle(
                                         fontSize: 22,  // Increase the font size
                                         color: !isFestivalSelected ? Color.fromRGBO(92, 67, 239, 60) : Colors.grey,
-                                        fontWeight: FontWeight.bold,
+                                        fontFamily: 'SejonghospitalBold',
                                       ),
                                     ),
                                     if (!isFestivalSelected)
@@ -149,17 +150,29 @@ class _HomePageState extends State<HomePage> {
                           ),
                           const SizedBox(height: 50),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 50.0),
                             child: Text(
                               "오늘의 운세",
-                              style: const TextStyle(fontSize: 24),
+                              style: const TextStyle(fontSize: 23,fontFamily: 'SejonghospitalLight',),
                             ),
                           ),
+                          SizedBox(height: 10),
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                            child: Text(
-                              viewModel.fortuneToday,
-                              style: const TextStyle(fontSize: 18),
+                            padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                                child: Text(
+                                  viewModel.fortuneToday,
+                                  style: const TextStyle(fontSize: 18),
+                                ),
+                              ),
                             ),
                           ),
                           const SizedBox(height: 50),
