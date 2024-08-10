@@ -48,7 +48,7 @@ class PostListPage extends StatelessWidget {
           child: Text(
             boardName,
             textAlign: TextAlign.center,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
+            style: TextStyle(fontFamily: 'SejonghospitalBold', fontSize: 22),
           ),
         ),
         centerTitle: true,
@@ -58,7 +58,7 @@ class PostListPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (boardName == '🔥 HOT 게시물')
+            if (boardName == 'HOT 게시판')
               Container(
                 width: 350,
                 margin: EdgeInsets.only(bottom: 15.0),

@@ -68,6 +68,8 @@ flutter:
     - assets/logo/logo_purple.png
     - assets/img/defaultProfile.png
     - assets/img/chatBot.png
+    - assets/img/board.png
+    - assets/img/chat.png
 
   uses-material-design: true
 
