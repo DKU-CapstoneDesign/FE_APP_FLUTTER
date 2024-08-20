@@ -190,7 +190,7 @@ class PostListPage extends StatelessWidget {
             MaterialPageRoute(builder: (context) => CreatePostPage()),
           );
         },
-        backgroundColor: Colors.pink,
+        backgroundColor: Color.fromRGBO(92, 67, 239, 60),
         foregroundColor: Colors.white,
         label: Text('글쓰기'),
         icon: Icon(Icons.edit),

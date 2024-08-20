@@ -81,7 +81,7 @@ class _ForumPageState extends State<ForumPage> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
-          color: isTapped ? const Color.fromRGBO(92, 67, 239, 60) : Color.fromRGBO(92, 67, 239, 220),
+          color: isTapped ? const Color.fromRGBO(92, 67, 239, 100) : Color.fromRGBO(92, 67, 239, 220),
           borderRadius: BorderRadius.circular(20.0),
         ),
         child: Center(

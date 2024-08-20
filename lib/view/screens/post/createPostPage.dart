@@ -35,72 +35,82 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('글 작성하기'),
+        leading:  IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(Icons.close)
+      )
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: '제목',
+        padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const TextField(
+                decoration: InputDecoration(
+                  hintText: '글 제목',
+                ),
               ),
-            ),
-            SizedBox(height: 16.0),
-            GestureDetector(
-              onTap: getImage,
-              child: Container(
-                height: 50,
+              SizedBox(height: 16.0),
+              GestureDetector(
+                onTap: getImage,
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: _imageFile != null
+                      ? Image.file(
+                    _imageFile!,
+                    fit: BoxFit.cover,
+                  )
+                      : const Center(
+                    child: Icon(Icons.add_a_photo),
+                  ),
+                ),
+              ),
+              SizedBox(height: 16.0),
+              Container(
+                height: 510,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.grey),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
-                child: _imageFile != null
-                    ? Image.file(
-                  _imageFile!,
-                  fit: BoxFit.cover,
-                )
-                    : Center(
-                  child: Icon(Icons.add_a_photo),
-                ),
-              ),
-            ),
-            SizedBox(height: 16.0),
-            Container(
-              height: 450,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey),
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: TextField(
-                controller: _contentController,
-                maxLines: null,
-                keyboardType: TextInputType.multiline,
-                decoration: InputDecoration(
-                  hintText: '내용',
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.all(16.0),
-                ),
-              ),
-            ),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.pink),
-                foregroundColor: MaterialStateProperty.all(Colors.white),
-                shape: MaterialStateProperty.all(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.0),
+                child: TextField(
+                  controller: _contentController,
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  decoration: const InputDecoration(
+                    hintText: '게시판에 올릴 게시글 내용을 작성해주세요 \n건강한 게시판 문화를 지향합니다:)',
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.all(16.0),
                   ),
                 ),
               ),
-              child: Text('완료'),
-            ),
-          ],
+              SizedBox(height: 16.0),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                style: ButtonStyle(
+                  backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(92, 67, 239, 60)),
+                  foregroundColor: WidgetStateProperty.all(Colors.white),
+                    padding: WidgetStateProperty.all<EdgeInsets>(
+                      EdgeInsets.symmetric(horizontal: 48, vertical: 18),
+                    ),
+                  shape: WidgetStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                  ),
+                ),
+                child: Text('완료'),
+              ),
+            ],
+          ),
         ),
       ),
     );
