@@ -1,8 +1,22 @@
 import 'package:capstonedesign/view/screens/first/firstLogoPage.dart';
+import 'package:capstonedesign/viewModel/login&signup/loginPage_viewModel.dart';
+import 'package:capstonedesign/viewModel/login&signup/signupPage_viewModel.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import 'dataSource/user_dataSource.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    //provider를 이용하여 상태를 관리함
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => SignUpViewModel(UserDataSource())),
+        ChangeNotifierProvider(create: (context) => LoginViewModel(UserDataSource())),
+      ],
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {

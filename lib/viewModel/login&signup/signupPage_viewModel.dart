@@ -1,158 +1,92 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import '../../dataSource/user_dataSource.dart';
+import '../../model/user.dart';
 
 class SignUpViewModel extends ChangeNotifier {
-  final UserDataSource dataSource;
-  SignUpViewModel(this.dataSource);
-  String email = '';
-  String password = '';
-  String nickname = '';
-  String country = '';
-  // String birthdate = '';
-  bool emailCheck = false;
-  bool nicknameCheck = false;
-
+  late User user;
+  late UserDataSource dataSource;
   DateTime birthdate = DateTime.now();
   final birthdateController = TextEditingController();
 
+  // 중복 체크를 했는지 확인하는 변수
+  bool emailCheck = false;
+  bool nicknameCheck = false;
+
+  SignUpViewModel(this.dataSource) {
+    user = User(
+      email: '',
+      password: '',
+      nickname: '',
+      country: '',
+      birthdate: '',
+    );
+  }
+
+  // 회원가입 로직
+  Future<void> signup(BuildContext context) async {
+    User? signupUser = await dataSource.signUp(
+      user.email,
+      user.password,
+      user.nickname,
+      user.country,
+      user.birthdate,
+    );
+
+    if (signupUser != null) {
+      _showDialog(context, '회원가입 성공', '회원가입에 성공하였습니다.');
+    } else {
+      _showDialog(context, '회원가입 실패', '회원가입에 실패하였습니다.\n다시 시도하세요.');
+    }
+  }
+
+  // 회원가입 성공/실패 다이얼로그 표시
+  void _showDialog(BuildContext context, String title, String content) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(title),
+        content: Text(content),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('확인'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // 생년월일을 String으로 변환 및 형식 지정
   void setBirthdate(DateTime date) {
+    user.birthdate = date as String;
     birthdate = date;
     birthdateController.text = "${date.year}-${date.month}-${date.day}";
-    notifyListeners();
-  }
-  void setEmailCheck(bool? value) {
-    if (value != null) {
-      emailCheck = value;
-      notifyListeners();
-    }
+    notifyListeners(); //상태가 변하면 ui에 알림 보내기
   }
 
-  void setNicknameCheck(bool? value) {
-    if (value != null) {
-      nicknameCheck = value;
-      notifyListeners();
-    }
+  void setEmailCheck(bool value) {
+    emailCheck = value;
+    notifyListeners(); //상태가 변하면 ui에 알림 보내기
   }
 
-  Future<bool> checkEmailDuplication(String email) async {
-    try {
-      final response = await http.post(
-        Uri.parse('https://true-porpoise-uniformly.ngrok-free.app/api/duplication/email'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'email': email}),
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return data['duplication'];
-      } else {
-        print('이메일 중복 체크 실패: ${response.body}');
-        return true; // 일단 오류 시 중복으로 간주
-      }
-    } catch (e) {
-      print('오류 발생: $e');
-      return true; // 오류 시 중복으로 간주
-    }
+  void setNicknameCheck(bool value) {
+    nicknameCheck = value;
+    notifyListeners(); //상태가 변하면 ui에 알림 보내기
   }
-//   if (duplication) {
-//   viewModel.setEmailCheck(true);
-//   ScaffoldMessenger.of(context).showSnackBar(
-//   SnackBar(
-//   content: Text('중복된 이메일입니다.'),
-//   ),
-//   );
-//   } else {
-//   viewModel.setEmailCheck(false);
-//   ScaffoldMessenger.of(context).showSnackBar(
-//   SnackBar(
-//   content: Text('사용할 수 있는 이메일입니다.'),
-//   ),
-//   );
-//   }
-// },
 
-  Future<bool> checkNicknameDuplication(String nickname) async {
-    try {
-      final response = await http.post(
-        Uri.parse('https://true-porpoise-uniformly.ngrok-free.app/api/duplication/nickname'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'nickname': nickname}),
-      );
-
-      if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return data['duplication'];
-      } else {
-        print('닉네임 중복 체크 실패: ${response.body}');
-        return true; // 일단 오류 시 중복으로 간주
-      }
-    } catch (e) {
-      print('오류 발생: $e');
-      return true; // 오류 시 중복으로 간주
-    }
+  // 이메일 중복 체크
+  Future<bool> checkEmailDuplication() async {
+    bool duplication = await dataSource.checkEmailDuplication(user.email);
+    setEmailCheck(!duplication); // 중복이 없으면 true, 중복이 있으면 false
+    return duplication;
   }
-  // if (duplication) {
-  // viewModel.setNicknameCheck(true);
-  // ScaffoldMessenger.of(context).showSnackBar(
-  // SnackBar(
-  // content: Text('중복된 닉네임입니다.'),
-  // ),
-  // );
-  // } else {
-  // viewModel.setEmailCheck(false);
-  // ScaffoldMessenger.of(context).showSnackBar(
-  // SnackBar(
-  // content: Text('사용할 수 있는 닉네임입니다.'),
-  // ),
-  // );
-  // }
 
-  Future<void> signUp(BuildContext context) async {
-    final formData = {
-      'email': email,
-      'password': password,
-      'nickname': nickname,
-      'country': country,
-      'birthdate': birthdate,
-    };
-
-    try {
-      final response = await http.post(
-        Uri.parse('https://true-porpoise-uniformly.ngrok-free.app/api/signup'),
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: formData,
-      );
-
-      if (response.statusCode == 200) {
-        // 회원가입 성공
-        print('회원가입 성공');
-        // 여기에 회원가입 성공 시 처리할 내용 추가
-        showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: Text('회원가입 성공'),
-            content: Text('회원가입에 성공하였습니다.'),
-            actions: <Widget>[
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('확인'),
-              ),
-            ],
-          ),
-        );
-      } else {
-        // 회원가입 실패
-        print('회원가입 실패: ${response.body}');
-        // 여기에 회원가입 실패 시 처리할 내용 추가
-      }
-    } catch (e) {
-      // 네트워크 오류 등 예외 처리
-      print('오류 발생: $e');
-      // 여기에 오류 발생 시 처리할 내용 추가
-    }
+  // 닉네임 중복 체크
+  Future<bool> checkNicknameDuplication() async {
+    bool duplication = await dataSource.checkNicknameDuplication(user.nickname);
+    setNicknameCheck(!duplication); // 중복이 없으면 true, 중복이 있으면 false
+    return duplication;
   }
+
+
 }

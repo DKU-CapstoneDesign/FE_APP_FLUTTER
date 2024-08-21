@@ -58,7 +58,7 @@ class PostListPage extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            if (boardName == 'HOT 게시판')
+            if (boardName == 'HOT게시판')
               Container(
                 width: 350,
                 margin: EdgeInsets.only(bottom: 15.0),
@@ -67,7 +67,7 @@ class PostListPage extends StatelessWidget {
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                child: Text(
+                child: const Text(
                   '좋아요 10개 이상인 게시물을 보여줘요!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -76,7 +76,7 @@ class PostListPage extends StatelessWidget {
                   ),
                 ),
               ),
-            if (boardName == '자유 게시판')
+            if (boardName == '자유게시판')
               Container(
                 width: 350,
                 margin: EdgeInsets.only(bottom: 15.0),
@@ -85,7 +85,7 @@ class PostListPage extends StatelessWidget {
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                child: Text(
+                child: const Text(
                   '자유로운 주제에 대해 이야기해요!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -94,7 +94,7 @@ class PostListPage extends StatelessWidget {
                   ),
                 ),
               ),
-            if (boardName == '도움 게시판')
+            if (boardName == '도움게시판')
               Container(
                 width: 350,
                 margin: EdgeInsets.only(bottom: 15.0),
@@ -103,7 +103,7 @@ class PostListPage extends StatelessWidget {
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                child: Text(
+                child: const Text(
                   '사람들에게 도움을 요청할 수 있어요!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -112,7 +112,7 @@ class PostListPage extends StatelessWidget {
                   ),
                 ),
               ),
-            if (boardName == '여행 게시판')
+            if (boardName == '여행게시판')
               Container(
                 width: 350,
                 margin: EdgeInsets.only(bottom: 15.0),
@@ -121,7 +121,7 @@ class PostListPage extends StatelessWidget {
                   color: Colors.grey[200],
                   borderRadius: BorderRadius.circular(10.0),
                 ),
-                child: Text(
+                child: const Text(
                   '여행과 관련된 정보를 공유해요!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -183,7 +183,8 @@ class PostListPage extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButton: boardName != 'HOT게시판'
+          ? FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
@@ -194,7 +195,8 @@ class PostListPage extends StatelessWidget {
         foregroundColor: Colors.white,
         label: Text('글쓰기'),
         icon: Icon(Icons.edit),
-      ),
+      )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
