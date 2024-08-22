@@ -17,7 +17,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     HomePage(),
     ForumPage(),
     ChattingListPage(),
-    MyPage()
+    /*MyPage()*/
   ];
 
   void _onItemTapped(int index) {
@@ -82,7 +82,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
         elevation: 0,
         highlightElevation: 0,
         splashColor: Colors.transparent,
-        child: Image.asset('assets/img/chatBot.png'),
+        // child: Image.asset('assets/img/chatBot.png'),
       ),
     );
   }

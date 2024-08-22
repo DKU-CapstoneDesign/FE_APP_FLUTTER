@@ -73,13 +73,13 @@ class UserDataSource {
   }
   //회원가입하기
   //form 데이터 형식으로 post
-  Future<User?> signUp(String email, String password, String nickname, String country, String birthdate) async {
+  Future<User?> signUp(String email, String password, String nickname, String country, String birthDate) async {
     final formData = {
       'email': email,
       'password': password,
       'nickname': nickname,
       'country': country,
-      'birthdate': birthdate,
+      'birthDate': birthDate,
     };
     try {
       final response = await http.post(

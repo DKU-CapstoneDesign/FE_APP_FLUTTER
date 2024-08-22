@@ -14,23 +14,23 @@ class LoginViewModel extends ChangeNotifier {
   }
 
   //로그인 로직
-  Future<void> login() async {
+  Future<void> login(BuildContext context) async {
     LoginUser? loggedUser = await dataSource.login(user.email, user.password);
     if (loggedUser != null) { //만약 데이터를 전송 받았다면
-      _navigateToHomePage(); //로그인 성공(홈페이지로 이동)
+      _navigateToHomePage(context); //로그인 성공(홈페이지로 이동)
     } else {
-      _showErrorDialog();
+      _showErrorDialog(context);
     }
     notifyListeners();
   }
 
 
   //로그인 성공 시 homepage로 이동
-  void _navigateToHomePage() {
+  void _navigateToHomePage(BuildContext context) {
     Navigator.push(context, MaterialPageRoute(builder: (context)=> BottomNavBar()));
   }
   //로그인 실패 시 실패 다이얼로그 띄우기
-  void _showErrorDialog() {
+  void _showErrorDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -42,15 +42,13 @@ class LoginViewModel extends ChangeNotifier {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("로그인에 성공하셨습니다."),
+              child: Text("확인"),
             ),
           ],
         );
       },
     );
   }
-
-
 }
 
 

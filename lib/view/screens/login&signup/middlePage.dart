@@ -84,7 +84,7 @@ class _MiddlePageState extends State<MiddlePage>{
               TextButton(
                   onPressed: (){
                     Navigator.push(
-                        context, MaterialPageRoute(builder: (context)=> LoginPage())
+                        context, MaterialPageRoute(builder: (context)=> LoginPage(welcomeMessage: "돌아오셨군요!\n 다시 만나 반가워요 :)"))
                     );
                   },
                   child: const Text("이미 계정이 있으신가요?",

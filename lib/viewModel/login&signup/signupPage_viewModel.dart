@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../dataSource/user_dataSource.dart';
 import '../../model/user.dart';
+import '../../view/screens/login&signup/loginPage.dart';
 
 class SignUpViewModel extends ChangeNotifier {
   late User user;
@@ -18,7 +19,7 @@ class SignUpViewModel extends ChangeNotifier {
       password: '',
       nickname: '',
       country: '',
-      birthdate: '',
+      birthDate: '',
     );
   }
 
@@ -29,17 +30,22 @@ class SignUpViewModel extends ChangeNotifier {
       user.password,
       user.nickname,
       user.country,
-      user.birthdate,
+      user.birthDate,
     );
+    print(signupUser);
 
     if (signupUser != null) {
-      _showDialog(context, '회원가입 성공', '회원가입에 성공하였습니다.');
+      _navigateToLoginPage(context); //회원가입 성공 시 로그인 페이지로 이동
     } else {
       _showDialog(context, '회원가입 실패', '회원가입에 실패하였습니다.\n다시 시도하세요.');
     }
   }
 
-  // 회원가입 성공/실패 다이얼로그 표시
+  //로그인 성공 시 signuppage로 이동
+  void _navigateToLoginPage(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage(welcomeMessage: "반가워요!\n만나서 반갑습니다 :)")));
+  }
+  // 회원가입 실패 다이얼로그 표시
   void _showDialog(BuildContext context, String title, String content) {
     showDialog(
       context: context,
@@ -58,10 +64,10 @@ class SignUpViewModel extends ChangeNotifier {
 
   // 생년월일을 String으로 변환 및 형식 지정
   void setBirthdate(DateTime date) {
-    user.birthdate = date as String;
-    birthdate = date;
-    birthdateController.text = "${date.year}-${date.month}-${date.day}";
-    notifyListeners(); //상태가 변하면 ui에 알림 보내기
+    // DateTime 객체를 "YYYY-MM-DD" 형식의 문자열로 변환
+    user.birthDate = "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
+    birthdateController.text = user.birthDate;
+    notifyListeners(); // 상태가 변하면 UI에 알림 보내기
   }
 
   void setEmailCheck(bool value) {

@@ -4,6 +4,11 @@ import '../../../viewModel/login&signup/loginPage_viewModel.dart';
 
 
 class LoginPage extends StatefulWidget{
+  final String welcomeMessage; //기존 회원과 신규 회원의 환영 메시지를 다르게 설정
+  //navigate 시 매개변수로 전달 받음
+
+  LoginPage({Key? key, required this.welcomeMessage}) : super(key: key);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -22,7 +27,8 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: <Widget>[
             SizedBox(height: 80),
-            const Text("돌아오셨군요!\n 다시 만나 반가워요 :)",
+            Text(
+              widget.welcomeMessage,
               style: TextStyle(
                 fontSize: 30,
                 fontFamily: 'SejonghospitalLight',
@@ -62,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 230),
             ElevatedButton(
                     onPressed: () {
-                      viewModel.login();
+                      viewModel.login(context);
                       /////서버 안 켜져 있을 시 임시로 홈에 들어가기
                       // Navigator.push(
                       //     context, MaterialPageRoute(builder: (context)=> BottomNavBar())
