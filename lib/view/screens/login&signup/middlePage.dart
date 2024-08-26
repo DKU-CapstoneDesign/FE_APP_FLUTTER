@@ -16,7 +16,7 @@ class _MiddlePageState extends State<MiddlePage>{
   @override
   void initState(){
     super.initState();
-    Future.delayed(Duration(milliseconds: 400),(){
+    Future.delayed(Duration(milliseconds: 400),(){ //서서히 나타나도록
       setState(() {
         _visible = true;
       });

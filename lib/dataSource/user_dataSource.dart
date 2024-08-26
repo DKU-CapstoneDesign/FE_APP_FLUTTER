@@ -10,21 +10,28 @@ class UserDataSource {
 
 
   //////로그인
-  Future<LoginUser?> login(String email, String password) async{
-    final response = await http.post(
-      Uri.parse('$baseUrl/api/login'),
-      body: {
-        'email': email,
-        'password': password,
-      },
-    );
-    if (response.statusCode == 200) {
-      print("로그인 성공");
-      //model의 LoginUser에 값을 넣기
-      return LoginUser.fromJson(jsonDecode(response.body));
-    } else {
-      print("로그인 실패");
-      return null;
+  Future<User?> login(String email, String password) async{
+    try{
+      final response = await http.post(
+        Uri.parse('$baseUrl/api/login'),
+        body: {
+          'email': email,
+          'password': password,
+        },
+      );
+      if (response.statusCode == 200) {
+        print("로그인 성공");
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        // responseData에서 데이터 추출
+        final loginUser = responseData['authentication']['principal'];
+        // User 객체로 변환하여 반환;
+        return User.fromJson(loginUser);
+      } else {
+        print("로그인 실패: : ${response.body}");
+        return null;
+      }
+    } catch(e){
+      print('오류 발생: $e');
     }
   }
 
@@ -107,8 +114,7 @@ class UserDataSource {
       final response = await http.get(Uri.parse('$baseUrl/api/logout'));
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
-        if (responseData.containsKey('loggedOut') &&
-            responseData['loggedOut'] == true) {
+        if (responseData.containsKey('loggedOut') && responseData['loggedOut'] == true) {
           print("로그아웃 성공");
           return true;
         } else {
@@ -123,4 +129,7 @@ class UserDataSource {
     }
     return false;
   }
+
+  //////비밀번호 변경
+
 }

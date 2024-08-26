@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../../dataSource/chatbot_dataSource.dart';
+import '../../../dataSource/chatBot_dataSource.dart';
 import '../../../viewModel/chatBot/chatBotPage_viewModel.dart';
 
 class ChatBotPage extends StatefulWidget {

@@ -55,15 +55,7 @@ class _HomePageState extends State<HomePage> {
                     padding: const EdgeInsets.all(20.0),
                     child: Row(
                       children: [
-                        IconButton(
-                          icon: const Icon(Icons.search, size: 28),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => DiscoverPage()),
-                            );
-                          },
-                        ),
+                        const SizedBox(width: 40),
                         Expanded(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -74,7 +66,8 @@ class _HomePageState extends State<HomePage> {
                                     isFestivalSelected = true;
                                   });
                                 },
-                                child: Column(
+                                child:
+                                Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
@@ -96,7 +89,7 @@ class _HomePageState extends State<HomePage> {
                                   ],
                                 ),
                               ),
-                              const SizedBox(width: 40),  // Increased spacing between buttons
+                              const SizedBox(width: 40),
                               GestureDetector(
                                 onTap: () {
                                   setState(() {

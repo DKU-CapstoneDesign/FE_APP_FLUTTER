@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import '../../model/message.dart';
+import '../../model/chatting.dart';
 
 class ChatViewModel extends ChangeNotifier {
-  List<Message> _messages = [];
+  List<Chatting> _messages = [];
 
-  List<Message> get messages => _messages;
+  List<Chatting> get messages => _messages;
 
-  void addMessage(Message message) {
+  void addMessage(Chatting message) {
     _messages.add(message);
     notifyListeners();
   }

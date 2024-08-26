@@ -37,7 +37,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 80),
             //이메일 입력칸, viewmodel을 통해 입력 값이 model에 저장
             TextField(
-                  onChanged: (value) => viewModel.user.email= value,
+                  onChanged: (value) => viewModel.email= value,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.email),
                     labelText: 'Email',
@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: 20),
             //비밀번호 입력칸, viewmodel을 통해 입력 값이 model에 저장
             TextField(
-              onChanged: (value) => viewModel.user.password= value,
+              onChanged: (value) => viewModel.password= value,
                   obscureText: true,
                   decoration: const InputDecoration(
                     icon: Icon(Icons.lock),

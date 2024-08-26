@@ -5,19 +5,16 @@ import 'package:capstonedesign/dataSource/user_dataSource.dart';
 import '../../view/widgets/bottomNavBar.dart';
 
 class LoginViewModel extends ChangeNotifier {
-  late User user;
+  late String email, password;
   late UserDataSource dataSource;
   late BuildContext context;
-
-  LoginViewModel(this.dataSource) {
-    user = LoginUser(email: '', password: '');
-  }
+  LoginViewModel(this.dataSource);
 
   //로그인 로직
   Future<void> login(BuildContext context) async {
-    LoginUser? loggedUser = await dataSource.login(user.email, user.password);
+    User? loggedUser = await dataSource.login(email, password);
     if (loggedUser != null) { //만약 데이터를 전송 받았다면
-      _navigateToHomePage(context); //로그인 성공(홈페이지로 이동)
+      _navigateToHomePage(context,loggedUser); //로그인 성공(홈페이지로 이동)
     } else {
       _showErrorDialog(context);
     }
@@ -26,9 +23,13 @@ class LoginViewModel extends ChangeNotifier {
 
 
   //로그인 성공 시 homepage로 이동
-  void _navigateToHomePage(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context)=> BottomNavBar()));
+  void _navigateToHomePage(BuildContext context, User user) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => BottomNavBar(user: user)),
+    );
   }
+
   //로그인 실패 시 실패 다이얼로그 띄우기
   void _showErrorDialog(BuildContext context) {
     showDialog(

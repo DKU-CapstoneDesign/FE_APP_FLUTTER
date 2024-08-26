@@ -32,20 +32,15 @@ class SignUpViewModel extends ChangeNotifier {
       user.country,
       user.birthDate,
     );
-    print(signupUser);
-
     if (signupUser != null) {
-      _navigateToLoginPage(context); //회원가입 성공 시 로그인 페이지로 이동
+      _showDialog(context, '회원가입 성공', '회원가입에 성공하였습니다.');
     } else {
       _showDialog(context, '회원가입 실패', '회원가입에 실패하였습니다.\n다시 시도하세요.');
     }
   }
 
   //로그인 성공 시 signuppage로 이동
-  void _navigateToLoginPage(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage(welcomeMessage: "반가워요!\n만나서 반갑습니다 :)")));
-  }
-  // 회원가입 실패 다이얼로그 표시
+  // 회원가입 성공/실패 다이얼로그 표시
   void _showDialog(BuildContext context, String title, String content) {
     showDialog(
       context: context,
@@ -54,12 +49,19 @@ class SignUpViewModel extends ChangeNotifier {
         content: Text(content),
         actions: <Widget>[
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
+            onPressed: () =>
+            //회원가입 성공하면 로그인 창으로 이동
+            //회원가입 실패하면 이전 창으로 이동
+                title=="회원가입 성공"? _navigateToLoginPage(context) : Navigator.of(context).pop(),
             child: const Text('확인'),
           ),
         ],
       ),
     );
+  }
+
+  void _navigateToLoginPage(BuildContext context) {
+    Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage(welcomeMessage: "환영해요!\n만나서 반갑습니다 :)")));
   }
 
   // 생년월일을 String으로 변환 및 형식 지정

@@ -35,33 +35,3 @@ class User {
     };
   }
 }
-
-class LoginUser extends User {
-  LoginUser({
-    required String email,
-    required String password,
-  }) : super(
-    email: email,
-    password: password,
-    nickname: '',
-    country: '',
-    birthDate: '',
-  );
-
-  // JSON으로부터 LoginUser 객체 생성
-  factory LoginUser.fromJson(Map<String, dynamic> json) {
-    return LoginUser(
-      email: json['email'] ?? '',
-      password: json['password'] ?? '',
-    );
-  }
-
-  // LoginUser 객체를 JSON으로 변환
-  @override
-  Map<String, dynamic> toJson() {
-    return {
-      'email': email,
-      'password': password,
-    };
-  }
-}

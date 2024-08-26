@@ -1,10 +1,12 @@
 import 'package:capstonedesign/view/screens/first/firstLogoPage.dart';
 import 'package:capstonedesign/viewModel/login&signup/loginPage_viewModel.dart';
 import 'package:capstonedesign/viewModel/login&signup/signupPage_viewModel.dart';
+import 'package:capstonedesign/viewModel/mypage/myPage_viewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'dataSource/user_dataSource.dart';
+import 'model/user.dart';
 
 void main() {
   runApp(
