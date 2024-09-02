@@ -25,8 +25,8 @@ class _BottomNavBarState extends State<BottomNavBar> {
     // User 객체를 각 페이지에 전달
     _pages = <Widget>[
       HomePage(),
-      ForumPage(),
       DiscoverPage(),
+      ForumPage(),
       ChattingListPage(),
       MyPage(user: widget.user),
     ];
@@ -70,12 +70,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
               label: '홈',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.forum),
-              label: '게시판',
-            ),
-            BottomNavigationBarItem(
               icon: Icon(Icons.search_outlined),
               label: '찾아보기',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.forum),
+              label: '게시판',
             ),
             BottomNavigationBarItem(
               icon: Icon(Icons.send),

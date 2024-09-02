@@ -1,26 +1,26 @@
 // viewmodels/home_view_model.dart
 
 import 'package:flutter/material.dart';
-import '../../dataSource/cardForm_dataSource.dart';
+import '../../dataSource/discover_dataSource.dart';
 import '../../dataSource/fortune_dataSource.dart';
-import '../../model/cardForm.dart';
+import '../../model/discover.dart';
 import '../../model/fortune.dart';
 
 
 class HomeViewModel extends ChangeNotifier {
-  List<CardForm> festivals = [];
+  List<Discover> festivals = [];
   String fortuneToday = '';
-  final CardFormDatasource  cardFormDatasource;
+  final DiscoverDatasource discoverDatasource;
   final FortuneDataSource fortuneDataSource;
 
   HomeViewModel({
-    required this.cardFormDatasource,
+    required this.discoverDatasource,
     required this.fortuneDataSource,
   });
 
   Future<void> fetchFestivals() async {
     try {
-      festivals = await cardFormDatasource.fetchFestivals();
+      festivals = (await discoverDatasource.fetchFestivals())!;
       notifyListeners();
     } catch (e) {
       // Handle error

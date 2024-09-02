@@ -1,18 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 
-import '../../../model/cardForm.dart';
-
-
-
+import '../../../model/discover.dart';
 
 
 class DiscoverDetailPage extends StatefulWidget {
-  final CardForm cardForm;
-  const DiscoverDetailPage({Key? key, required this.cardForm}) : super(key: key);
+  final Discover discover;
+  const DiscoverDetailPage({Key? key, required this.discover}) : super(key: key);
 
   @override
   State<DiscoverDetailPage> createState() => _DiscoverDetailPageState();
@@ -26,14 +21,14 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.cardForm.title),
+        title: Text(widget.discover.title),
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(height: 30,),
             Image.network(
-              widget.cardForm.imageUrl, width: MediaQuery.of(context).size.width * 0.7,
+              widget.discover.imageUrl, width: MediaQuery.of(context).size.width * 0.7,
             ),
             SizedBox(height: 20,),
             SizedBox(
@@ -67,7 +62,7 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
             Padding(
               padding: EdgeInsets.only(left:30, right: 30),
               child: Text(
-                widget.cardForm.content,
+                widget.discover.content,
                 style: TextStyle(
                   fontSize: 17
                 ),

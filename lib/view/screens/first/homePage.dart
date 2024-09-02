@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../dataSource/cardForm_dataSource.dart';
+import '../../../dataSource/discover_dataSource.dart';
 import '../../../dataSource/fortune_dataSource.dart';
-import '../../../model/cardForm.dart';
+import '../../../model/discover.dart';
 import '../../../viewModel/first/homePage_viewModel.dart';
 import '../../widgets/postListView.dart';
-import '../discover/discoverPage.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key? key}) : super(key: key);
@@ -15,36 +14,29 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Track selected tab
-  bool isFestivalSelected = true;
+  bool isFestivalSelected = true; // 탭바 컨트롤을 위한 변수
 
-  // Dummy posts for the 축제 tab
-  List<CardForm> dummyPosts = [
-    CardForm(
-      title: '플러터 개발 시작하기',
-      content: '플러터는 구글에서 개발한 모바일 앱 개발 프레임워크입니다. 다트 언어를 사용하며, 단일 코드베이스로 iOS, Android 등 다양한 플랫폼에서 동작합니다.',
-      imageUrl: 'https://www.swmaestro.org/static/sw/img/common/logo.png',
-    ),
-    CardForm(
-      title: '프론트엔드 개발자 되는 법',
-      content: '프론트엔드 개발자가 되려면 HTML, CSS, JavaScript를 반드시 배워야 합니다. 또한 React, Vue, Angular 등의 프레임워크 학습도 필수적입니다. 실무 경험을 위해 개인 프로젝트도 진행하는 것이 좋습니다.',
-      imageUrl: 'https://www.adm.ee/wordpress/wp-content/uploads/2023/08/JAVA-768x512.png',
-    ),
-    CardForm(
-      title: '파이썬 기초 공부하기',
-      content: '파이썬은 인공지능, 데이터 분석, 웹 개발 등 다양한 분야에서 활용되는 프로그래밍 언어입니다. 기본 문법과 자료 구조, 모듈과 패키지 등을 학습하면 파이썬 프로그래밍에 입문할 수 있습니다.',
-      imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Python-logo-notext.svg/1200px-Python-logo-notext.svg.png',
-    ),
-  ];
+  //만약 정보를 가져오지 못했을 경우 에러를 표시함
+  Discover errorPost = Discover(
+    title: '정보를 불러오지 못했습니다.',
+    content: '관리자에게 연락해주세요',
+    imageUrl: "https://img.freepik.com/free-vector/error-404-concept-for-landing-page_23-2148237748.jpg?w=1380&t=st=1725265497~exp=1725266097~hmac=d7a95048d969f691ccefe06c9d42eadd35021b0542f025271d0ca609a3945969"
+  );
 
   @override
   Widget build(BuildContext context) {
+    //상태 관리
     return ChangeNotifierProvider(
       create: (_) => HomeViewModel(
-        cardFormDatasource: CardFormDatasource(),
+        discoverDatasource: DiscoverDatasource(),
         fortuneDataSource: FortuneDataSource(),
-      )..loadInitialData(),
+      )..loadInitialData(), //loadInitialData()를 통해 데이터를 즉시 가져오기
+
+
       child: Scaffold(
+        //consumer를 이용한 상태 관리
+        /*provider 대신 consumer를 사용한 이유??
+         => 상태 관리를 더 명확하게 하고, 특정 위젯들만 다시 빌드할 수 있기 때문*/
         body: Consumer<HomeViewModel>(
           builder: (context, viewModel, child) {
             return SafeArea(
@@ -57,6 +49,8 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         const SizedBox(width: 40),
                         Expanded(
+
+                          //탭바 타이틀 컨트롤
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -66,14 +60,13 @@ class _HomePageState extends State<HomePage> {
                                     isFestivalSelected = true;
                                   });
                                 },
-                                child:
-                                Column(
+                                child: Column(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Text(
                                       'DISCOVER',
                                       style: TextStyle(
-                                        fontSize: 20,  // Increase the font size
+                                        fontSize: 20,
                                         color: isFestivalSelected ? Color.fromRGBO(92, 67, 239, 60) : Colors.grey,
                                         fontWeight: FontWeight.bold,
                                         fontFamily: 'SejonghospitalBold',
@@ -82,7 +75,7 @@ class _HomePageState extends State<HomePage> {
                                     if (isFestivalSelected)
                                       Container(
                                         margin: const EdgeInsets.only(top: 4),
-                                        height: 3,  // Increase the underline thickness
+                                        height: 3,
                                         width: 40,
                                         color: Color.fromRGBO(92, 67, 239, 60),
                                       ),
@@ -102,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                                     Text(
                                       'TODAY',
                                       style: TextStyle(
-                                        fontSize: 20,  // Increase the font size
+                                        fontSize: 20,
                                         color: !isFestivalSelected ? Color.fromRGBO(92, 67, 239, 60) : Colors.grey,
                                         fontFamily: 'SejonghospitalBold',
                                       ),
@@ -110,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                                     if (!isFestivalSelected)
                                       Container(
                                         margin: const EdgeInsets.only(top: 4),
-                                        height: 3,  // Increase the underline thickness
+                                        height: 3,
                                         width: 40,
                                         color: Color.fromRGBO(92, 67, 239, 60)
                                       ),
@@ -120,39 +113,50 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                         ),
-                        const SizedBox(width: 28), // Align the layout properly with additional space on the right
+                        const SizedBox(width: 28),
                       ],
                     ),
                   ),
+
+                  //탭바 아래 나올 내용
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const SizedBox(height: 16),
+                          //postListView 위젯을 이용해서 내용 컨트롤
+                          ////축제 정보(discover)를 눌렀을 때
                           PostListView(
                             cardForms: isFestivalSelected
-                                ? (viewModel.festivals.isNotEmpty ? viewModel.festivals.map((festival) {
-                              return CardForm(
+                                ? (viewModel.festivals.isNotEmpty
+                                ? viewModel.festivals.map((festival) {
+                              return Discover(
                                 title: festival.title,
                                 content: festival.content,
                                 imageUrl: festival.imageUrl,
                               );
-                            }).toList() : dummyPosts)
-                                : [], // Empty list for hot 게시글
+                            }).toList()
+                                : [errorPost]) // 받아오지 못했다면 errorPost를 리스트로 전달
+
+                            ////핫 게시물(today)을 눌렀을 때
+                                : [],
                           ),
                           const SizedBox(height: 60),
+
+
+                          //////////////////////////
                           Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Text(
+                                const Text(
                                     " 오늘의 운세 ",
-                                    style: const TextStyle(fontSize: 20, fontFamily: 'SejonghospitalLight'),
+                                    style: TextStyle(fontSize: 20, fontFamily: 'SejonghospitalLight'),
                                   ),
-                                SizedBox(height: 10),
-                                Divider(
+                                const SizedBox(height: 10),
+                                const Divider(
                                   indent: 150,
                                   endIndent: 150,
                                 ),

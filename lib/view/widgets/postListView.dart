@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:capstonedesign/model/cardForm.dart';
+import 'package:capstonedesign/model/discover.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../screens/discover/discoverDetailPage.dart';
 
 class PostListView extends StatefulWidget {
-  final List<CardForm> cardForms;
+  final List<Discover> cardForms;
   const PostListView({Key? key, required this.cardForms}) : super(key: key);
 
   @override
@@ -29,7 +29,7 @@ class _PostListViewState extends State<PostListView> {
                 print("post clicked!!!");
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
-                        DiscoverDetailPage(cardForm: widget.cardForms[index])));
+                        DiscoverDetailPage(discover: widget.cardForms[index])));
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
