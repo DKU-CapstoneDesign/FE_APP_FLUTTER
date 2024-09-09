@@ -33,16 +33,26 @@ class PostDataSource {
   }
 
   /////전체 게시글 조회
+
   Future<List?> getAllPost() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/api/posts'));
+
       if (response.statusCode == 200) {
-        final Map<String, dynamic>  responseData = json.decode(response.body);
-        if(responseData["success"]==true){
+        // 응답을 바이트로 변환한 후 UTF-8로 디코딩
+        final decodedResponse = utf8.decode(response.bodyBytes);
+        // 디코딩한 데이터를 JSON 파싱
+        final Map<String, dynamic> responseData = json.decode(decodedResponse);
+
+        if (responseData["success"] == true) {
           print("전체 게시글 조회 성공");
+
           // Post 객체 리스트로 반환
           final List<dynamic> postsData = responseData["response"];
-          return postsData;
+          return postsData.cast<Map<String, dynamic>>();
+        } else {
+          print("전체 게시글 조회 실패");
+          return null;
         }
       } else {
         print("전체 게시글 조회 실패");
