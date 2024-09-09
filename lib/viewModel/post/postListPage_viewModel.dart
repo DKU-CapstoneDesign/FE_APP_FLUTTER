@@ -1,19 +1,20 @@
 import 'package:capstonedesign/dataSource/post_dataSource.dart';
-import 'package:capstonedesign/model/post.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:provider/provider.dart';
 
-class PostListViewModel extends ChangeNotifier{
-  late PostDataSource datasource;
+
+class PostListViewModel extends ChangeNotifier {
+  final PostDataSource dataSource;
   List<dynamic> posts = [];
-  PostListViewModel(this.datasource);
+  bool isLoading = true; // 로딩 상태를 추가
 
+  PostListViewModel(this.dataSource);
 
-  //리턴 받은 post들을 리스트에 넣기
-  Future<void> getPostList(BuildContext context) async{
-    posts = (await datasource.getAllPost()) ?? [];
-    print('!!!!!${posts}');
+  Future<void> getPostList(BuildContext context) async {
+    isLoading = true; // 로딩 시작
+    notifyListeners();
+
+    posts = await dataSource.getAllPost() ?? [];
+    isLoading = false; // 로딩 완료
     notifyListeners();
   }
-
 }
