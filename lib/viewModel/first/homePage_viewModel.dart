@@ -1,5 +1,3 @@
-// viewmodels/home_view_model.dart
-
 import 'package:flutter/material.dart';
 import '../../dataSource/discover_dataSource.dart';
 import '../../dataSource/fortune_dataSource.dart';

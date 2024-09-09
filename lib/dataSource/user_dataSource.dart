@@ -8,7 +8,6 @@ class UserDataSource {
       // 'https://port-0-be-springboot-128y2k2llvky8epy.sel5.cloudtype.app';
       //'https://true-porpoise-uniformly.ngrok-free.app/api';
 
-
   //////로그인
   Future<User?> login(String email, String password) async{
     try{
@@ -130,6 +129,54 @@ class UserDataSource {
     return false;
   }
 
-  //////비밀번호 변경
 
+
+  //////비밀번호 변경
+  //현재 비밀번호 확인
+  Future<bool> checkPassword(int userId, String password) async{
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/api/check/password'),
+        headers: {'Content-Type':  'application/json'},
+        body: jsonEncode({
+          'userId': userId,
+          'password':  password,
+        }),
+      );
+      if (response.statusCode == 200) {
+        print('현재 비밀번호 확인 성공');
+        return true;
+      } else {
+        print('현재 비밀번호 확인 실패: ${response.statusCode}, ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      print('에러 발생: $e');
+      return false;
+    }
+  }
+
+  //새로운 비밀번호로 업데이트
+  Future<bool> updateNewPassword(int userId, String newPassword) async{
+    try {
+      final response = await http.put(
+        Uri.parse('$baseUrl/api/modify/password'),
+        headers: {'Content-Type':  'application/json'},
+        body: jsonEncode({
+          'userId': userId,
+          'newPassword': newPassword,
+        }),
+      );
+      if (response.statusCode == 200) {
+        print('새로운 비밀번호 업데이트 성공');
+        return true;
+      } else {
+        print('새로운 비밀번호 업데이트 실패: ${response.statusCode}, ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      print('에러 발생: $e');
+      return false;
+    }
+  }
 }

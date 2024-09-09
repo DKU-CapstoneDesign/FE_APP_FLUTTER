@@ -1,19 +1,49 @@
 class Post {
-  int id; // 게시글 ID
-  int uploaderId; // 작성자 ID
-  String title; // 제목
-  String content; // 내용
-  DateTime created_at; // 생성일자
-  int likes; // 좋아요
-  int views; // 조회수
+  int id;
+  String title;
+  String contents;
+  String username;
+  DateTime createdAt;
+  DateTime modifiedAt;
+  int likeCount;
+  List<String> commentList;
 
   Post({
     required this.id,
-    required this.uploaderId,
     required this.title,
-    required this.content,
-    required this.created_at,
-    required this.likes,
-    required this.views,
+    required this.contents,
+    required this.username,
+    required this.createdAt,
+    required this.modifiedAt,
+    required this.likeCount,
+    required this.commentList,
   });
+
+  // JSON으로부터 Post 객체 생성
+  factory Post.fromJson(Map<String, dynamic> json) {
+    return Post(
+      id: json['id'] ?? 0,
+      title: json['title'] ?? '',
+      contents: json['contents'] ?? '',
+      username: json['username'] ?? '',
+      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+      modifiedAt: DateTime.parse(json['modifiedAt'] ?? DateTime.now().toIso8601String()),
+      likeCount: json['likeCount'] ?? 0,
+      commentList: List<String>.from(json['commentList'] ?? []),
+    );
+  }
+
+  // Post 객체를 JSON으로 변환
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'title': title,
+      'contents': contents,
+      'username': username,
+      'createdAt': createdAt.toIso8601String(), // DateTime을 문자열로 변환
+      'modifiedAt': modifiedAt.toIso8601String(), // DateTime을 문자열로 변환
+      'likeCount': likeCount,
+      'commentList': commentList,
+    };
+  }
 }

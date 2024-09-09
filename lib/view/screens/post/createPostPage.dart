@@ -1,21 +1,27 @@
 import 'dart:io';
-
+import 'package:capstonedesign/viewModel/post/createPostPage_viewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import '../../../dataSource/post_dataSource.dart';
+import '../../../model/user.dart';
+
 
 class CreatePostPage extends StatefulWidget {
+  final User user;
+  CreatePostPage({required this.user});
+
   @override
   _CreatePostPageState createState() => _CreatePostPageState();
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
+
+  //이미지 컨트롤
   File? _imageFile;
   final picker = ImagePicker();
-  final TextEditingController _contentController = TextEditingController();
-
   Future getImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-
     setState(() {
       if (pickedFile != null) {
         _imageFile = File(pickedFile.path);
@@ -25,15 +31,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
     });
   }
 
-  @override
-  void dispose() {
-    _contentController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    //상태 관리
+    return ChangeNotifierProvider(
+        create: (_) => CreatePostViewModel(PostDataSource(), widget.user),
+
+      child : Scaffold(
       appBar: AppBar(
         leading:  IconButton(
             onPressed: () {
@@ -42,18 +47,26 @@ class _CreatePostPageState extends State<CreatePostPage> {
             icon: Icon(Icons.close)
       )
       ),
-      body: Padding(
+      //consumer를 이용한 상태 관리
+      /*provider 대신 consumer를 사용한 이유??
+    => 상태 관리를 더 명확하게 하고, 특정 위젯들만 다시 빌드할 수 있기 때문*/
+      body: Consumer<CreatePostViewModel>(
+        builder: (context, viewModel, child){
+         return Padding(
         padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const TextField(
-                decoration: InputDecoration(
+              TextField(
+                onChanged: (value)=> viewModel.title = value,
+                decoration: const InputDecoration(
                   hintText: '글 제목',
                 ),
               ),
               SizedBox(height: 16.0),
+
+              ////이미지
               GestureDetector(
                 onTap: getImage,
                 child: Container(
@@ -73,6 +86,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 ),
               ),
               SizedBox(height: 16.0),
+
+
               Container(
                 height: 510,
                 decoration: BoxDecoration(
@@ -80,7 +95,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: TextField(
-                  controller: _contentController,
+                  onChanged: (value) => viewModel.contents = value,
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
                   decoration: const InputDecoration(
@@ -93,7 +108,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  viewModel.createPost(context);
                 },
                 style: ButtonStyle(
                   backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(92, 67, 239, 60)),
@@ -111,8 +126,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
               ),
             ],
           ),
-        ),
-      ),
+        )
+        );
+        }
+      )
+      )
     );
   }
 }

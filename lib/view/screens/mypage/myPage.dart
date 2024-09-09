@@ -1,4 +1,5 @@
 import 'package:capstonedesign/dataSource/user_dataSource.dart';
+import 'package:capstonedesign/view/screens/mypage/changePWPage.dart';
 import 'package:flutter/material.dart';
 import '../../../model/user.dart';
 import '../../../viewModel/mypage/myPage_viewModel.dart';
@@ -158,7 +159,9 @@ class _MyPageState extends State<MyPage> {
                   ),
                   SizedBox(height: 20),
                   TextButton.icon(
-                      onPressed: () => null,
+                      onPressed: () {
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=> ChangePWPage()));
+                      },
                       icon: Icon(Icons.key_sharp, color: Colors.black38),
                       label: const Text("비밀번호 변경하기",
                         style: TextStyle(

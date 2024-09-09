@@ -20,6 +20,7 @@ class SignUpViewModel extends ChangeNotifier {
       nickname: '',
       country: '',
       birthDate: '',
+      id: 0,
     );
   }
 
@@ -39,7 +40,7 @@ class SignUpViewModel extends ChangeNotifier {
     }
   }
 
-  //로그인 성공 시 signuppage로 이동
+  // 로그인 성공 시 signuppage로 이동
   // 회원가입 성공/실패 다이얼로그 표시
   void _showDialog(BuildContext context, String title, String content) {
     showDialog(

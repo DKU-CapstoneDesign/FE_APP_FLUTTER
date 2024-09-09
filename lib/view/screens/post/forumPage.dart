@@ -1,8 +1,15 @@
+import 'package:capstonedesign/view/screens/post/postListPage.dart';
 import 'package:flutter/material.dart';
-import 'postListPage.dart';
 import 'package:capstonedesign/view/widgets/infoBox.dart';
+import 'package:provider/provider.dart';
+
+import '../../../dataSource/post_dataSource.dart';
+import '../../../model/user.dart';
+import '../../../viewModel/post/postListPage_viewModel.dart';
 
 class ForumPage extends StatefulWidget {
+  final User user;
+  ForumPage({Key? key, required this.user}) : super(key: key);
   @override
   _ForumPageState createState() => _ForumPageState();
 }
@@ -70,7 +77,15 @@ class _ForumPageState extends State<ForumPage> {
         });
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => PostListPage(boardName: boardName.replaceAll('\n', ""))),
+          MaterialPageRoute(
+            builder: (_) => ChangeNotifierProvider(
+              create: (_) => PostListViewModel(PostDataSource()),
+              child: PostListPage(
+                user: widget.user,
+                boardName: boardName.replaceAll('\n', ""),
+              ),
+            ),
+          ),
         );
       },
       onTapCancel: () {

@@ -1,4 +1,5 @@
 import 'package:capstonedesign/dataSource/user_dataSource.dart';
+import 'package:capstonedesign/view/screens/login&signup/middlePage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../viewModel/login&signup/loginPage_viewModel.dart';
@@ -19,10 +20,18 @@ class _LoginPageState extends State<LoginPage> {
     return ChangeNotifierProvider(
         create: (_) => LoginViewModel(UserDataSource()),
 
-
       child: Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: AppBar(),
+      appBar: AppBar(
+      leading: IconButton(
+        icon: Icon(Icons.arrow_back), // 뒤로가기 아이콘
+        onPressed: () {
+        Navigator.pushReplacement(
+        context,
+          MaterialPageRoute(builder: (context) => MiddlePage()),
+         );},
+        ),
+      ),
       //consumer를 이용한 상태 관리
       /*provider 대신 consumer를 사용한 이유??
       => 상태 관리를 더 명확하게 하고, 특정 위젯들만 다시 빌드할 수 있기 때문*/
