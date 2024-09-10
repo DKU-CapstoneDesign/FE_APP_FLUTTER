@@ -33,7 +33,6 @@ class PostDataSource {
   }
 
   /////전체 게시글 조회
-
   Future<List?> getAllPost() async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/api/posts'));
