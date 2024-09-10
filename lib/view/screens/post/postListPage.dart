@@ -1,4 +1,3 @@
-import 'package:capstonedesign/dataSource/post_dataSource.dart';
 import 'package:capstonedesign/viewModel/post/postListPage_viewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/post/postDetailPage.dart';
@@ -22,7 +21,7 @@ class _PostListPageState extends State<PostListPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final viewModel = Provider.of<PostListViewModel>(context, listen: false);
-      await viewModel.getPostList(context);
+      await viewModel.getPostList();
     });
   }
 
@@ -45,7 +44,7 @@ class _PostListPageState extends State<PostListPage> {
   // 새로고침 시 호출할 함수
   Future<void> _refreshPosts(BuildContext context) async {
     final viewModel = Provider.of<PostListViewModel>(context, listen: false);
-    await viewModel.getPostList(context);
+    await viewModel.getPostList();
   }
 
   @override
@@ -73,8 +72,9 @@ class _PostListPageState extends State<PostListPage> {
             return Center(child: Text('게시물이 없습니다.'));
           }
 
+          // 위로 당기면 새로고침할 수 있도록
           return RefreshIndicator(
-            onRefresh: () => _refreshPosts(context), // 새로고침 핸들러
+            onRefresh: () => _refreshPosts(context),
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
               child: Column(
@@ -157,16 +157,15 @@ class _PostListPageState extends State<PostListPage> {
       floatingActionButton: widget.boardName != 'HOT게시판'
           ? FloatingActionButton.extended(
         onPressed: () async {
-          // CreatePostPage로 이동 후, 작성한 글 정보를 가져옴
-          var newPost = await Navigator.push(
+          final result = await Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => CreatePostPage(user: widget.user),
             ),
           );
-          //작성한 글 정보를 리스트에 추가
-          Provider.of<PostListViewModel>(context, listen: false)
-              .addPost(newPost);
+          if (result == true) { //만약 새 글을 썼다면
+            _refreshPosts(context); //화면 새로고침
+          }
         },
         backgroundColor: Color.fromRGBO(92, 67, 239, 60),
         foregroundColor: Colors.white,

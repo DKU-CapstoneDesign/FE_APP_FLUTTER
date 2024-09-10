@@ -15,7 +15,7 @@ class CreatePostViewModel extends ChangeNotifier {
   Future<void> createPost(BuildContext context) async {
     final newPost = await datasource.createPost(title, contents, user.id);
     if (newPost != null) { //만약 데이터를 전송 받았다면
-      Navigator.pop(context, newPost); // 이전 화면으로 돌아가면서 새로운 게시물 반환
+      Navigator.pop(context, true); // 이전 화면으로 돌아가면서 글이 생성되었음을 보냄
     } else {
       _showErrorDialog(context);
     }
