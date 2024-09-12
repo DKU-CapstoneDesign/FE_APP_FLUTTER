@@ -144,8 +144,14 @@ class UserDataSource {
         }),
       );
       if (response.statusCode == 200) {
-        print('현재 비밀번호 확인 성공');
-        return true;
+        final responseData = jsonDecode(response.body);
+        if(responseData){
+          print('현재 비밀번호 확인 성공');
+          return responseData;
+        } else {
+          print('현재 비밀번호 확인 실패');
+          return responseData;
+        }
       } else {
         print('현재 비밀번호 확인 실패: ${response.statusCode}, ${response.body}');
         return false;
@@ -157,26 +163,28 @@ class UserDataSource {
   }
 
   //새로운 비밀번호로 업데이트
-  Future<bool> updateNewPassword(int userId, String newPassword) async{
+  Future<User?> updateNewPassword(int userId, String newPassword) async {
     try {
       final response = await http.put(
         Uri.parse('$baseUrl/api/modify/password'),
-        headers: {'Content-Type':  'application/json'},
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'userId': userId,
           'newPassword': newPassword,
         }),
       );
+
       if (response.statusCode == 200) {
+        Map<String, dynamic> responseData = jsonDecode(response.body);
         print('새로운 비밀번호 업데이트 성공');
-        return true;
+        return User.fromJson(responseData);
       } else {
         print('새로운 비밀번호 업데이트 실패: ${response.statusCode}, ${response.body}');
-        return false;
+        return null;
       }
     } catch (e) {
       print('에러 발생: $e');
-      return false;
+      return null;
     }
   }
 }

@@ -1,150 +1,249 @@
-import 'package:capstonedesign/dataSource/post_dataSource.dart';
 import 'package:flutter/material.dart';
-import 'package:capstonedesign/model/post.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/intl.dart';
 import '../../../viewModel/post/postDetailPage_viewModel.dart';
 
 class PostDetailPage extends StatefulWidget {
-  final Post post; // Post 객체를 전달받음
-  PostDetailPage({Key? key, required this.post}) : super(key: key);
+  final String boardName;
+  final int postId;
+
+  PostDetailPage({Key? key, required this.postId, required this.boardName})
+      : super(key: key);
 
   @override
   _PostDetailPageState createState() => _PostDetailPageState();
 }
 
 class _PostDetailPageState extends State<PostDetailPage> {
+  bool isLiked = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final viewModel = Provider.of<PostDetailViewModel>(context, listen: false);
+      await viewModel.getPostInfo(widget.postId);
+    });
+  }
+
+  // 새로고침 시 호출할 함수
+  Future<void> _refreshPosts(BuildContext context) async {
+    final viewModel = Provider.of<PostDetailViewModel>(context, listen: false);
+    await viewModel.getPostInfo(widget.postId);
+  }
+
+  //// 날짜 컨트롤
+  String _twoDigits(int n) {
+    return n.toString().padLeft(2, '0');
+  }
+
+  String formatDateTime(DateTime dateTime) {
+    return '${_twoDigits(dateTime.month)}/${_twoDigits(dateTime.day)} ${_twoDigits(dateTime.hour)}:${_twoDigits(dateTime.minute)}';
+  }
+
+  //// 좋아요 컨트롤
+  void _toggleLike() {
+    setState(() {
+      if (isLiked) {
+        Provider.of<PostDetailViewModel>(context, listen: false).post.likeCount--;
+      } else {
+        Provider.of<PostDetailViewModel>(context, listen: false).post.likeCount++;
+      }
+      isLiked = !isLiked;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    // 상태 관리
-    return ChangeNotifierProvider(
-      create: (_) => PostDetailViewModel(PostDataSource()),
-
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('게시글 상세'),
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      appBar: AppBar(
+        title: Text(
+          widget.boardName,
+          style: const TextStyle(fontFamily: 'SejonghospitalBold', fontSize: 22),
         ),
-        //consumer를 이용한 상태 관리
-        /*provider 대신 consumer를 사용한 이유??
-        => 상태 관리를 더 명확하게 하고, 특정 위젯들만 다시 빌드할 수 있기 때문*/
-        body: Consumer<PostDetailViewModel>(
-          builder: (context, viewModel, child) {
-            return Padding(
-              padding: const EdgeInsets.all(25),
-              child: SingleChildScrollView(
+        centerTitle: true,
+      ),
+      body: Consumer<PostDetailViewModel>(
+        builder: (context, viewModel, child) {
+
+          // 위로 당기면 새로고침할 수 있도록
+          return RefreshIndicator(
+            onRefresh: () => _refreshPosts(context),
+            child: GestureDetector(
+              // 입력 필드 외부를 터치하면 키보드 닫힘
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: SafeArea(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // 작성자와 작성일 표시
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                          child: Text(
-                            '작성자: ${viewModel.username}', // 작성자 이름
-                            style: TextStyle(fontSize: 16.0),
+                    Expanded(
+                      child: SingleChildScrollView(
+                          padding: EdgeInsets.only(bottom: 20.0),
+                          child: Padding(
+                            padding: const EdgeInsets.all(20.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // 작성자 정보
+                                ListTile(
+                                  leading: const CircleAvatar(
+                                    backgroundImage: AssetImage('assets/avatar.png'),
+                                  ),
+                                  title: Text(
+                                    viewModel.post.username,
+                                    style: const TextStyle(fontFamily: 'SejonghospitalBold'),
+                                  ),
+                                  subtitle: Text(
+                                    formatDateTime(viewModel.post.createdAt),
+                                    style: const TextStyle(
+                                        fontFamily: 'SejonghospitalLight', color: Colors.grey),
+                                  ),
+                                ),
+                                const SizedBox(height: 20.0),
+
+                                // 게시글 내용
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        viewModel.post.title,
+                                        style: const TextStyle(
+                                            fontSize: 22.0,
+                                            fontFamily: 'SejonghospitalBold'),
+                                      ),
+                                      const SizedBox(height: 20.0),
+                                      Text(
+                                        viewModel.post.contents,
+                                        style: const TextStyle(
+                                            fontSize: 16.0,
+                                            fontFamily: 'SejonghospitalLight'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: 30.0),
+
+                                // 좋아요와 댓글 수
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(
+                                            isLiked
+                                                ? Icons.thumb_up_alt
+                                                : Icons.thumb_up_alt_outlined,
+                                            color: isLiked
+                                                ? Color.fromRGBO(92, 67, 239, 1)
+                                                : Colors.grey,
+                                          ),
+                                          onPressed: _toggleLike,
+                                        ),
+                                        Text(
+                                          '${viewModel.post.likeCount}',
+                                          style: TextStyle(fontSize: 16.0),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Icon(Icons.comment, color: Colors.grey),
+                                        const SizedBox(width: 8.0),
+                                        Text(
+                                          '${viewModel.post.commentList.length}',
+                                          style: TextStyle(fontSize: 16.0),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 24.0),
+                                Container(
+                                  height: 17,
+                                  width: double.infinity,
+                                  color: Color.fromRGBO(245, 245, 245, 20),
+                                ),
+
+                                // 댓글 리스트
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: viewModel.post.commentList.length,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.grey),
+                                          borderRadius: BorderRadius.circular(8.0),
+                                        ),
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Text(
+                                          viewModel.post.commentList[index],
+                                          style: const TextStyle(
+                                              fontFamily: 'SejonghospitalLight'),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                const SizedBox(height: 16.0),
+                              ],
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            '작성일: ${_formatDate(viewModel.createdAt)}', // 작성일자 형식화
-                            style: TextStyle(fontSize: 16.0),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16.0),
-                    // 게시글 제목
-                    Text(
-                      viewModel.title,
-                      style: TextStyle(fontSize: 25.0, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 16.0),
-                    // 게시글 내용
-                    Text(
-                      viewModel.contents,
-                      style: TextStyle(fontSize: 16.0),
-                    ),
-                    const SizedBox(height: 16.0),
-                    // 좋아요 버튼과 카운트
-                    /*Row(
-                      children: [
-                        IconButton(
-                          *//*icon: viewModel.likeCount
-                              ? Icon(Icons.thumb_up_alt, color: Colors.blue)
-                              : Icon(Icons.thumb_up_alt_outlined),*//*
-                          onPressed: () {
-                            //viewModel.toggleLike(); // 좋아요 상태 토글
-                          },
-                        ),
-                        Text('${viewModel.post.likeCount}'),
-                      ],
-                    ),*/
-                    const Divider(
-                      color: Colors.grey,
-                      thickness: 1.0,
-                    ),
-                    const SizedBox(height: 16.0),
-                    // 댓글 목록 표시
-                    const Text(
-                      '댓글',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
                       ),
                     ),
-                    const SizedBox(height: 8.0),
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(), // 스크롤 방지
-                      itemCount: viewModel.contents.length,
-                      itemBuilder: (context, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: Container(
+
+                    // 댓글 입력란
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              decoration: InputDecoration(
+                                hintText: '댓글을 입력하세요.',
+                                contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(30.0),
+                                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 8.0),
+                          Container(
                             decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey),
-                              borderRadius: BorderRadius.circular(8.0),
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                  color: Color.fromRGBO(92, 67, 239, 50), width: 2.0),
                             ),
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(viewModel.contents[index]), // 댓글 내용 표시
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 150.0),
-                    // 댓글 입력 및 작성 버튼
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            decoration: const InputDecoration(
-                              hintText: '댓글을 입력하세요',
+                            child: IconButton(
+                              icon: const Icon(
+                                Icons.arrow_upward,
+                                color: Color.fromRGBO(92, 67, 239, 50),
+                              ),
+                              onPressed: () {
+                                // 전송 버튼 클릭 시 동작
+                              },
                             ),
                           ),
-                        ),
-                        const SizedBox(width: 8.0),
-                        ElevatedButton(
-                          onPressed: () {
-                            // 댓글 추가// 입력창 초기화
-                          },
-                          child: const Text('댓글 작성'),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-            );
-          },
-        ),
+            ),
+          );
+        },
       ),
     );
-  }
-
-  // 날짜 형식화 함수
-  String _formatDate(DateTime date) {
-    return DateFormat('yyyy-MM-dd').format(date); // yyyy-MM-dd 형식으로 표시
   }
 }

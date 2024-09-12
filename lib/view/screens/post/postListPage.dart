@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/post/postDetailPage.dart';
 import 'package:capstonedesign/view/screens/post/createPostPage.dart';
 import 'package:provider/provider.dart';
+import '../../../dataSource/post_dataSource.dart';
 import '../../../model/user.dart';
+import '../../../viewModel/post/postDetailPage_viewModel.dart';
 
 class PostListPage extends StatefulWidget {
   final String boardName;
@@ -61,6 +63,9 @@ class _PostListPageState extends State<PostListPage> {
         ),
         centerTitle: true,
       ),
+      //consumer를 이용한 상태 관리
+      /*provider 대신 consumer를 사용한 이유??
+        => 상태 관리를 더 명확하게 하고, 특정 위젯들만 다시 빌드할 수 있기 때문*/
       body: Consumer<PostListViewModel>(
         builder: (context, viewModel, child) {
           // 로딩 중이면 로딩 스피너를 표시
@@ -131,8 +136,10 @@ class _PostListPageState extends State<PostListPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        PostDetailPage(post: post),
+                                    builder: (context) => ChangeNotifierProvider(
+                                      create: (_) => PostDetailViewModel(PostDataSource()),
+                                      child: PostDetailPage(postId: post['id'], boardName: widget.boardName),
+                                    ),
                                   ),
                                 );
                               },

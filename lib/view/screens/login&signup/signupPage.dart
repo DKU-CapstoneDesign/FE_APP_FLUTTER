@@ -25,9 +25,6 @@ class _SignUpPageState extends State<SignUpPage> {
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(50, 0, 40, 100),
-          //consumer를 이용한 상태 관리
-          /*provider 대신 consumer를 사용한 이유??
-           => 상태 관리를 더 명확하게 하고, 특정 위젯들만 다시 빌드할 수 있기 때문*/
           child: Consumer<SignUpViewModel>(
             builder: (context, viewModel, child) {
               return Form(

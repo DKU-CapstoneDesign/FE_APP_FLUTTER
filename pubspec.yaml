@@ -72,7 +72,6 @@ flutter:
     - assets/img/board.png
     - assets/img/chat.png
 
-
   uses-material-design: true
 
   fonts:

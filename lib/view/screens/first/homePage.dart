@@ -44,12 +44,31 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.asset(
+                          'assets/logo/logo_purple.png',
+                          height: 40,
+                          width: 70,
+                        ),
+                        // 오른쪽 알림 아이콘
+                        IconButton(
+                          icon: Icon(Icons.notifications, color: Colors.grey,size: 30),
+                          onPressed: () {
+                            // 알림
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
                     child: Row(
                       children: [
                         const SizedBox(width: 40),
                         Expanded(
-
                           //탭바 타이틀 컨트롤
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
