@@ -1,42 +1,35 @@
+//채팅방 리스트에서
+
+
+import 'package:capstonedesign/model/user.dart';
+
 class ChattingList {
-  final String id;
+  final int id;
   final String lastMessage;
-  final String sender;
-  final String receiver;
-  final String members; //채팅방 안의 유저 2명의 정보 (id, username,email..)
-  final String message;
-  final String roomNum;
-  final bool read;
-  final String createdAt;
-  final String updatedAt;
+  final List<User> members; //채팅방 안의 유저 2명의 정보 (User 객체를 들고 와야 함)
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
 
   ChattingList({
     required this.id,
     required this.lastMessage,
-    required this.sender,
-    required this.receiver,
     required this.members,
-    required this.message,
-    required this.roomNum,
-    required this.read,
     required this.createdAt,
     required this.updatedAt
   });
 
   // JSON으로부터 ChattingList 객체 생성
   factory ChattingList.fromJson(Map<String, dynamic> json) {
+    var membersJson = json['members'] as List;
+    List<User> membersList = membersJson.map((memberJson) => User.fromJson(memberJson)).toList();
+
     return ChattingList(
-      id: json['id'] ?? '',
+      id: json['id'] ?? 0 ,
       lastMessage: json['lastMessage'] ?? '',
-      sender : json['sender'] ?? '',
-      receiver: json['receiver'] ?? '',
-      members: json['members'] ?? '',
-      message: json['message'] ?? '',
-      roomNum: json['roomNum'] ?? '',
-      read: json['read'] ?? '',
-      createdAt: json['createdAt'] ?? '',
-      updatedAt: json['updatedAt'] ?? '',
+      members: membersList,
+      createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
+      updatedAt: DateTime.parse(json['updatedAt'] ?? DateTime.now().toIso8601String()),
     );
   }
 
@@ -45,19 +38,12 @@ class ChattingList {
     return {
       'id' : id,
       'lastMessage' : lastMessage,
-      'sender' : sender,
-      'receiver' : receiver,
-      'members' : members,
-      'message' : message,
-      'roomNum' : roomNum,
-      'read' : read,
-      'createdAt' : createdAt,
-      'updatedAt' : updatedAt
+      'members': members.map((user) => user.toJson()).toList(),
+      'createdAt' : createdAt.toIso8601String(), // DateTime을 문자열로 변환
+      'updatedAt' : updatedAt.toIso8601String(), // DateTime을 문자열로 변환
     };
   }
-
-
-
 }
+
 
 

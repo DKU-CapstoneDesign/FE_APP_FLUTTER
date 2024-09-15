@@ -1,3 +1,4 @@
+import 'package:capstonedesign/dataSource/chatting_dataSource.dart';
 import 'package:capstonedesign/viewModel/post/postListPage_viewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/post/postDetailPage.dart';
@@ -138,7 +139,7 @@ class _PostListPageState extends State<PostListPage> {
                                   MaterialPageRoute(
                                     builder: (context) => ChangeNotifierProvider(
                                       create: (_) => PostDetailViewModel(PostDataSource()),
-                                      child: PostDetailPage(postId: post['id'], boardName: widget.boardName),
+                                      child: PostDetailPage(postId: post['id'], boardName: widget.boardName, currentUserNickname: widget.user.nickname,),
                                     ),
                                   ),
                                 );

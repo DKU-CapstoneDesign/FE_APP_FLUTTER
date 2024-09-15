@@ -1,20 +1,23 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
+import '../model/chatting.dart';
 import '../model/chattingList.dart';
 
 class ChattingDataSource {
-  String baseUrl = 'http://158.180.86.243:8080';
+  String baseUrl = 'http://152.69.230.42:8080';
+      //'http://158.180.86.243:8080';
 
   //////채팅방 생성 (게시판에서 상대방의 프로필을 통해 채팅방 생성)
-  Future<ChattingList?> createChat(String nickname1, String nickname2) async {
+  Future<ChattingList?> createChat(String sender, String receiver) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/api/chat/creating'),
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode({ //유저들의 닉네임을 통해 채팅방 생성
           "members": [
-            {'nickname': nickname1},
-            {'nickname': nickname2},
+            {"nickname": sender},
+            {"nickname": receiver}
           ]
         }),
       );
@@ -23,7 +26,7 @@ class ChattingDataSource {
         //model의 ChattingList에 값을 넣기
         return ChattingList.fromJson(jsonDecode(response.body));
       } else {
-        print("채팅방 생성 실패");
+        print("채팅방 생성 실패: ${response.statusCode}, ${response.body}");
         return null;
       }
     } catch (e) {
@@ -33,24 +36,27 @@ class ChattingDataSource {
 
 
   //////채팅 보내기
-  Future<ChattingList?> sendChat(String sender, String receiver,
-      String message) async {
+  Future<Chatting?> sendChat(String sender, String receiver, String message) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/api/chat'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'sender': sender,
-          'receiver': receiver,
-          'message': message
+          "sender": sender,
+          "receiver": receiver,
+          "message": message
         }),
       );
+      print(sender);
+      print(receiver);
+      print(message);
+
       if (response.statusCode == 200) {
         print("채팅 보내기 성공");
-        //model의 ChattingList에 값을 넣기
-        return ChattingList.fromJson(jsonDecode(response.body));
+        //model의 Chatting에 값을 넣기
+        return Chatting.fromJson(jsonDecode(response.body));
       } else {
-        print('채팅 보내기 실패: ${response.body}');
+        print('채팅 보내기 실패: ${response.statusCode}, ${response.body}');
         return null;
       }
     } catch (e) {
@@ -59,7 +65,7 @@ class ChattingDataSource {
   }
 
 
-  //////채팅 읽음 처리 (???)
+  //////채팅 읽음 처리
   Future<void> setChatRead(String roomNum, String receiver) async {
     try {
       final response = await http.put(
@@ -82,7 +88,7 @@ class ChattingDataSource {
   }
 
 
-  //////채팅방 목록
+  //////채팅방 목록 (sse)
   Future<List<ChattingList>?> getChatList(String nickname) async {
     try {
       final response = await http.get(
@@ -102,8 +108,8 @@ class ChattingDataSource {
   }
 
 
-  //////채팅방 읽음 상태 목록
-  Future<List<ChattingList>?> getChatReadStatusList(String nickname) async {
+  //////채팅방 읽음 상태 목록 (sse)
+  /*Future<List<ChattingList>?> getChatReadStatusList(String nickname) async {
     try {
       final response = await http.get(
           Uri.parse('$baseUrl/api/chat/list/nickname/$nickname'));
@@ -120,9 +126,10 @@ class ChattingDataSource {
       return null;
     }
   }
+   */
 
 
-  //////대화 내역(방 번호 기반)
+  //////대화 내역(방 번호 기반)(sse)
   Future<List<ChattingList>?> chatListByRoomNum(String roomNum) async {
     try {
       final response = await http.get(
@@ -142,8 +149,8 @@ class ChattingDataSource {
   }
 
 
-  //////대화 내역 (송수신자 이름 기반)
-  Future<List<ChattingList>?> chatListByNickName(String sender, String receiver) async {
+  //////대화 내역 (송수신자 이름 기반) (sse)
+  /*Future<List<ChattingList>?> chatListByNickName(String sender, String receiver) async {
     try {
       final response = await http.get(
           Uri.parse('$baseUrl/api/sender/$sender/receiver/$receiver'));
@@ -158,5 +165,5 @@ class ChattingDataSource {
       print('오류 발생: $e');
       return null;
     }
-  }
+  }*/
 }

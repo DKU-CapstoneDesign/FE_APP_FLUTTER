@@ -2,7 +2,7 @@ class Post {
   int id;
   String title;
   String contents;
-  String username;
+  String nickname;
   DateTime createdAt;
   DateTime modifiedAt;
   int likeCount;
@@ -12,7 +12,7 @@ class Post {
     required this.id,
     required this.title,
     required this.contents,
-    required this.username,
+    required this.nickname,
     required this.createdAt,
     required this.modifiedAt,
     required this.likeCount,
@@ -25,7 +25,7 @@ class Post {
       id: json['id'] ?? 0,
       title: json['title'] ?? '',
       contents: json['contents'] ?? '',
-      username: json['username'] ?? '',
+      nickname: json['nickname'] ?? '',
       createdAt: DateTime.parse(json['createdAt'] ?? DateTime.now().toIso8601String()),
       modifiedAt: DateTime.parse(json['modifiedAt'] ?? DateTime.now().toIso8601String()),
       likeCount: json['likeCount'] ?? 0,
@@ -39,7 +39,7 @@ class Post {
       'id': id,
       'title': title,
       'contents': contents,
-      'username': username,
+      'nickname': nickname,
       'createdAt': createdAt.toIso8601String(), // DateTime을 문자열로 변환
       'modifiedAt': modifiedAt.toIso8601String(), // DateTime을 문자열로 변환
       'likeCount': likeCount,

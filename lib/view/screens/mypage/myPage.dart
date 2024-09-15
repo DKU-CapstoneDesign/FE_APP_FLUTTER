@@ -127,6 +127,19 @@ class _MyPageState extends State<MyPage> {
                         ),
                       ),
                     ),
+                    SizedBox(height: 20),
+                    TextButton.icon(
+                      onPressed: () => null,
+                      icon: Icon(Icons.bookmark_border_rounded, color: Colors.black38),
+                      label: const Text(
+                        "스크랩한 축제               >",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontFamily: "SejonghospitalLight",
+                          color: Colors.black,
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ),

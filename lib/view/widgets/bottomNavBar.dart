@@ -27,7 +27,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       HomePage(),
       DiscoverPage(),
       ForumPage(user: widget.user),
-      ChattingListPage(),
+      ChattingListPage(currentUserNickname: '',),
       MyPage(user: widget.user),
     ];
   }
