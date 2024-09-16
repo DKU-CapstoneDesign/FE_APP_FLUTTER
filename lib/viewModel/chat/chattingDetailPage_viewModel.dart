@@ -45,7 +45,7 @@ class ChattingDetailPageViewModel extends ChangeNotifier {
   }
 
 
-  // TextEditingController 해제
+  // TextEditingController 해제!
   @override
   void dispose() {
     textController.dispose();
