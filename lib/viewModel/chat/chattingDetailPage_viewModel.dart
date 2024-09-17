@@ -4,7 +4,7 @@ import '../../dataSource/chatting_dataSource.dart';
 import '../../model/chatting.dart';
 
 class ChattingDetailPageViewModel extends ChangeNotifier {
-  final List<Chatting> messages = [];
+  late List<Chatting> messages = [];
   late String currentUserNickname;
   late String otherUserNickname;
   final TextEditingController textController = TextEditingController();
@@ -21,14 +21,16 @@ class ChattingDetailPageViewModel extends ChangeNotifier {
   Future<void> startChat() async {
     final chatRoom = await dataSource.createChat(currentUserNickname, otherUserNickname);
 
-    /*if (chatRoom != null) {
+    if (chatRoom != null) {
       roomNum = chatRoom.id.toString();
-      final messages = await dataSource.chatListByRoomNum(roomNum);
-      if (messages != null && messages.isNotEmpty) {
-        _messages = messages.map((msg) => Chatting.fromJson(msg as Map<String, dynamic>)).toList();
-        notifyListeners(); // UI 업데이트
-      }*/
-    //}
+      final messageStream = dataSource.chatListByRoomNum(roomNum);
+      await for (var chatList in messageStream) {
+        if (chatList != null && chatList.isNotEmpty) {
+          messages = chatList.cast<Chatting>(); // 받은 전체 메시지로 갱신
+          notifyListeners(); // UI 업데이트
+        }
+      }
+    }
   }
 
   // 메시지 보내기
@@ -45,7 +47,7 @@ class ChattingDetailPageViewModel extends ChangeNotifier {
   }
 
 
-  // TextEditingController 해제!
+  // TextEditingController 해제
   @override
   void dispose() {
     textController.dispose();

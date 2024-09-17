@@ -30,9 +30,12 @@ class _MyPageState extends State<MyPage> {
                   children: [
                     Row(
                       children: [
-                        Image.asset(
-                          'assets/img/defaultProfile.png',
-                          width: 70,
+                        CircleAvatar(
+                          radius: 30,
+                          child: Text(
+                            widget.user.nickname.isNotEmpty ? widget.user.nickname[0] : '?',
+                            style: TextStyle(fontSize: 24.0),
+                          ),
                         ),
                         SizedBox(width: 24),
                         Text(

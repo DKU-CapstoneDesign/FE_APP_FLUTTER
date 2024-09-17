@@ -27,7 +27,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       HomePage(),
       DiscoverPage(),
       ForumPage(user: widget.user),
-      ChattingListPage(currentUserNickname: '',),
+      ChattingListPage(currentUserNickname: widget.user.nickname),
       MyPage(user: widget.user),
     ];
   }
@@ -47,49 +47,49 @@ class _BottomNavBarState extends State<BottomNavBar> {
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
           hoverColor: Colors.transparent,
-     ),
-      child: Container(
-        height: 70.0,
-        decoration: const BoxDecoration(
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey,
-              blurRadius: 10,
-            ),
-          ],
-       ),
-        child: BottomNavigationBar(
-          type: BottomNavigationBarType.fixed,
-          unselectedItemColor: Colors.grey,
-          selectedItemColor: Color.fromRGBO(92, 67, 239, 50),
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: '홈',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search_outlined),
-              label: '찾아보기',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.forum),
-              label: '게시판',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.send),
-              label: '채팅',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: '마이페이지',
-            ),
-          ],
-          currentIndex: _selectedIndex,
-          onTap: _onItemTapped,
         ),
-      ),
+        child: Container(
+          height: 70.0,
+          decoration: const BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey,
+                blurRadius: 10,
+              ),
+            ],
+          ),
+          child: BottomNavigationBar(
+            type: BottomNavigationBarType.fixed,
+            unselectedItemColor: Colors.grey,
+            selectedItemColor: Color.fromRGBO(92, 67, 239, 50),
+            showSelectedLabels: false,
+            showUnselectedLabels: false,
+            items: const <BottomNavigationBarItem>[
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: '홈',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.search_outlined),
+                label: '찾아보기',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.forum),
+                label: '게시판',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.send),
+                label: '채팅',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.person),
+                label: '마이페이지',
+              ),
+            ],
+            currentIndex: _selectedIndex,
+            onTap: _onItemTapped,
+          ),
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.push(

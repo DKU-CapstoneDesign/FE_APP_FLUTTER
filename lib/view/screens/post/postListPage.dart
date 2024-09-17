@@ -1,4 +1,3 @@
-import 'package:capstonedesign/dataSource/chatting_dataSource.dart';
 import 'package:capstonedesign/viewModel/post/postListPage_viewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/post/postDetailPage.dart';

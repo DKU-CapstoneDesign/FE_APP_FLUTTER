@@ -111,8 +111,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   onTap: () {
                                     _showProfileOptions(context, viewModel.post.nickname);
                                   },
-                                  child: const CircleAvatar(
-                                    backgroundImage: AssetImage('assets/avatar.png'),
+                                  child:  CircleAvatar(
+                                      child: Text(
+                                        viewModel.post.nickname.isNotEmpty ? viewModel.post.nickname[0] : '?',
+                                      ),
                                   ),
                                 ),
                                 title: Text(
