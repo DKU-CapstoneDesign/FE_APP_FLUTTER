@@ -1,15 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../model/user.dart';
 import '../../../viewModel/post/postDetailPage_viewModel.dart';
 import '../chat/chattingDetailPage.dart';
 
 class PostDetailPage extends StatefulWidget {
   final String boardName;
+  final User user;
   final int postId;
   final String currentUserNickname; //현재 유저
 
-  PostDetailPage({Key? key, required this.postId, required this.boardName, required this.currentUserNickname})
+  PostDetailPage({Key? key, required this.postId, required this.boardName, required this.currentUserNickname, required this.user})
       : super(key: key);
 
   @override
@@ -23,14 +25,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final viewModel = Provider.of<PostDetailViewModel>(context, listen: false);
-      await viewModel.getPostInfo(widget.postId);
+      await viewModel.getPostInfo(widget.postId, widget.user);
     });
   }
 
   // 새로고침 시 호출할 함수
   Future<void> _refreshPosts(BuildContext context) async {
     final viewModel = Provider.of<PostDetailViewModel>(context, listen: false);
-    await viewModel.getPostInfo(widget.postId);
+    await viewModel.getPostInfo(widget.postId, widget.user);
   }
 
   //// 날짜 컨트롤
@@ -107,40 +109,93 @@ class _PostDetailPageState extends State<PostDetailPage> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              // 작성자 정보
-                              ListTile(
-                                leading: GestureDetector(
-                                  onTap: () {
-                                    _showProfileOptions(context, viewModel.post.nickname);
-                                  },
-                                  child: CircleAvatar(
-                                    child: Text(
-                                      viewModel.post.nickname.isNotEmpty
-                                          ? viewModel.post.nickname[0]
-                                          : '?',
+
+                              //// 작성자 정보
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        _showProfileOptions(context, viewModel.post.nickname);
+                                      },
+                                      child: Row(
+                                        children: [
+                                          CircleAvatar(
+                                            child: Text(
+                                              viewModel.post.nickname.isNotEmpty
+                                                  ? viewModel.post.nickname[0]
+                                                  : '?',
+                                            ),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                viewModel.post.nickname,
+                                                style: const TextStyle(
+                                                  fontFamily: 'SejonghospitalBold',
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                              Text(
+                                                formatDateTime(viewModel.post.createdAt),
+                                                style: const TextStyle(
+                                                  fontFamily: 'SejonghospitalLight',
+                                                  fontSize: 14,
+                                                  color: Colors.grey,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                title: Text(
-                                  viewModel.post.nickname,
-                                  style: const TextStyle(
-                                      fontFamily: 'SejonghospitalBold'),
-                                ),
-                                subtitle: Text(
-                                  formatDateTime(viewModel.post.createdAt),
-                                  style: const TextStyle(
-                                      fontFamily: 'SejonghospitalLight',
-                                      color: Colors.grey),
-                                ),
+
+
+                                  //만약 글 작성자라면 수정/삭제 버튼을 띄우도록
+                                  if (viewModel.post.nickname == widget.user.nickname)
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(Icons.edit),
+                                          iconSize: 20.0,
+                                          color: Colors.grey,
+                                          onPressed: () {
+                                            viewModel.editPost();
+                                          },
+                                        ),
+                                        const Text(
+                                          "|",
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 20.0,
+                                          ),
+                                        ),
+                                        IconButton(
+                                          icon: Icon(Icons.delete),
+                                          iconSize: 20.0,
+                                          color: Colors.grey,
+                                          onPressed: () {
+                                            viewModel.deletePost();
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                ],
                               ),
                               const SizedBox(height: 20.0),
+
+
 
                               // 첨부 파일이 있으면 이미지 표시하기
                               if (viewModel.post.attachments != null &&
                                   viewModel.post.attachments!.isNotEmpty)
                                 Container(
                                   margin:
-                                  const EdgeInsets.symmetric(vertical: 20.0),
+                                  const EdgeInsets.symmetric(horizontal: 20),
                                   height: 200,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
@@ -150,6 +205,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     fit: BoxFit.cover,
                                   ),
                                 ),
+                              SizedBox(height: 30),
+
+
 
                               // 게시글 내용
                               Padding(
@@ -260,7 +318,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             child: TextField(
                               decoration: InputDecoration(
                                 hintText: '댓글을 입력하세요.',
-                                contentPadding: EdgeInsets.symmetric(
+                                contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10.0, horizontal: 20.0),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30.0),

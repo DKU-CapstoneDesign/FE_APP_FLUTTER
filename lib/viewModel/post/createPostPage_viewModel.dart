@@ -6,73 +6,83 @@ import '../../model/user.dart';
 
 class CreatePostViewModel extends ChangeNotifier {
   late String title, contents, category;
-  List<Map<String, String>>? attachments = []; // 여러 개의 파일을 담는 리스트
+  List<Map<String, String>> attachments = [];
   late PostDataSource datasource;
   final User user;
   final ImagePicker picker = ImagePicker();
 
   CreatePostViewModel(this.datasource, this.user);
 
-  // 여러 이미지 선택 로직 (현재 image_picker는 여러 파일 선택을 지원하지 않으므로 반복 선택으로 처리)
+  // 여러 이미지 선택 로직
   Future<void> getImage() async {
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
-      // 각 이미지 파일의 fileName과 filePath를 저장
-      attachments!.add({
+      attachments.add({
         'fileName': pickedFile.path.split('/').last,
         'filePath': pickedFile.path,
       });
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   // 이미지 선택 취소 로직
   void removeImage(int index) {
-    if (attachments != null && attachments!.isNotEmpty) {
-      attachments!.removeAt(index); // 해당 인덱스의 이미지를 삭제
+    if (attachments.isNotEmpty) {
+      attachments.removeAt(index);
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   // 글 생성하기 로직 (form 데이터 형식으로 post)
   Future<void> createPost(BuildContext context) async {
-    if(category =="자유게시판"){
-      category = "ANY";
-    }else if(category == "도움게시판"){
-      category = "HELPING";
-    } else if(category == "여행게시판"){
-      category =  "TRAVELING";
+    // 카테고리 설정
+    switch (category) {
+      case "자유게시판":
+        category = "ANY";
+        break;
+      case "도움게시판":
+        category = "HELPING";
+        break;
+      case "여행게시판":
+        category = "TRAVELING";
+        break;
     }
 
-    // 첨부 파일이 없을 경우
-    if (attachments == null || attachments!.isEmpty) {
-      final newPost = await datasource.createPost(
-        user.id.toString(),
-        title,
-        contents,
-        category,
-      );
+    try {
+      if (attachments.isEmpty) {
+        // 첨부 파일이 없을 경우
+        final newPost = await datasource.createPost(
+          user.id.toString(),
+          title,
+          contents,
+          category,
+        );
 
-      if (newPost != null) {
-        Navigator.pop(context, true); // 이전 화면으로 돌아가면서 글이 생성되었음을 보냄
-      } else {
-        _showErrorDialog(context);
-      }
+        if (newPost != null) {
+          Navigator.pop(context, true); // 이전 화면으로 돌아가면서 글이 생성되었음을 보냄
+        } else {
+          _showErrorDialog(context);
+        }
 
-      // 첨부 파일이 있을 경우
-    } else {
-      final newPostWithImage = await datasource.createPostWithImg(
-        user.id.toString(),
-        title,
-        contents,
-        category,
-        attachments!, // 첨부된 이미지 리스트 전달
-      );
-      if (newPostWithImage != null) {
-        Navigator.pop(context, true); // 이전 화면으로 돌아가면서 글이 생성되었음을 보냄
       } else {
-        _showErrorDialog(context);
+        // 첨부 파일이 있을 경우
+        final newPostWithImage = await datasource.createPostWithImg(
+          user.id.toString(),
+          title,
+          contents,
+          category,
+          attachments,
+        );
+
+        if (newPostWithImage != null) {
+          Navigator.pop(context, true); // 이전 화면으로 돌아가면서 글이 생성되었음을 보냄
+        } else {
+          _showErrorDialog(context);
+        }
       }
+    } catch (e) {
+      print("에러 발생: $e");
+      _showErrorDialog(context);
     }
   }
 

@@ -23,7 +23,7 @@ class _PostListPageState extends State<PostListPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final viewModel = Provider.of<PostListViewModel>(context, listen: false);
-      await viewModel.getPostList();
+      await viewModel.getPostList(widget.boardName);
     });
   }
 
@@ -46,7 +46,7 @@ class _PostListPageState extends State<PostListPage> {
   // 새로고침 시 호출할 함수
   Future<void> _refreshPosts(BuildContext context) async {
     final viewModel = Provider.of<PostListViewModel>(context, listen: false);
-    await viewModel.getPostList();
+    await viewModel.getPostList(widget.boardName);
   }
 
   @override
@@ -138,7 +138,12 @@ class _PostListPageState extends State<PostListPage> {
                                   MaterialPageRoute(
                                     builder: (context) => ChangeNotifierProvider(
                                       create: (_) => PostDetailViewModel(PostDataSource()),
-                                      child: PostDetailPage(postId: post['id'], boardName: widget.boardName, currentUserNickname: widget.user.nickname,),
+                                      child: PostDetailPage(
+                                          postId: post['id'],
+                                          boardName: widget.boardName,
+                                          currentUserNickname: widget.user.nickname,
+                                          user: widget.user
+                                       ),
                                     ),
                                   ),
                                 );

@@ -1,6 +1,6 @@
 class Post {
   int id;
-  String userId;
+  int userId;
   String title;
   String contents;
   String category;
@@ -31,7 +31,7 @@ class Post {
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
       id: json['id'] ?? 0,
-      userId: json['userId'] ?? '',
+      userId: json['userId'] ?? 0,
       title: json['title'] ?? '',
       contents: json['contents'] ?? '',
       category: json['category'] ?? '',
@@ -41,7 +41,7 @@ class Post {
       likeCount: json['likeCount'] ?? 0,
       viewCount: json['viewCount'] ?? 0,
       commentList: List<String>.from(json['commentList'] ?? []),
-      attachments: List<Map<String, String>>.from(json['attachments'] ?? []),
+      attachments: List<Map<String, String>>.from(json['attachments'].map((attachment) => Map<String, String>.from(attachment))),
     );
   }
 

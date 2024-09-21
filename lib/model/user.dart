@@ -5,6 +5,7 @@ class User {
   String country;
   String birthDate;
   int id;
+  String cookie;
 
   User({
     required this.email,
@@ -12,7 +13,8 @@ class User {
     required this.nickname,
     required this.country,
     required this.birthDate,
-    required this.id
+    required this.id,
+    required this.cookie
   });
 
   // JSON으로부터 User 객체 생성
@@ -23,7 +25,8 @@ class User {
       nickname: json['nickname'] ?? '',
       country: json['country'] ?? '',
       birthDate: json['birthDate'] ?? '',
-      id: json['id'] ?? 0
+      id: json['id'] ?? 0,
+      cookie: json['cookie'] ?? ''
     );
   }
 
@@ -35,7 +38,8 @@ class User {
       'nickname': nickname,
       'country': country,
       'birthDate': birthDate,
-      'id' : id
+      'id' : id,
+      'cookie' : cookie
     };
   }
 }

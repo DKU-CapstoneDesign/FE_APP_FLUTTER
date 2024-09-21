@@ -21,6 +21,7 @@ class SignUpViewModel extends ChangeNotifier {
       country: '',
       birthDate: '',
       id: 0,
+      cookie: ''
     );
   }
 

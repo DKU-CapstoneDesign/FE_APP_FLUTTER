@@ -25,8 +25,15 @@ class UserDataSource {
         final Map<String, dynamic> responseData = json.decode(response.body);
         // responseData에서 데이터 추출
         final loginUser = responseData['authentication']['principal'];
+        final String? setCookie = response.headers['set-cookie'];
+
         // User 객체로 변환하여 반환;
-        return User.fromJson(loginUser);
+        final user = User.fromJson(loginUser);
+        if (setCookie != null) {
+          user.cookie = setCookie;
+        }
+        print(user.cookie);
+        return user;
       } else {
         print("로그인 실패: : ${response.body}");
         return null;
