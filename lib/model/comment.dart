@@ -1,13 +1,25 @@
 class Comment {
-  final int id; // 댓글 ID
-  final int postId; // 게시글 ID
-  final int writerId; // 작성자 ID
-  final String text; // 내용
+  String contents;
+  String parentCommentId;
 
   Comment({
-    required this.id,
-    required this.postId,
-    required this.writerId,
-    required this.text,
+    required this.contents,
+    required this.parentCommentId,
   });
+
+  // JSON으로부터 Comment 객체 생성
+  factory Comment.fromJson(Map<String, dynamic> json){
+    return Comment(
+        contents: json['contents'] ?? '',
+        parentCommentId: json['parentCommentId'] ?? ''
+    );
+  }
+
+ // Comment 객체를 JSON으로 변환
+  Map<String, dynamic> toJson() {
+    return {
+      'contents' :contents,
+      'parentCommentId' : parentCommentId
+    };
+  }
 }

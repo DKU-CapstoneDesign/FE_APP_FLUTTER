@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../dataSource/post_dataSource.dart';
 import '../../model/post.dart';
-import '../../dataSource/chatting_dataSource.dart';
-import '../../view/screens/chat/chattingDetailPage.dart';
 
 class PostDetailViewModel extends ChangeNotifier {
   late Post post;
@@ -13,13 +11,17 @@ class PostDetailViewModel extends ChangeNotifier {
   PostDetailViewModel(this.datasource) {
     post = Post(
       id: 0,
+      userId: '',
       title: '',
       contents: '',
+      category: '',
       nickname: '',
       createdAt: DateTime.now(),
       modifiedAt: DateTime.now(),
       likeCount: 0,
+      viewCount: 0,
       commentList: [],
+      attachments : [],
     );
   }
 

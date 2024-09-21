@@ -37,6 +37,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   String _twoDigits(int n) {
     return n.toString().padLeft(2, '0');
   }
+
   String formatDateTime(DateTime dateTime) {
     return '${_twoDigits(dateTime.month)}/${_twoDigits(dateTime.day)} ${_twoDigits(dateTime.hour)}:${_twoDigits(dateTime.minute)}';
   }
@@ -58,7 +59,12 @@ class _PostDetailPageState extends State<PostDetailPage> {
             onPressed: () async {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => ChattingDetailPage(currentUserNickname: widget.currentUserNickname, otherUserNickname: otherUserNickname)),
+                MaterialPageRoute(
+                  builder: (context) => ChattingDetailPage(
+                    currentUserNickname: widget.currentUserNickname,
+                    otherUserNickname: otherUserNickname,
+                  ),
+                ),
               );
             },
           ),
@@ -73,7 +79,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,12 +92,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
       ),
       body: Consumer<PostDetailViewModel>(
         builder: (context, viewModel, child) {
-
-          // 위로 당기면 새로고침할 수 있도록
           return RefreshIndicator(
             onRefresh: () => _refreshPosts(context),
             child: GestureDetector(
-              // 입력 필드 외부를 터치하면 키보드 닫힘
               onTap: () => FocusScope.of(context).unfocus(),
               child: SafeArea(
                 child: Column(
@@ -111,27 +113,48 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   onTap: () {
                                     _showProfileOptions(context, viewModel.post.nickname);
                                   },
-                                  child:  CircleAvatar(
-                                      child: Text(
-                                        viewModel.post.nickname.isNotEmpty ? viewModel.post.nickname[0] : '?',
-                                      ),
+                                  child: CircleAvatar(
+                                    child: Text(
+                                      viewModel.post.nickname.isNotEmpty
+                                          ? viewModel.post.nickname[0]
+                                          : '?',
+                                    ),
                                   ),
                                 ),
                                 title: Text(
                                   viewModel.post.nickname,
-                                  style: const TextStyle(fontFamily: 'SejonghospitalBold'),
+                                  style: const TextStyle(
+                                      fontFamily: 'SejonghospitalBold'),
                                 ),
                                 subtitle: Text(
                                   formatDateTime(viewModel.post.createdAt),
                                   style: const TextStyle(
-                                      fontFamily: 'SejonghospitalLight', color: Colors.grey),
+                                      fontFamily: 'SejonghospitalLight',
+                                      color: Colors.grey),
                                 ),
                               ),
                               const SizedBox(height: 20.0),
 
+                              // 첨부 파일이 있으면 이미지 표시하기
+                              if (viewModel.post.attachments != null &&
+                                  viewModel.post.attachments!.isNotEmpty)
+                                Container(
+                                  margin:
+                                  const EdgeInsets.symmetric(vertical: 20.0),
+                                  height: 200,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: Image.network(
+                                    viewModel.post.attachments!.first['filePath'] ?? '',
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+
                               // 게시글 내용
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                padding:
+                                const EdgeInsets.symmetric(horizontal: 20.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -155,7 +178,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
                               // 좋아요와 댓글 수
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -202,11 +226,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                 itemCount: viewModel.post.commentList.length,
                                 itemBuilder: (context, index) {
                                   return Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 4.0),
                                     child: Container(
                                       decoration: BoxDecoration(
                                         border: Border.all(color: Colors.grey),
-                                        borderRadius: BorderRadius.circular(8.0),
+                                        borderRadius:
+                                        BorderRadius.circular(8.0),
                                       ),
                                       padding: const EdgeInsets.all(8.0),
                                       child: Text(
@@ -234,14 +260,17 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             child: TextField(
                               decoration: InputDecoration(
                                 hintText: '댓글을 입력하세요.',
-                                contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                                contentPadding: EdgeInsets.symmetric(
+                                    vertical: 10.0, horizontal: 20.0),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30.0),
-                                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                                  borderSide:
+                                  BorderSide(color: Colors.grey, width: 1.0),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30.0),
-                                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
+                                  borderSide:
+                                  BorderSide(color: Colors.grey, width: 1.0),
                                 ),
                               ),
                             ),
@@ -251,7 +280,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                  color: Color.fromRGBO(92, 67, 239, 50), width: 2.0),
+                                  color: Color.fromRGBO(92, 67, 239, 50),
+                                  width: 2.0),
                             ),
                             child: IconButton(
                               icon: const Icon(

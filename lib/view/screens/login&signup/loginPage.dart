@@ -2,7 +2,9 @@ import 'package:capstonedesign/dataSource/user_dataSource.dart';
 import 'package:capstonedesign/view/screens/login&signup/middlePage.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../model/user.dart';
 import '../../../viewModel/login&signup/loginPage_viewModel.dart';
+import '../../widgets/bottomNavBar.dart';
 
 class LoginPage extends StatefulWidget {
   final String welcomeMessage; // 기존 회원과 신규 회원의 환영 메시지를 다르게 설정
@@ -84,10 +86,10 @@ class _LoginPageState extends State<LoginPage> {
                 ElevatedButton(
                   onPressed: () {
                     viewModel.login(context);
-                    /////서버 안 켜져 있을 시 임시로 홈에 들어가기
-                    // Navigator.push(
-                    //     context, MaterialPageRoute(builder: (context)=> BottomNavBar())
-                    // );
+                    /*//서버 안 켜져 있을 시 임시로 홈에 들어가기
+                    Navigator.push(
+                        context, MaterialPageRoute(builder: (context)=> BottomNavBar(user: User(email: '', password: '', nickname: '', country: '', birthDate: '', id: 0)))
+                    );*/
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Color.fromRGBO(92, 67, 239, 50),

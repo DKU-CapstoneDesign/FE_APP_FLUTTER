@@ -97,7 +97,7 @@ class UserDataSource {
       );
       if (response.statusCode == 200) {
         //model의 User에 값을 넣기
-        return User.fromJson(jsonDecode(response.body));
+        return User.fromJson(json.decode(response.body));
       } else {
         print('회원가입 실패: ${response.body}');
         return null;

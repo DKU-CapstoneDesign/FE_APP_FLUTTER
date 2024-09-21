@@ -1,15 +1,14 @@
 import 'dart:io';
-import 'package:capstonedesign/viewModel/post/createPostPage_viewModel.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../../dataSource/post_dataSource.dart';
 import '../../../model/user.dart';
-
+import '../../../viewModel/post/createPostPage_viewModel.dart';
 
 class CreatePostPage extends StatefulWidget {
+  final String boardName; //category
   final User user;
-  CreatePostPage({required this.user});
+  CreatePostPage({required this.user, required this.boardName});
 
   @override
   _CreatePostPageState createState() => _CreatePostPageState();
@@ -17,120 +16,166 @@ class CreatePostPage extends StatefulWidget {
 
 class _CreatePostPageState extends State<CreatePostPage> {
 
-  //이미지 컨트롤
-  File? _imageFile;
-  final picker = ImagePicker();
-  Future getImage() async {
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile != null) {
-        _imageFile = File(pickedFile.path);
-      } else {
-        print('No image selected.');
-      }
-    });
-  }
-
-
   @override
   Widget build(BuildContext context) {
     //상태 관리
     return ChangeNotifierProvider(
-        create: (_) => CreatePostViewModel(PostDataSource(), widget.user),
-
-      child : Scaffold(
-      appBar: AppBar(
-        leading:  IconButton(
+      create: (_) => CreatePostViewModel(PostDataSource(), widget.user),
+      child: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
             },
-            icon: Icon(Icons.close)
-      )
-      ),
-      //consumer를 이용한 상태 관리
-      /*provider 대신 consumer를 사용한 이유??
-    => 상태 관리를 더 명확하게 하고, 특정 위젯들만 다시 빌드할 수 있기 때문*/
-      body: Consumer<CreatePostViewModel>(
-        builder: (context, viewModel, child){
-         return Padding(
-        padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TextField(
-                onChanged: (value)=> viewModel.title = value,
-                decoration: const InputDecoration(
-                  hintText: '글 제목',
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-              ////이미지
-              GestureDetector(
-                onTap: getImage,
-                child: Container(
-                  height: 50,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: _imageFile != null
-                      ? Image.file(
-                    _imageFile!,
-                    fit: BoxFit.cover,
-                  )
-                      : const Center(
-                    child: Icon(Icons.add_a_photo),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16.0),
-
-
-              Container(
-                height: 510,
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: TextField(
-                  onChanged: (value) => viewModel.contents = value,
-                  maxLines: null,
-                  keyboardType: TextInputType.multiline,
-                  decoration: const InputDecoration(
-                    hintText: '게시판에 올릴 게시글 내용을 작성해주세요 \n건강한 게시판 문화를 지향합니다:)',
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.all(16.0),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () {
-                  viewModel.createPost(context);
-                },
-                style: ButtonStyle(
-                  backgroundColor: WidgetStateProperty.all(const Color.fromRGBO(92, 67, 239, 60)),
-                  foregroundColor: WidgetStateProperty.all(Colors.white),
-                    padding: WidgetStateProperty.all<EdgeInsets>(
-                      EdgeInsets.symmetric(horizontal: 48, vertical: 18),
-                    ),
-                  shape: WidgetStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                  ),
-                ),
-                child: Text('완료'),
-              ),
-            ],
+            icon: Icon(Icons.close),
           ),
-        )
-        );
-        }
-      )
-      )
+        ),
+        //consumer를 이용한 상태 관리
+        body: Consumer<CreatePostViewModel>(
+          builder: (context, viewModel, child) {
+            return Padding(
+              padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    TextField(
+                      onChanged: (value) {
+                        viewModel.title = value;
+                        viewModel.category = widget.boardName; //카테고리 설정
+                      },
+                      decoration: const InputDecoration(
+                        hintText: '글 제목',
+                      ),
+                    ),
+                    SizedBox(height: 30.0),
+
+
+                    //// 이미지 선택 및 미리보기
+                    Row(
+                      children: [
+                        // 이미지 선택 버튼
+                        Container(
+                          height: 80,
+                          width: 80,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: IconButton(
+                            icon: const Icon(Icons.add_photo_alternate, size: 30, color: Colors.grey),
+                            onPressed: () => viewModel.getImage(), // 여러 이미지 선택
+                          ),
+                        ),
+                        SizedBox(width: 20),
+
+                        // 이미지 미리보기 및 삭제 버튼
+                        viewModel.attachments != null && viewModel.attachments!.isNotEmpty
+                            ? Expanded(
+                          child: SizedBox(
+                            height: 80,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: viewModel.attachments!.length,
+                              itemBuilder: (context, index) {
+                                final attachment = viewModel.attachments![index];
+                                return Stack(
+                                  children: [
+                                    // 이미지 미리보기
+                                    Container(
+                                      margin: EdgeInsets.only(right: 10),
+                                      height: 80,
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.file(
+                                          File(attachment['filePath']!),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ),
+                                    // 삭제 버튼
+                                    Positioned(
+                                      right: 0,
+                                      top: 0,
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          viewModel.removeImage(index); // 이미지 제거 함수 호출
+                                        },
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            color: Colors.black.withOpacity(0.6),
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(
+                                            Icons.close,
+                                            color: Colors.white,
+                                            size: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                        )
+                            : Container(
+                          height: 80,
+                          width: 80,
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+
+                    Container(
+                      height: 510,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: TextField(
+                        onChanged: (value) => viewModel.contents = value,
+                        maxLines: null,
+                        keyboardType: TextInputType.multiline,
+                        decoration: const InputDecoration(
+                          hintText: '게시판에 올릴 게시글 내용을 작성해주세요 \n건강한 게시판 문화를 지향합니다:)',
+                          border: InputBorder.none,
+                          contentPadding: EdgeInsets.all(16.0),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 16.0),
+                    ElevatedButton(
+                      onPressed: () {
+                        viewModel.createPost(context);
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(92, 67, 239, 60)),
+                        foregroundColor: MaterialStateProperty.all(Colors.white),
+                        padding: MaterialStateProperty.all<EdgeInsets>(
+                          EdgeInsets.symmetric(horizontal: 48, vertical: 18),
+                        ),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                      ),
+                      child: Text('완료'),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }

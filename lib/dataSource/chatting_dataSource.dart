@@ -95,6 +95,7 @@ class ChattingDataSource {
     try {
       final request = http.Request('GET', Uri.parse('$baseUrl/api/chat/list/nickname/$nickname'));
       request.headers['Accept'] = 'text/event-stream';
+      request.headers['Connection'] = 'keep-alive';
       final response = await request.send();
 
       if (response.statusCode == 200) {

@@ -19,15 +19,17 @@ class ChattingDetailPageViewModel extends ChangeNotifier {
   // 채팅방이 있다면 -> 이전 채팅 내용 가져오기 (chatListByRoomNum)
   // 채팅방이 없다면 -> 채팅방 생성하기 (createChat)
   Future<void> startChat() async {
-    final chatRoom = await dataSource.createChat(currentUserNickname, otherUserNickname);
+    //채팅방 생성하기
+    final result = await dataSource.createChat(currentUserNickname, otherUserNickname);
 
-    if (chatRoom != null) {
-      roomNum = chatRoom.id.toString();
+    //채팅 내용 가져오기
+    if (result != null) {
+      roomNum = result.id.toString();
       final messageStream = dataSource.chatListByRoomNum(roomNum);
       await for (var chatList in messageStream) {
         if (chatList != null && chatList.isNotEmpty) {
           messages = chatList.cast<Chatting>(); // 받은 전체 메시지로 갱신
-          notifyListeners(); // UI 업데이트
+          notifyListeners();
         }
       }
     }

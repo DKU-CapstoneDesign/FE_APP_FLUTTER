@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:http/http.dart' as http;
+import '../model/comment.dart';
 import '../model/post.dart';
 
 class PostDataSource {
@@ -9,29 +11,75 @@ class PostDataSource {
       // 'http://158.180.86.243:8080';
 
   ///////////게시글
-  ////게시글 생성
-  Future<Post?> createPost(String title, String contents, int userId) async {
+  ////게시글 생성 (이미지 X)
+  //form 데이터 형식으로 post
+  Future<Post?> createPost(String userId, String title, String contents, String category) async {
+    // 텍스트 필드만 전송하기 위한 데이터
+    final formData = {
+      'userId': userId,
+      'title': title,
+      'contents': contents,
+      'category': category,
+    };
+
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/api/post'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'title': title,
-          'contents': contents,
-          'userId': userId
-        }),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: formData,
       );
+
       if (response.statusCode == 200) {
         print("게시글 생성 성공");
-        final Map<String, dynamic> responseData = json.decode(response.body);
-        // Post 객체로 변환하여 반환
-        return Post.fromJson(responseData);
+        final responseData = json.decode(response.body);
+        if (responseData['success'] == true) {
+          return Post.fromJson(responseData['response']);
+        }
       } else {
-        print("게시글 생성 실패 : ${response.body}");
+        print('게시글 생성 실패:${response.body}');
         return null;
       }
     } catch (e) {
-      print('오류 발생: $e');
+      print('에러 발생: $e');
+      return null;
+    }
+  }
+  ////게시글 생성 (이미지 O)
+  //multipart/form-data로 텍스트와 파일을 함께 전송
+  Future<Post?> createPostWithImg(String userId, String title, String contents, String category, List<Map<String, String>> attachments) async {
+    var uri = Uri.parse('$baseUrl/api/post');
+    // JSON 형식으로 서버에서 요구하는 파일 정보와 함께 텍스트 데이터를 포함
+    Map<String, dynamic> data = {
+      'userId': userId,
+      'title': title,
+      'contents': contents,
+      'category': category,
+      'attachments': attachments,
+    };
+
+    try {
+      // POST 요청 전송
+      final response = await http.post(
+        uri,
+        headers: {
+          'Content-Type': 'application/json', // JSON 형식으로 전송
+        },
+        body: json.encode(data), // 데이터를 JSON으로 인코딩
+      );
+
+      if (response.statusCode == 200) {
+        print("게시글 생성 성공");
+
+        final responseData = json.decode(response.body);
+        if (responseData['success'] == true) {
+          return Post.fromJson(responseData['response']);
+        }
+      } else {
+        print('게시글 생성 실패: ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('에러 발생: $e');
       return null;
     }
   }
@@ -66,7 +114,6 @@ class PostDataSource {
       return null;
     }
   }
-
 
   ////선택된 게시글 조회
   Future<Post?> getOnePost(int postId) async {
@@ -145,20 +192,21 @@ class PostDataSource {
 
   ///////////댓글
   ////댓글 생성
-  Future<Post?> createComment(String comment, int id) async {
+  Future<Comment?> createComment(String comment, int id) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/api/comment/$id'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'comment': comment,
+          'parentCommentId' :'',
         }),
       );
       if (response.statusCode == 200) {
         print("댓글 생성 성공");
         final Map<String, dynamic> responseData = json.decode(response.body);
         // Post 객체로 변환하여 반환
-        return Post.fromJson(responseData);
+        return Comment.fromJson(responseData);
       } else {
         print("댓글 생성 실패 : ${response.body}");
         return null;
@@ -170,13 +218,13 @@ class PostDataSource {
   }
 
   ////댓글 조회
-  Future<Post?> getComment(int id) async {
+  Future<Comment?> getComment(int id) async {
     try {
       final response = await http.get(Uri.parse('$baseUrl/api/comment/$id'));
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
         print("댓글 조회 성공");
-        return Post.fromJson(responseData);
+        return Comment.fromJson(responseData);
       } else {
         print("댓글 조회 실패");
         return null;
@@ -204,6 +252,37 @@ class PostDataSource {
     } catch (e) {
       print('에러 발생: $e');
       return false;
+    }
+  }
+
+  ///////////좋아요 누르기
+  //form 데이터 형식으로 post
+  Future<Post?> pushLike(String postId, String userId, String title, String contents, String category, String attachments) async {
+    final formData = {
+      'userId': userId,
+      'title': title,
+      'contents': contents,
+      'category': category,
+      'attachments': attachments,
+    };
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/api/post/$postId/likes'),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: formData,
+      );
+
+      if (response.statusCode == 200) {
+        print("좋아요 누르기 성공");
+        //model의 Post에 값을 넣기
+        return Post.fromJson(json.decode(response.body));
+      } else {
+        print("좋아요 누르기 실패 : ${response.body}");
+        return null;
+      }
+    } catch (e) {
+      print('오류 발생: $e');
+      return null;
     }
   }
 

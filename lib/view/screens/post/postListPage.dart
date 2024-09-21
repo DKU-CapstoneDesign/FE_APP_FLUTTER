@@ -167,7 +167,7 @@ class _PostListPageState extends State<PostListPage> {
           final result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CreatePostPage(user: widget.user),
+              builder: (context) => CreatePostPage(user: widget.user, boardName: widget.boardName,),
             ),
           );
           if (result == true) { //만약 새 글을 썼다면

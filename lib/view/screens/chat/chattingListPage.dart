@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/chat/chattingDetailPage.dart';
 import 'package:capstonedesign/view/widgets/infoBox.dart';
@@ -56,7 +57,18 @@ class _ChattingListPageState extends State<ChattingListPage> {
                     child: viewModel.isLoading
                         ? Center(child: CircularProgressIndicator())
                         : viewModel.chatList.isEmpty
-                        ? Center(child: Text("채팅방이 없습니다.\n 게시판에서 채팅을 시작할 수 있어요!"))
+                        ? Center(
+                      child: Container(
+                        alignment: Alignment.center,
+                        child: const Text(
+                          "채팅방이 없습니다.\n게시판에서 채팅을 시작할 수 있어요!",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontSize: 16.0,
+                          ),
+                        ),
+                      ),
+                    )
                         : ListView.builder(
                       itemCount: viewModel.chatList.length,
                       itemBuilder: (context, index) {
