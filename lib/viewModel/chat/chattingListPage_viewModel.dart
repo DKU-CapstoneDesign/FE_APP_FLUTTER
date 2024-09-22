@@ -14,12 +14,11 @@ class ChattingListViewModel extends ChangeNotifier {
 
     final chatStream = datasource.getChatList(nickname);
     await for (var chatListFromStream in chatStream) {
-      if (chatListFromStream != null) {
+      if (chatListFromStream != null && chatListFromStream.isNotEmpty) {
         chatList = chatListFromStream;
+        isLoading = false;
         notifyListeners();
       }
     }
-    isLoading = false;
-    notifyListeners();
   }
 }

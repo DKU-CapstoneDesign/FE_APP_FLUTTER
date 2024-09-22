@@ -169,7 +169,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => EditPostPage(user: widget.user, boardName: widget.boardName),
+                                                builder: (context) => EditPostPage(user: widget.user, boardName: widget.boardName, post: viewModel.post),
                                               ),
                                             );
                                           },
@@ -186,7 +186,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                           iconSize: 20.0,
                                           color: Colors.grey,
                                           onPressed: () {
-                                            viewModel.deletePost();
+                                            viewModel.deletePost(context,widget.postId, widget.user);
                                           },
                                         ),
                                       ],
@@ -257,7 +257,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                               ? Color.fromRGBO(92, 67, 239, 1)
                                               : Colors.grey,
                                         ),
-                                        onPressed: viewModel.toggleLike,
+                                        // 좋아요 버튼 onPressed
+                                        onPressed: () async {
+                                          await viewModel.pushLike(widget.postId, widget.user.id);
+                                        },
                                       ),
                                       Text(
                                         '${viewModel.post.likeCount}',
@@ -323,6 +326,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         children: [
                           Expanded(
                             child: TextField(
+                              onChanged: (value) {
+                                viewModel.comment = value;
+                              },
                               decoration: InputDecoration(
                                 hintText: '댓글을 입력하세요.',
                                 contentPadding: const EdgeInsets.symmetric(
@@ -354,7 +360,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                 color: Color.fromRGBO(92, 67, 239, 50),
                               ),
                               onPressed: () {
-                                // 전송 버튼 클릭 시 동작
+                                viewModel.createComment(widget.postId);
                               },
                             ),
                           ),

@@ -151,17 +151,24 @@ class PostDataSource {
 
 
   ////게시글 수정
-  Future<Post?> editPost(String title, String contents, int userId, int postId) async {
+  Future<Post?> editPost(String title, String contents, int userId, int postId, User user) async {
     try {
       final response = await http.put(
         Uri.parse('$baseUrl/api/post/$postId'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': user.cookie
+        },
         body: jsonEncode({
           'title': title,
           'contents': contents,
           'userId': userId
-        }),
+        })
       );
+
+      print('응답 상태 코드: ${response.statusCode}');
+      print('응답 본문: ${response.body}');
+
       if (response.statusCode == 200) {
         print("게시글 수정 성공");
         final responseData = json.decode(response.body);
@@ -179,11 +186,14 @@ class PostDataSource {
   }
 
   ////게시글 삭제
-  Future<bool> deletePost(int postId) async {
+  Future<bool> deletePost(int postId, User user) async {
     try {
       final response = await http.delete(
         Uri.parse('$baseUrl/api/post/$postId'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': user.cookie
+        },
       );
       if (response.statusCode == 200) {
         print('게시글 삭제 성공');
@@ -200,13 +210,12 @@ class PostDataSource {
 
   ///////////좋아요 누르기
   //form 데이터 형식으로 post
-  Future<Post?> pushLike(String postId, String userId, String title, String contents, String category, String attachments) async {
+  Future<bool> pushLike(String postId, String userId, String title, String contents, String category) async {
     final formData = {
       'userId': userId,
       'title': title,
       'contents': contents,
       'category': category,
-      'attachments': attachments,
     };
     try {
       final response = await http.post(
@@ -217,15 +226,14 @@ class PostDataSource {
 
       if (response.statusCode == 200) {
         print("좋아요 누르기 성공");
-        //model의 Post에 값을 넣기
-        return Post.fromJson(json.decode(response.body));
+        return true;
       } else {
         print("좋아요 누르기 실패 : ${response.body}");
-        return null;
+        return false;
       }
     } catch (e) {
       print('오류 발생: $e');
-      return null;
+      return false;
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../../dataSource/chatting_dataSource.dart';
 import '../../model/chatting.dart';
+import '../../model/chattingList.dart';
 
 class ChattingDetailPageViewModel extends ChangeNotifier {
   late List<Chatting> messages = [];
@@ -9,6 +10,7 @@ class ChattingDetailPageViewModel extends ChangeNotifier {
   late String otherUserNickname;
   final TextEditingController textController = TextEditingController();
   final ChattingDataSource dataSource = ChattingDataSource();
+  late ChattingList chattingList;
   late String roomNum;
 
   ChattingDetailPageViewModel(this.currentUserNickname, this.otherUserNickname) {
@@ -19,12 +21,16 @@ class ChattingDetailPageViewModel extends ChangeNotifier {
   // 채팅방이 있다면 -> 이전 채팅 내용 가져오기 (chatListByRoomNum)
   // 채팅방이 없다면 -> 채팅방 생성하기 (createChat)
   Future<void> startChat() async {
-    //채팅방 생성하기
-    final result = await dataSource.createChat(currentUserNickname, otherUserNickname);
 
-    //채팅 내용 가져오기
-    if (result != null) {
-      roomNum = result.id.toString();
+    //채팅방이 없다면
+    if(chattingList.id == null){
+      //채팅방 생성하기
+      final result = await dataSource.createChat(currentUserNickname, otherUserNickname);
+    }
+    //채팅방이 없다면
+    else {
+      //채팅 내용 가져오기
+      roomNum = chattingList.id as String;
       final messageStream = dataSource.chatListByRoomNum(roomNum);
       await for (var chatList in messageStream) {
         if (chatList != null && chatList.isNotEmpty) {

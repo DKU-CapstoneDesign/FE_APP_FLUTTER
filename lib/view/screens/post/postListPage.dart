@@ -1,3 +1,4 @@
+import 'package:capstonedesign/dataSource/comment_dataSource.dart';
 import 'package:capstonedesign/viewModel/post/postListPage_viewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/post/postDetailPage.dart';
@@ -138,7 +139,7 @@ class _PostListPageState extends State<PostListPage> {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => ChangeNotifierProvider(
-                                      create: (_) => PostDetailViewModel(PostDataSource()),
+                                      create: (_) => PostDetailViewModel(PostDataSource(), widget.user, CommentDatasource()),
                                       child: PostDetailPage(
                                           postId: post['id'],
                                           boardName: widget.boardName,

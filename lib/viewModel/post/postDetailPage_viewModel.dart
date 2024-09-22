@@ -1,3 +1,4 @@
+import 'package:capstonedesign/dataSource/comment_dataSource.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../dataSource/post_dataSource.dart';
@@ -6,11 +7,14 @@ import '../../model/user.dart';
 
 class PostDetailViewModel extends ChangeNotifier {
   late Post post;
+  final User user;
+  String comment = '';
   final PostDataSource datasource;
+  final CommentDatasource commentDatasource;
   bool isLiked = false;
   bool isDeleted = false;
 
-  PostDetailViewModel(this.datasource) {
+  PostDetailViewModel(this.datasource, this.user, this.commentDatasource) {
     post = Post(
       id: 0,
       userId: 0,
@@ -34,20 +38,40 @@ class PostDetailViewModel extends ChangeNotifier {
   }
 
   // 게시물 삭제하기
-  Future<void> deletePost() async {
-    isDeleted = (await datasource.deletePost(post.id));
+  Future<void> deletePost(BuildContext context, int postId, User user) async {
+    isDeleted = (await datasource.deletePost(postId,user))!;
+    if (isDeleted) {
+      Navigator.pop(context, true);
+    }
     notifyListeners();
   }
 
   // 좋아요 토글 로직
-  void toggleLike() {
-    if (isLiked) {
-      post.likeCount--;
-    } else {
+  Future<void> pushLike (int postId, int userId) async{
+    isLiked = await datasource.pushLike(
+      postId.toString(),
+      userId.toString(),
+      post.title,
+      post.contents,
+      post.category
+    );
+    if(isLiked){
       post.likeCount++;
     }
-    isLiked = !isLiked;
     notifyListeners();
   }
+
+
+  // 댓글 생성하기
+  Future<void> createComment(int postId) async{
+    final newComment = await commentDatasource.createComment(comment, postId);
+
+    if (newComment != null) {
+      post.commentList.add(newComment as String);
+      notifyListeners();
+    }
+  }
+
+  // 댓글 삭제하기
 
 }

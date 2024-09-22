@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../dataSource/post_dataSource.dart';
 import '../../../model/user.dart';
-import '../../../viewModel/post/createPostPage_viewModel.dart';
+import '../../../model/post.dart';
+import '../../../viewModel/post/editPostPage_viewModel.dart';
 
 class EditPostPage extends StatefulWidget {
   final String boardName; // category
   final User user;
+  final Post post;
 
-  EditPostPage({required this.user, required this.boardName});
+  EditPostPage({required this.user, required this.boardName, required this.post});
 
   @override
   _EditPostPageState createState() => _EditPostPageState();
@@ -23,8 +25,8 @@ class _EditPostPageState extends State<EditPostPage> {
   void initState() {
     super.initState();
     // TextEditingController로 기존 제목과 내용을 초기화
-    _titleController = TextEditingController(text: '');
-    _contentController = TextEditingController(text: '');
+    _titleController = TextEditingController(text: widget.post.title);
+    _contentController = TextEditingController(text: widget.post.contents);
   }
 
   @override
@@ -37,7 +39,7 @@ class _EditPostPageState extends State<EditPostPage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => CreatePostViewModel(PostDataSource(), widget.user),
+      create: (_) => EditPostViewModel(PostDataSource(), widget.post),
       child: Scaffold(
         appBar: AppBar(
           leading: IconButton(
@@ -48,7 +50,7 @@ class _EditPostPageState extends State<EditPostPage> {
           ),
           title: Text('게시글 수정하기'),
         ),
-        body: Consumer<CreatePostViewModel>(
+        body: Consumer<EditPostViewModel>(
           builder: (context, viewModel, child) {
             return Padding(
               padding: EdgeInsets.fromLTRB(30, 10, 30, 10),
@@ -59,7 +61,7 @@ class _EditPostPageState extends State<EditPostPage> {
                     TextField(
                       controller: _titleController,
                       onChanged: (value) {
-                        //viewModel.post.title = value;
+                        viewModel.title = value;
                       },
                       decoration: const InputDecoration(
                         hintText: '글 제목',
@@ -86,15 +88,15 @@ class _EditPostPageState extends State<EditPostPage> {
                         SizedBox(width: 20),
 
                         // 이미지 미리보기 및 삭제 버튼
-                        if (viewModel.post.attachments != null && viewModel.post.attachments!.isNotEmpty)
+                        if (viewModel.attachments.isNotEmpty)
                           Expanded(
                             child: SizedBox(
                               height: 80,
                               child: ListView.builder(
                                 scrollDirection: Axis.horizontal,
-                                itemCount: viewModel.post.attachments!.length,
+                                itemCount: viewModel.attachments.length,
                                 itemBuilder: (context, index) {
-                                  final attachment = viewModel.post.attachments![index];
+                                  final attachment = viewModel.attachments[index];
                                   return Stack(
                                     children: [
                                       // 이미지 미리보기
@@ -108,7 +110,7 @@ class _EditPostPageState extends State<EditPostPage> {
                                         ),
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.circular(8),
-                                          child: attachment['filePath']!.contains('http') // 네트워크 이미지인지 확인
+                                          child: attachment['filePath']!.contains('http')
                                               ? Image.network(
                                             attachment['filePath']!,
                                             fit: BoxFit.cover,
@@ -163,7 +165,7 @@ class _EditPostPageState extends State<EditPostPage> {
                       ),
                       child: TextField(
                         controller: _contentController,
-                        onChanged: (value) => viewModel.post.contents = value,
+                        onChanged: (value) => viewModel.contents = value,
                         maxLines: null,
                         keyboardType: TextInputType.multiline,
                         decoration: const InputDecoration(
@@ -176,8 +178,9 @@ class _EditPostPageState extends State<EditPostPage> {
                     SizedBox(height: 16.0),
                     ElevatedButton(
                       onPressed: () async {
-                        await viewModel.editPost(context); // 게시글 수정 요청
-                        Navigator.pop(context, true); // 수정 후 페이지 이동
+                        viewModel.title = _titleController.text;
+                        viewModel.contents = _contentController.text;
+                        await viewModel.editPost(context, widget.user.id, widget.post.id, widget.user); // 게시글 수정 요청
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(92, 67, 239, 60)),
@@ -191,7 +194,7 @@ class _EditPostPageState extends State<EditPostPage> {
                           ),
                         ),
                       ),
-                      child: Text('수정 완료'),
+                      child: Text('수정'),
                     ),
                   ],
                 ),

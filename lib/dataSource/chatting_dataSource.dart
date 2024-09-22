@@ -95,7 +95,6 @@ class ChattingDataSource {
     try {
       final request = http.Request('GET', Uri.parse('$baseUrl/api/chat/list/nickname/$nickname'));
       request.headers['Accept'] = 'text/event-stream';
-      request.headers['Connection'] = 'keep-alive';
       final response = await request.send();
 
       if (response.statusCode == 200) {
@@ -153,8 +152,8 @@ class ChattingDataSource {
 
 
   //////대화 내역(방 번호 기반)(sse)
-  Stream<List<ChattingList>?> chatListByRoomNum(String roomNum) async* {
-    List<ChattingList> chattingList = []; // 결과를 저장할 리스트
+  Stream<List<Chatting>?> chatListByRoomNum(String roomNum) async* {
+    List<Chatting> chatting = []; // 결과를 저장할 리스트
     try {
       final request = http.Request('GET', Uri.parse('$baseUrl/api/chat/roomNum/$roomNum'));
       request.headers['Accept'] = 'text/event-stream'; // SSE 응답 형식으로 설정
@@ -176,15 +175,15 @@ class ChattingDataSource {
             print("Decoded data: $decodedData");  // 디코딩된 데이터 출력
 
             // 채팅 리스트에 추가
-            chattingList.add(ChattingList.fromJson(decodedData));
+            chatting.add(Chatting.fromJson(decodedData));
 
             // 중간 데이터를 반환하여 UI 업데이트
-            yield List.from(chattingList); // 리스트의 복사본을 반환
+            yield List.from(chatting); // 리스트의 복사본을 반환
           }
         }
 
         // 모든 데이터가 처리되면 리스트를 반환
-        yield chattingList;
+        yield chatting;
       } else {
         print("대화 내역 가져오기 실패: ${response.statusCode}");
         yield null;

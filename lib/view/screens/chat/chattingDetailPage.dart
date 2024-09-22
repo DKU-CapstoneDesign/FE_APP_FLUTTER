@@ -10,6 +10,7 @@ class ChattingDetailPage extends StatelessWidget {
   ChattingDetailPage({
     required this.currentUserNickname,
     required this.otherUserNickname,
+
   });
 
   @override
