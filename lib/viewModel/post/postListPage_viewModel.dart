@@ -1,8 +1,11 @@
 import 'package:capstonedesign/dataSource/post_dataSource.dart';
 import 'package:flutter/cupertino.dart';
 
+import '../../model/post.dart';
+
 class PostListViewModel extends ChangeNotifier {
   final PostDataSource dataSource;
+  late Post post;
   List<dynamic> posts = [];
   bool isLoading = true;
 

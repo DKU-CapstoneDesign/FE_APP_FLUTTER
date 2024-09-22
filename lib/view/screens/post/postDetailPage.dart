@@ -1,3 +1,4 @@
+import 'package:capstonedesign/view/screens/post/editPostPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -163,8 +164,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                           icon: Icon(Icons.edit),
                                           iconSize: 20.0,
                                           color: Colors.grey,
+                                          //수정하기 페이지로 이동
                                           onPressed: () {
-                                            viewModel.editPost();
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) => EditPostPage(user: widget.user, boardName: widget.boardName),
+                                              ),
+                                            );
                                           },
                                         ),
                                         const Text(

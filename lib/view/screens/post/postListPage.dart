@@ -4,6 +4,7 @@ import 'package:capstonedesign/view/screens/post/postDetailPage.dart';
 import 'package:capstonedesign/view/screens/post/createPostPage.dart';
 import 'package:provider/provider.dart';
 import '../../../dataSource/post_dataSource.dart';
+import '../../../model/post.dart';
 import '../../../model/user.dart';
 import '../../../viewModel/post/postDetailPage_viewModel.dart';
 
@@ -172,7 +173,7 @@ class _PostListPageState extends State<PostListPage> {
           final result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CreatePostPage(user: widget.user, boardName: widget.boardName,),
+              builder: (context) => CreatePostPage(user: widget.user, boardName: widget.boardName),
             ),
           );
           if (result == true) { //만약 새 글을 썼다면

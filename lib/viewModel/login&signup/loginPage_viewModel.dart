@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/model/user.dart';
 import 'package:capstonedesign/dataSource/user_dataSource.dart';
-
 import '../../view/widgets/bottomNavBar.dart';
 
 class LoginViewModel extends ChangeNotifier {

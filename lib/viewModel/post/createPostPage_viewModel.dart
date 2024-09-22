@@ -1,11 +1,10 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../dataSource/post_dataSource.dart';
 import '../../model/user.dart';
 
 class CreatePostViewModel extends ChangeNotifier {
-  late String title, contents, category;
+  String title = "", contents = "", category = "";
   List<Map<String, String>> attachments = [];
   late PostDataSource datasource;
   final User user;

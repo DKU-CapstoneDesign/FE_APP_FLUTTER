@@ -151,7 +151,7 @@ class PostDataSource {
 
 
   ////게시글 수정
-  Future<bool> editPost(String title, String contents, int userId, int postId) async {
+  Future<Post?> editPost(String title, String contents, int userId, int postId) async {
     try {
       final response = await http.put(
         Uri.parse('$baseUrl/api/post/$postId'),
@@ -163,15 +163,18 @@ class PostDataSource {
         }),
       );
       if (response.statusCode == 200) {
-        print('게시글 수정 성공');
-        return true;
+        print("게시글 수정 성공");
+        final responseData = json.decode(response.body);
+        if (responseData['success'] == true) {
+          return Post.fromJson(responseData['response']);
+        }
       } else {
         print('게시글 수정 실패: ${response.statusCode}, ${response.body}');
-        return false;
+        return null;
       }
     } catch (e) {
       print('에러 발생: $e');
-      return false;
+      return null;
     }
   }
 

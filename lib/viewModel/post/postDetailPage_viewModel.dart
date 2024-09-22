@@ -8,7 +8,6 @@ class PostDetailViewModel extends ChangeNotifier {
   late Post post;
   final PostDataSource datasource;
   bool isLiked = false;
-  bool isEdited = false;
   bool isDeleted = false;
 
   PostDetailViewModel(this.datasource) {
@@ -31,12 +30,6 @@ class PostDetailViewModel extends ChangeNotifier {
   // 게시물 정보 가져오기
   Future<void> getPostInfo(int postId, User user) async {
     post = (await datasource.getOnePost(postId, user))!;
-    notifyListeners();
-  }
-
-  // 게시물 수정하기
-  Future<void> editPost() async {
-    isEdited = (await datasource.editPost(post.title, post.contents, post.userId, post.id));
     notifyListeners();
   }
 

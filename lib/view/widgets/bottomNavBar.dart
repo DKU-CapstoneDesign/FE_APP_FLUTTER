@@ -3,6 +3,7 @@ import 'package:capstonedesign/view/screens/mypage/myPage.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/post/forumPage.dart';
 import 'package:capstonedesign/view/screens/chat/chattingListPage.dart';
+import '../../model/post.dart';
 import '../../model/user.dart';
 import '../screens/chatBot/chatBotPage.dart';
 import '../screens/first/homePage.dart';
