@@ -1,5 +1,4 @@
 import 'package:capstonedesign/view/screens/post/editPostPage.dart';
-import 'package:capstonedesign/view/screens/post/profilePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -52,19 +51,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
       context: context,
       builder: (BuildContext context) => CupertinoActionSheet(
         actions: <CupertinoActionSheetAction>[
-          CupertinoActionSheetAction(
-            child: const Text('프로필 보기'),
-            onPressed: () async{
-             /* Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ProfilePage(
-                      user :  otherUserNickname
-                    ),
-                  )
-              );*/
-            },
-          ),
           CupertinoActionSheetAction(
             child: const Text('채팅하기'),
             onPressed: () async {
