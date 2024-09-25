@@ -119,7 +119,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () {
-                                        _showProfileOptions(context, viewModel.post.nickname);
+                                        //자기 자신의 프로필 보기 & 채팅은 막기
+                                        if (widget.currentUserNickname !=  viewModel.post.nickname) {
+                                          _showProfileOptions(context, viewModel.post.nickname);
+                                        }
                                       },
                                       child: Row(
                                         children: [

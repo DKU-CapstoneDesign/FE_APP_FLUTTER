@@ -60,9 +60,6 @@ class _EditPostPageState extends State<EditPostPage> {
                   children: [
                     TextField(
                       controller: _titleController,
-                      onChanged: (value) {
-                        viewModel.title = value;
-                      },
                       decoration: const InputDecoration(
                         hintText: '글 제목',
                       ),
@@ -165,7 +162,6 @@ class _EditPostPageState extends State<EditPostPage> {
                       ),
                       child: TextField(
                         controller: _contentController,
-                        onChanged: (value) => viewModel.contents = value,
                         maxLines: null,
                         keyboardType: TextInputType.multiline,
                         decoration: const InputDecoration(

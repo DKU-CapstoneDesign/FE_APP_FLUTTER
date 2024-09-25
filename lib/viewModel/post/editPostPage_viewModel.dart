@@ -12,12 +12,7 @@ class EditPostViewModel extends ChangeNotifier {
   final Post post;
   final ImagePicker picker = ImagePicker();
 
-  EditPostViewModel(this.datasource, this.post) {
-    //기존 게시글의 내용으로 들고오기
-    title = post.title;
-    contents = post.contents;
-    attachments = post.attachments ?? [];
-  }
+  EditPostViewModel(this.datasource, this.post);
 
   // 여러 이미지 선택 로직
   Future<void> getImage() async {
@@ -41,6 +36,10 @@ class EditPostViewModel extends ChangeNotifier {
 
   // 게시물 수정하기
   Future<void> editPost(BuildContext context, int userId, int postId, User user) async {
+    print(userId);
+    print(postId);
+    print(title);
+    print(contents);
     final editedPost = await datasource.editPost(
       title,
       contents,
