@@ -47,20 +47,22 @@ class PostDetailViewModel extends ChangeNotifier {
   }
 
   // 좋아요 토글 로직
-  Future<void> pushLike (int postId, int userId) async{
-    isLiked = await datasource.pushLike(
+  Future<void> toggleLike(int postId, int userId, User user) async {
+    bool success = await datasource.pushLike(
       postId.toString(),
       userId.toString(),
       post.title,
       post.contents,
-      post.category
+      post.category,
+      user,
     );
-    if(isLiked){
-      post.likeCount++;
-    }
-    notifyListeners();
-  }
 
+    if (success) {
+      isLiked = !isLiked;
+      post.likeCount = isLiked ? post.likeCount + 1 : post.likeCount - 1; // Adjust like count
+      notifyListeners();
+    }
+  }
 
   // 댓글 생성하기
   Future<void> createComment(int postId) async{

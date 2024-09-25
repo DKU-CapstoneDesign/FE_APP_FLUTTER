@@ -36,10 +36,6 @@ class EditPostViewModel extends ChangeNotifier {
 
   // 게시물 수정하기
   Future<void> editPost(BuildContext context, int userId, int postId, User user) async {
-    print(userId);
-    print(postId);
-    print(title);
-    print(contents);
     final editedPost = await datasource.editPost(
       title,
       contents,

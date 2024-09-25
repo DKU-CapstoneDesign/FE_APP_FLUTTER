@@ -160,9 +160,9 @@ class PostDataSource {
           'Cookie': user.cookie
         },
         body: jsonEncode({
-          'title': title,
-          'contents': contents,
-          'userId': userId
+          "title": title,
+          "contents": contents,
+          "userId": userId
         })
       );
 
@@ -210,25 +210,31 @@ class PostDataSource {
 
   ///////////좋아요 누르기
   //form 데이터 형식으로 post
-  Future<bool> pushLike(String postId, String userId, String title, String contents, String category) async {
+  Future<bool> pushLike(String postId, String userId, String title, String contents, String category, User user) async {
     final formData = {
       'userId': userId,
       'title': title,
       'contents': contents,
       'category': category,
     };
+
+    print(formData);
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/api/post/$postId/likes'),
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Cookie': user.cookie
+        },
         body: formData,
+
       );
 
       if (response.statusCode == 200) {
         print("좋아요 누르기 성공");
         return true;
       } else {
-        print("좋아요 누르기 실패 : ${response.body}");
+        print("좋아요 누르기 실패 :${response.statusCode}, ${response.body}");
         return false;
       }
     } catch (e) {

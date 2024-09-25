@@ -1,4 +1,5 @@
 import 'package:capstonedesign/view/screens/post/editPostPage.dart';
+import 'package:capstonedesign/view/screens/post/profilePage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -53,8 +54,15 @@ class _PostDetailPageState extends State<PostDetailPage> {
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
             child: const Text('프로필 보기'),
-            onPressed: () {
-              Navigator.pop(context);
+            onPressed: () async{
+             /* Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ProfilePage(
+                      user :  otherUserNickname
+                    ),
+                  )
+              );*/
             },
           ),
           CupertinoActionSheetAction(
@@ -259,8 +267,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
 
                               // 좋아요와 댓글 수
                               Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -273,9 +280,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                               ? Color.fromRGBO(92, 67, 239, 1)
                                               : Colors.grey,
                                         ),
-                                        // 좋아요 버튼 onPressed
                                         onPressed: () async {
-                                          await viewModel.pushLike(widget.postId, widget.user.id);
+                                          await viewModel.toggleLike(widget.postId, widget.user.id, widget.user);
                                         },
                                       ),
                                       Text(
