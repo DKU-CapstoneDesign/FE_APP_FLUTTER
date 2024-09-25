@@ -5,7 +5,7 @@ class Chatting {
   final String message;
   final String sender;
   final String receiver;
-  final String roomNum;
+  late String roomNum;
   final bool read;
   final DateTime createdAt;
 

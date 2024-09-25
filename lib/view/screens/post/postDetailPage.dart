@@ -66,6 +66,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   builder: (context) => ChattingDetailPage(
                     currentUserNickname: widget.currentUserNickname,
                     otherUserNickname: otherUserNickname,
+                    user: widget.user,
                   ),
                 ),
               );
@@ -200,16 +201,28 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               // 첨부 파일이 있으면 이미지 표시하기
                               if (viewModel.post.attachments != null &&
                                   viewModel.post.attachments!.isNotEmpty)
+
                                 Container(
-                                  margin:
-                                  const EdgeInsets.symmetric(horizontal: 20),
+                                  margin: const EdgeInsets.symmetric(horizontal: 20),
                                   height: 200,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                   ),
-                                  child: Image.network(
-                                    viewModel.post.attachments!.first['filePath'] ?? '',
-                                    fit: BoxFit.cover,
+                                  child: ListView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    itemCount: viewModel.post.attachments?.length ?? 0,
+                                    itemBuilder: (context, index) {
+                                      return Container(
+                                        margin: const EdgeInsets.symmetric(horizontal: 5),
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Image.network(
+                                          viewModel.post.attachments![index]['filePath'] ?? '',
+                                          fit: BoxFit.cover,
+                                        ),
+                                      );
+                                    },
                                   ),
                                 ),
                               SizedBox(height: 30),

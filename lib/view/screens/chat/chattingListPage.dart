@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/chat/chattingDetailPage.dart';
 import 'package:capstonedesign/view/widgets/infoBox.dart';
 import 'package:provider/provider.dart';
+import '../../../model/chatting.dart';
+import '../../../model/user.dart';
 import '../../../viewModel/chat/chattingListPage_viewModel.dart';
 
 class ChattingListPage extends StatefulWidget {
   final String currentUserNickname;
-  ChattingListPage({required this.currentUserNickname});
+  final User user;
+  ChattingListPage({required this.currentUserNickname, required this.user});
 
   @override
   _ChattingListPageState createState() => _ChattingListPageState();
@@ -86,6 +89,7 @@ class _ChattingListPageState extends State<ChattingListPage> {
                                 builder: (context) => ChattingDetailPage(
                                   currentUserNickname: widget.currentUserNickname,
                                   otherUserNickname: otherUserNickname,
+                                  user: widget.user,
                                 ),
                               ),
                             );

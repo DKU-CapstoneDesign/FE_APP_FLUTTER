@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../model/user.dart';
 import '../../../viewModel/chat/chattingDetailPage_viewModel.dart';
-import '../../../model/chatting.dart';
 
 class ChattingDetailPage extends StatelessWidget {
   final String currentUserNickname; // sender
   final String otherUserNickname; // receiver
+  final User user;
 
   ChattingDetailPage({
     required this.currentUserNickname,
     required this.otherUserNickname,
-
+    required this.user,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
+    return ChangeNotifierProvider<ChattingDetailPageViewModel>(
       create: (_) => ChattingDetailPageViewModel(currentUserNickname, otherUserNickname),
       child: Scaffold(
         appBar: AppBar(
@@ -24,7 +25,6 @@ class ChattingDetailPage extends StatelessWidget {
             style: const TextStyle(fontFamily: 'SejonghospitalBold', fontSize: 22),
           ),
           centerTitle: true,
-          backgroundColor: const Color.fromRGBO(253, 247, 254, 1),
           leading: BackButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -33,6 +33,9 @@ class ChattingDetailPage extends StatelessWidget {
         ),
         body: Consumer<ChattingDetailPageViewModel>(
           builder: (context, viewModel, child) {
+            if (viewModel == null) {
+              return Center(child: CircularProgressIndicator()); // viewModel이 null일 때 처리
+            }
             return Column(
               children: [
                 // 메시지 리스트 표시
@@ -41,7 +44,7 @@ class ChattingDetailPage extends StatelessWidget {
                     reverse: true, // 최신 메시지를 아래에 표시
                     itemCount: viewModel.messages.length,
                     itemBuilder: (context, index) {
-                      final Chatting chatting = viewModel.messages[index];
+                      final chatting = viewModel.messages[index];
                       bool isCurrentUser = chatting.sender == currentUserNickname;
 
                       return Align(
@@ -69,9 +72,7 @@ class ChattingDetailPage extends StatelessWidget {
                     },
                   ),
                 ),
-
-
-                //메시지 입력 창
+                // 메시지 입력 창
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
                   color: const Color.fromRGBO(211, 211, 211, 40),
@@ -88,7 +89,7 @@ class ChattingDetailPage extends StatelessWidget {
                       IconButton(
                         icon: const Icon(Icons.send),
                         onPressed: () {
-                          viewModel.sendChat();
+                          viewModel.sendChat(user);
                         },
                       ),
                     ],

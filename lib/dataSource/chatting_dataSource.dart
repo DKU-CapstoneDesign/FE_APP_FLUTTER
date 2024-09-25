@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:capstonedesign/model/user.dart';
 import 'package:http/http.dart' as http;
 
 import '../model/chatting.dart';
@@ -37,11 +38,14 @@ class ChattingDataSource {
 
 
   //////채팅 보내기
-  Future<Chatting?> sendChat(String sender, String receiver, String message) async {
+  Future<Chatting?> sendChat(String sender, String receiver, String message, User user) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/api/chat'),
-        headers: {'Content-Type': 'application/json'},
+        headers: {
+          'Content-Type': 'application/json',
+          'Cookie': user.cookie
+        },
         body: jsonEncode({
           "sender": sender,
           "receiver": receiver,
@@ -88,42 +92,53 @@ class ChattingDataSource {
     }
   }
 
-
+  List<ChattingList> chattingList = [];
   //////채팅방 목록 (sse)
   Stream<List<ChattingList>?> getChatList(String nickname) async* {
-    List<ChattingList> chattingList = [];
     try {
+      // 요청 설정
       final request = http.Request('GET', Uri.parse('$baseUrl/api/chat/list/nickname/$nickname'));
       request.headers['Accept'] = 'text/event-stream';
+
       final response = await request.send();
 
       if (response.statusCode == 200) {
         print("채팅방 목록 가져오기 성공");
+        print(response.reasonPhrase);
 
-        // 응답을 Stream으로 받아 처리
+        // SSE 응답을 스트림으로 변환하여 처리
         final stream = response.stream
-            .transform(utf8.decoder)
-            .transform(LineSplitter()); // SSE 응답을 한 줄씩 분리
+            .transform(utf8.decoder) // UTF-8로 디코딩
+            .transform(LineSplitter()); // 줄 단위로 분리
 
-        // 각 줄을 개별적으로 처리하여 ChattingList로 변환
+        // SSE 이벤트를 하나씩 처리
         await for (String event in stream) {
+          // SSE 데이터가 'data: '로 시작하는지 확인
           if (event.startsWith('data: ')) {
-            final jsonData = event.substring(6); // 'data: ' 부분 제거
-            final decodedData = jsonDecode(jsonData);
-            print("Decoded data: $decodedData");  // 디코딩된 데이터 출력
+            final jsonData = event.substring(6); // 'data: ' 부분을 제거
+            try {
+              // 받은 데이터를 JSON으로 디코딩
+              final decodedData = jsonDecode(jsonData);
+              print("디코딩된 데이터: $decodedData");
 
-            // 채팅 리스트에 추가
-            chattingList.add(ChattingList.fromJson(decodedData));
-            // 중간 데이터를 반환하여 UI 업데이트
-            yield List.from(chattingList); // 채팅 목록을 복사하여 반환
+              // ChattingList 객체로 변환하여 리스트에 추가
+              chattingList.add(ChattingList.fromJson(decodedData));
+
+              // 중간 데이터를 반환하여 UI 업데이트
+              yield List.from(chattingList); // 리스트의 복사본을 반환
+            } catch (e) {
+              print("JSON 파싱 오류: $e");
+            }
           }
         }
-        // 모든 데이터가 처리되면 최종 리스트를 반환
-        yield chattingList;
       } else {
         print("채팅방 목록 가져오기 실패: ${response.statusCode}");
         yield null;
       }
+
+      // 최종적으로 모든 데이터가 처리되면 리스트를 반환
+      yield chattingList;
+
     } catch (e) {
       print('오류 발생: $e');
       yield null;
@@ -152,8 +167,8 @@ class ChattingDataSource {
 
 
   //////대화 내역(방 번호 기반)(sse)
-  Stream<List<Chatting>?> chatListByRoomNum(String roomNum) async* {
-    List<Chatting> chatting = []; // 결과를 저장할 리스트
+  Stream<List<ChattingList>?> chatListByRoomNum(String roomNum) async* {
+    List<ChattingList> chatting = []; // 결과를 저장할 리스트
     try {
       final request = http.Request('GET', Uri.parse('$baseUrl/api/chat/roomNum/$roomNum'));
       request.headers['Accept'] = 'text/event-stream'; // SSE 응답 형식으로 설정
@@ -161,21 +176,23 @@ class ChattingDataSource {
 
       if (response.statusCode == 200) {
         print("대화 내역 가져오기 성공");
-
+        final responseBody = await response.stream.bytesToString(); // 응답 본문을 스트링으로 변환
+        print("Response body: $responseBody");
         // 응답을 Stream으로 받아 처리
+        print("대화 내역 가져오기 !!!!!");
         final stream = response.stream
             .transform(utf8.decoder)
             .transform(LineSplitter()); // SSE 응답을 한 줄씩 분리
-
+        print("대화 내역 가져오기 !!!!!");
         // 각 줄을 개별적으로 처리하여 ChattingList로 변환
         await for (String event in stream) {
           if (event.startsWith('data: ')) {
+            print("대화 내역 가져오기 성공!!!!");
             final jsonData = event.substring(6); // 'data: ' 부분 제거
             final decodedData = jsonDecode(jsonData);
             print("Decoded data: $decodedData");  // 디코딩된 데이터 출력
-
             // 채팅 리스트에 추가
-            chatting.add(Chatting.fromJson(decodedData));
+            chatting.add(ChattingList.fromJson(decodedData));
 
             // 중간 데이터를 반환하여 UI 업데이트
             yield List.from(chatting); // 리스트의 복사본을 반환

@@ -4,7 +4,7 @@
 import 'package:capstonedesign/model/user.dart';
 
 class ChattingList {
-  final int id;
+  late final int id;
   final String lastMessage;
   final List<User> members; //채팅방 안의 유저 2명의 정보 (User 객체를 들고 와야 함)
   final DateTime createdAt;
