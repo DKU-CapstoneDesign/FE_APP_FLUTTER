@@ -19,23 +19,13 @@ class ChattingDetailPage extends StatefulWidget {
 }
 
 class _ChattingDetailPageState extends State<ChattingDetailPage> {
-  late ChattingDetailPageViewModel viewModel;
-  @override
-  void initState() {
-    super.initState();
-    viewModel = ChattingDetailPageViewModel(
-      widget.currentUserNickname,
-      widget.otherUserNickname,
-      widget.user,
-    );
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await viewModel.startChat();
-    });
-  }
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<ChattingDetailPageViewModel>.value(
-      value: viewModel,
+    return ChangeNotifierProvider<ChattingDetailPageViewModel>(
+      create: (_) => ChattingDetailPageViewModel(
+        widget.currentUserNickname,
+        widget.otherUserNickname,
+      ),
       child: Scaffold(
         appBar: AppBar(
           title: Text(

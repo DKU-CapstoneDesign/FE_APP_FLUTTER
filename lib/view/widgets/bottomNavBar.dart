@@ -3,8 +3,9 @@ import 'package:capstonedesign/view/screens/mypage/myPage.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/post/forumPage.dart';
 import 'package:capstonedesign/view/screens/chat/chattingListPage.dart';
-import '../../model/post.dart';
+import 'package:provider/provider.dart';
 import '../../model/user.dart';
+import '../../viewModel/chat/chattingListPage_viewModel.dart';
 import '../screens/chatBot/chatBotPage.dart';
 import '../screens/first/homePage.dart';
 
@@ -28,7 +29,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
       HomePage(),
       DiscoverPage(),
       ForumPage(user: widget.user),
-      ChattingListPage(currentUserNickname: widget.user.nickname, user: widget.user,),
+      ChangeNotifierProvider(
+          create: (_) => ChattingListViewModel(),
+          child:  ChattingListPage(currentUserNickname: widget.user.nickname, user: widget.user,),
+      ),
       MyPage(user: widget.user),
     ];
   }

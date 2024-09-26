@@ -5,20 +5,14 @@ import '../../model/chattingList.dart';
 class ChattingListViewModel extends ChangeNotifier {
   final ChattingDataSource datasource = ChattingDataSource();
   List<ChattingList> chatList = [];
-  bool isLoading = true;
   ChattingListViewModel();
 
+  // 채팅방 리스트 가져오기 ---sse
   Future<void> getChatList(String nickname) async {
-    isLoading = true;
-    notifyListeners();
-
     final chatStream = datasource.getChatList(nickname);
-    await for (var chatListFromStream in chatStream) {
-      if (chatListFromStream != null && chatListFromStream.isNotEmpty) {
-        chatList = chatListFromStream;
-        isLoading = false;
-        notifyListeners();
-      }
-    }
+    chatStream.listen((chatStream){
+      chatList = chatStream!.cast<ChattingList>();
+      notifyListeners();
+    });
   }
 }

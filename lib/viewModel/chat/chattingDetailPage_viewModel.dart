@@ -11,9 +11,9 @@ class ChattingDetailPageViewModel extends ChangeNotifier {
   final TextEditingController textController = TextEditingController();
   final ChattingDataSource dataSource = ChattingDataSource();
   ChattingList? chattingList;
-  final User user; // Store the user object
 
-  ChattingDetailPageViewModel(this.currentUserNickname, this.otherUserNickname, this.user) {
+
+  ChattingDetailPageViewModel(this.currentUserNickname, this.otherUserNickname) {
     startChat();
   }
 
@@ -32,7 +32,7 @@ class ChattingDetailPageViewModel extends ChangeNotifier {
   Future<void> fetchMessage() async {
     final messageStream = dataSource.chatListByRoomNum(chattingList!.id.toString(),);
     messageStream.listen((chatList) {
-        messages = chatList!.cast<Chatting>();
+      messages = chatList!.cast<Chatting>();
       notifyListeners();
     });
   }

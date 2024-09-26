@@ -2,9 +2,7 @@ import 'package:capstonedesign/view/screens/post/postListPage.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/widgets/infoBox.dart';
 import 'package:provider/provider.dart';
-
 import '../../../dataSource/post_dataSource.dart';
-import '../../../model/post.dart';
 import '../../../model/user.dart';
 import '../../../viewModel/post/postListPage_viewModel.dart';
 

@@ -5,7 +5,6 @@ import 'package:capstonedesign/view/screens/post/postDetailPage.dart';
 import 'package:capstonedesign/view/screens/post/createPostPage.dart';
 import 'package:provider/provider.dart';
 import '../../../dataSource/post_dataSource.dart';
-import '../../../model/post.dart';
 import '../../../model/user.dart';
 import '../../../viewModel/post/postDetailPage_viewModel.dart';
 
