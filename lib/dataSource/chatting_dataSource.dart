@@ -130,7 +130,7 @@ class ChattingDataSource {
   }
 
   //////채팅방 읽음 상태 목록 (sse)
-  /*Future<List<ChattingList>?> getChatReadStatusList(String nickname) async {
+  Future<List<ChattingList>?> getChatReadStatusList(String nickname) async {
     try {
       final response = await http.get(
           Uri.parse('$baseUrl/api/chat/list/nickname/$nickname'));
@@ -147,7 +147,10 @@ class ChattingDataSource {
       return null;
     }
   }
-   */
+
+
+  //////채팅방 읽음 처리
+
 
 
   //////대화 내역(방 번호 기반)(sse)

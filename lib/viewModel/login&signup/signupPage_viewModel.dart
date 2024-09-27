@@ -15,18 +15,32 @@ class SignUpViewModel extends ChangeNotifier {
 
   SignUpViewModel(this.dataSource) {
     user = User(
-      email: '',
-      password: '',
-      nickname: '',
-      country: '',
-      birthDate: '',
-      id: 0,
-      cookie: ''
+        email: '',
+        password: '',
+        nickname: '',
+        country: '',
+        birthDate: '',
+        id: 0,
+        cookie: ''
     );
   }
 
   // 회원가입 로직
   Future<void> signup(BuildContext context) async {
+    if (user.email.isEmpty ||
+        user.password.isEmpty ||
+        user.nickname.isEmpty ||
+        user.country.isEmpty ||
+        user.birthDate.isEmpty) {
+      _showDialog(context, '회원가입 실패', '모든 입력을 채워주세요.');
+      return;
+    }
+
+    if (!emailCheck || !nicknameCheck) {
+      _showDialog(context, '회원가입 실패', '이메일 또는 닉네임 중복 확인을 해주세요.');
+      return;
+    }
+
     User? signupUser = await dataSource.signUp(
       user.email,
       user.password,
@@ -34,6 +48,7 @@ class SignUpViewModel extends ChangeNotifier {
       user.country,
       user.birthDate,
     );
+
     if (signupUser != null) {
       _showDialog(context, '회원가입 성공', '회원가입에 성공하였습니다.');
     } else {
@@ -41,7 +56,6 @@ class SignUpViewModel extends ChangeNotifier {
     }
   }
 
-  // 로그인 성공 시 signuppage로 이동
   // 회원가입 성공/실패 다이얼로그 표시
   void _showDialog(BuildContext context, String title, String content) {
     showDialog(
@@ -52,9 +66,7 @@ class SignUpViewModel extends ChangeNotifier {
         actions: <Widget>[
           TextButton(
             onPressed: () =>
-            //회원가입 성공하면 로그인 창으로 이동
-            //회원가입 실패하면 이전 창으로 이동
-                title=="회원가입 성공"? _navigateToLoginPage(context) : Navigator.of(context).pop(),
+            title == "회원가입 성공" ? _navigateToLoginPage(context) : Navigator.of(context).pop(),
             child: const Text('확인'),
           ),
         ],
@@ -63,25 +75,27 @@ class SignUpViewModel extends ChangeNotifier {
   }
 
   void _navigateToLoginPage(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(builder: (context)=> LoginPage(welcomeMessage: "환영해요!\n만나서 반갑습니다 :)")));
+    Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => LoginPage(welcomeMessage: "환영해요!\n만나서 반갑습니다 :)"))
+    );
   }
 
   // 생년월일을 String으로 변환 및 형식 지정
   void setBirthdate(DateTime date) {
-    // DateTime 객체를 "YYYY-MM-DD" 형식의 문자열로 변환
     user.birthDate = "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}";
     birthdateController.text = user.birthDate;
-    notifyListeners(); // 상태가 변하면 UI에 알림 보내기
+    notifyListeners();
   }
 
   void setEmailCheck(bool value) {
     emailCheck = value;
-    notifyListeners(); //상태가 변하면 ui에 알림 보내기
+    notifyListeners();
   }
 
   void setNicknameCheck(bool value) {
     nicknameCheck = value;
-    notifyListeners(); //상태가 변하면 ui에 알림 보내기
+    notifyListeners();
   }
 
   // 이메일 중복 체크
@@ -97,6 +111,4 @@ class SignUpViewModel extends ChangeNotifier {
     setNicknameCheck(!duplication); // 중복이 없으면 true, 중복이 있으면 false
     return duplication;
   }
-
-
 }

@@ -16,6 +16,11 @@ class ChattingListPage extends StatefulWidget {
   _ChattingListPageState createState() => _ChattingListPageState();
 }
 
+// 시간 포맷
+String _formatTime(DateTime dateTime) {
+  return "${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}";
+}
+
 class _ChattingListPageState extends State<ChattingListPage> {
   @override
   void initState() {
@@ -24,11 +29,6 @@ class _ChattingListPageState extends State<ChattingListPage> {
       final viewModel = Provider.of<ChattingListViewModel>(context, listen: false);
       await viewModel.getChatList(widget.currentUserNickname);
     });
-  }
-
-  // 시간 포맷
-  String _formatTime(DateTime dateTime) {
-    return "${dateTime.hour}:${dateTime.minute.toString().padLeft(2, '0')}";
   }
 
   @override
@@ -71,7 +71,7 @@ class _ChattingListPageState extends State<ChattingListPage> {
                     ),
                   )
                       : ListView.builder(
-                    itemCount: viewModel.chatList.length,  // 전체 리스트 개수 사용
+                    itemCount: viewModel.chatList.length,
                     itemBuilder: (context, index) {
                       final chat = viewModel.chatList[index];
                       final otherUserNickname = chat.members.firstWhere(
