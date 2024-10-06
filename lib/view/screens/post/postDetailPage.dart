@@ -300,38 +300,109 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               ),
 
                               // 댓글 리스트
-                              // 댓글 리스트
                               if (viewModel.post.commentList.isNotEmpty)
                                 ListView.builder(
                                   shrinkWrap: true,
-                                  physics: NeverScrollableScrollPhysics(),
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  reverse: true, // 댓글을 거꾸로 표시
                                   itemCount: viewModel.post.commentList.length,
                                   itemBuilder: (context, index) {
-                                    final comment = viewModel.post.commentList[index]; // Comment 객체로 처리
+                                    final comment = viewModel.post.commentList[index];
+
                                     return Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.grey),
-                                          borderRadius: BorderRadius.circular(8.0),
-                                        ),
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              comment.nickname,
-                                              style: const TextStyle(
-                                                  fontFamily: 'SejonghospitalBold',
-                                                  fontSize: 14.0),
+                                      padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(15.0),
+                                            child: Row(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                CircleAvatar(
+                                                  radius: 15.0,
+                                                  child: Text(
+                                                    comment.nickname.isNotEmpty ? comment.nickname[0] : '?',
+                                                    style: TextStyle(fontSize: 14.0),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 10),
+
+
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                    children: [
+                                                      // 닉네임과 작성 시간
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                comment.nickname,
+                                                                style: const TextStyle(
+                                                                    fontFamily: 'SejonghospitalBold',
+                                                                    fontSize: 14.0
+                                                                ),
+                                                              ),
+                                                              const SizedBox(height: 2.0),
+                                                              Text(
+                                                                formatDateTime(comment.createdAt),
+                                                                style: const TextStyle(
+                                                                  fontSize: 12.0,
+                                                                  color: Colors.grey,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      const SizedBox(height: 15.0),
+
+                                                      // 댓글 내용
+                                                      Text(
+                                                        comment.contents,
+                                                        style: const TextStyle(
+                                                          fontFamily: 'SejonghospitalLight',
+                                                          fontSize: 14.0,
+                                                        ),
+                                                      ),
+                                                      const SizedBox(height: 10.0),
+
+                                                      // 답글 달기
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          // 답글 달기 기능 처리
+                                                        },
+                                                        child: const Text(
+                                                          '답글 달기',
+                                                          style: TextStyle(
+                                                            color: Colors.grey,
+                                                            fontSize: 14.0,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+
+                                                // 댓글 삭제 (내가 작성한 댓글만 삭제 할 수 있도록)
+                                                if (comment.nickname == widget.currentUserNickname)
+                                                  IconButton(
+                                                    icon: const Icon(Icons.close, color: Colors.grey),
+                                                    iconSize: 18.0,
+                                                    onPressed: () async {
+                                                      await viewModel.deleteComment(widget.postId);
+                                                      await _refreshPosts(context); // 댓글 삭제 후 새로고침
+                                                    },
+                                                  ),
+                                              ],
                                             ),
-                                            const SizedBox(height: 4.0),
-                                            Text(
-                                              comment.contents,
-                                              style: const TextStyle(fontFamily: 'SejonghospitalLight'),
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                          Divider(color: Colors.grey[300]),
+                                        ],
                                       ),
                                     );
                                   },
