@@ -314,7 +314,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         Padding(
-                                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                          padding: const EdgeInsets.symmetric(vertical: 5.0),
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
                                             children: [
@@ -495,7 +495,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                                     );
                                                   },
                                                 ),
-                                              const SizedBox(height: 16.0),
+                                              const SizedBox(height: 10.0),
                                               Divider(color: Colors.grey[300]),
                                             ],
                                           ),

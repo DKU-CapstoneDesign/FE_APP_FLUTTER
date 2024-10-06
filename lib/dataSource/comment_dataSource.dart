@@ -18,7 +18,7 @@ class CommentDatasource{
         },
         body: jsonEncode({
           'contents': comment,
-          'parentCommentId' : parentCommentId,
+          'parentCommentId': parentCommentId == 0 ? null : parentCommentId,
         }),
       );
       if (response.statusCode == 200) {
