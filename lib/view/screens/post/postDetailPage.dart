@@ -426,7 +426,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                                               "↳",
                                                               style: TextStyle(color:Colors.grey,fontSize: 20
                                                               ),
-                                                          ), // Reply arrow
+                                                          ),
                                                           const SizedBox(width: 10),
 
                                                           CircleAvatar(

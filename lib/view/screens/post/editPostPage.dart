@@ -176,7 +176,7 @@ class _EditPostPageState extends State<EditPostPage> {
                       onPressed: () async {
                         viewModel.title = _titleController.text;
                         viewModel.contents = _contentController.text;
-                        await viewModel.editPost(context, widget.user.id, widget.post.id, widget.user); // 게시글 수정 요청
+                        await viewModel.editPost(context, widget.user.id.toString(), widget.post.id, widget.user); // 게시글 수정 요청
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(92, 67, 239, 60)),

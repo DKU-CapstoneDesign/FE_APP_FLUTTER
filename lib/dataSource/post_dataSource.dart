@@ -147,25 +147,22 @@ class PostDataSource {
     }
   }
 
+  ////게시글 수정 (이미지 X)
+  //form 데이터 형식으로 post
+  Future<Post?> editPost( String title, String contents, String userId, int postId, User user, String category,) async {
+    final formData = {
+      'userId': userId,
+      'title': title,
+      'contents': contents,
+      'category': category,
+    };
 
-  ////게시글 수정
-  Future<Post?> editPost(String title, String contents, int userId, int postId, User user) async {
     try {
       final response = await http.put(
         Uri.parse('$baseUrl/api/post/$postId'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Cookie': user.cookie
-        },
-        body: jsonEncode({
-          "title": title,
-          "contents": contents,
-          "userId": userId
-        })
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: formData,
       );
-
-      print('응답 상태 코드: ${response.statusCode}');
-      print('응답 본문: ${response.body}');
 
       if (response.statusCode == 200) {
         print("게시글 수정 성공");
@@ -174,7 +171,60 @@ class PostDataSource {
           return Post.fromJson(responseData['response']);
         }
       } else {
-        print('게시글 수정 실패: ${response.statusCode}, ${response.body}');
+        print('게시글 수정 실패:${response.body}');
+        return null;
+      }
+    } catch (e) {
+      print('에러 발생: $e');
+      return null;
+    }
+  }
+
+
+
+  // 게시글 수정 (이미지 O)
+  // multipart/form-data로 텍스트와 파일을 함께 전송
+  Future<Post?> editPostWithImg(
+      String title,
+      String contents,
+      String userId,
+      int postId,
+      User user,
+      String category,
+      List<Map<String, String>> attachments) async {
+
+    var uri = Uri.parse('$baseUrl/api/post/$postId');
+
+    var request = http.MultipartRequest('PUT', uri)
+      ..fields['userId'] = userId
+      ..fields['title'] = title
+      ..fields['contents'] = contents
+      ..fields['category'] = category;
+
+    for (var attachment in attachments) {
+      request.files.add(await http.MultipartFile.fromPath(
+        'attachments',
+        attachment['filePath']!,
+        filename: attachment['fileName'],
+      ));
+    }
+
+    // 쿠키 추가
+    request.headers['Cookie'] = user.cookie;
+
+    try {
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+        print("게시글 수정 성공");
+
+        final responseData = json.decode(response.body);
+        if (responseData['success'] == true) {
+          return Post.fromJson(responseData['response']);
+        }
+      } else {
+        print('게시글 수정 실패: ${response.body}');
         return null;
       }
     } catch (e) {

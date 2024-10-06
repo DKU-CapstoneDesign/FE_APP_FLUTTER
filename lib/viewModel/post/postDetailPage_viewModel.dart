@@ -32,6 +32,7 @@ class PostDetailViewModel extends ChangeNotifier {
   }
 
 
+  ///////// 게시물
   // 게시물 정보 가져오기
   Future<void> getPostInfo(int postId, User user) async {
     try {
@@ -74,6 +75,8 @@ class PostDetailViewModel extends ChangeNotifier {
     }
   }
 
+
+  ///////// 댓글
   // 댓글 생성하기
   Future<void> createComment(int postId, int parentId) async {
     final newComment = await commentDatasource.createComment(
@@ -92,13 +95,11 @@ class PostDetailViewModel extends ChangeNotifier {
 
   //댓글 삭제하기
   Future<void> deleteComment(int commentId) async{
-    final deleteComment = await commentDatasource.deleteComment(commentId, user);
+    await commentDatasource.deleteComment(commentId, user);
     notifyListeners();
   }
 
 
-
-  //컨트롤러 해지
   @override
   void dispose() {
     commentController.dispose();
