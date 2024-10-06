@@ -12,8 +12,13 @@ class PostDetailPage extends StatefulWidget {
   final int postId;
   final String currentUserNickname; //현재 유저
 
-  PostDetailPage({Key? key, required this.postId, required this.boardName, required this.currentUserNickname, required this.user})
-      : super(key: key);
+  PostDetailPage({
+    Key? key,
+    required this.postId,
+    required this.boardName,
+    required this.currentUserNickname,
+    required this.user
+  }) : super(key: key);
 
   @override
   _PostDetailPageState createState() => _PostDetailPageState();
@@ -27,21 +32,20 @@ class _PostDetailPageState extends State<PostDetailPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final viewModel = Provider.of<PostDetailViewModel>(context, listen: false);
       await viewModel.getPostInfo(widget.postId, widget.user);
-
-      /*// 댓글이 존재할 때만 getComment를 호출
-      if (viewModel.post.commentList.isNotEmpty) {
-        await viewModel.getComment(widget.postId);
-      }*/
+      print(viewModel.post.commentList);
     });
   }
 
   // 새로고침 시 호출할 함수
   Future<void> _refreshPosts(BuildContext context) async {
     final viewModel = Provider.of<PostDetailViewModel>(context, listen: false);
+    // 글 내용
     await viewModel.getPostInfo(widget.postId, widget.user);
+    // 댓글
+    await viewModel.getComment(widget.postId);
   }
 
-  //// 날짜 컨트롤
+  //// 날짜 포맷팅 함수
   String _twoDigits(int n) {
     return n.toString().padLeft(2, '0');
   }
@@ -104,6 +108,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   children: [
                     Expanded(
                       child: SingleChildScrollView(
+                        physics: AlwaysScrollableScrollPhysics(), // 스크롤 가능하도록 설정
                         padding: EdgeInsets.only(bottom: 20.0),
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
@@ -118,7 +123,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () {
-                                        //자기 자신의 프로필 보기 & 채팅은 막기
                                         if (widget.currentUserNickname !=  viewModel.post.nickname) {
                                           _showProfileOptions(context, viewModel.post.nickname);
                                         }
@@ -158,8 +162,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     ),
                                   ),
 
-
-                                  //만약 글 작성자라면 수정/삭제 버튼을 띄우도록
+                                  // 작성자가 맞을 때 수정/삭제 버튼 표시
                                   if (viewModel.post.nickname == widget.user.nickname)
                                     Row(
                                       children: [
@@ -167,12 +170,15 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                           icon: Icon(Icons.edit),
                                           iconSize: 20.0,
                                           color: Colors.grey,
-                                          //수정하기 페이지로 이동
                                           onPressed: () {
                                             Navigator.push(
                                               context,
                                               MaterialPageRoute(
-                                                builder: (context) => EditPostPage(user: widget.user, boardName: widget.boardName, post: viewModel.post),
+                                                builder: (context) => EditPostPage(
+                                                    user: widget.user,
+                                                    boardName: widget.boardName,
+                                                    post: viewModel.post
+                                                ),
                                               ),
                                             );
                                           },
@@ -189,7 +195,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                           iconSize: 20.0,
                                           color: Colors.grey,
                                           onPressed: () {
-                                            viewModel.deletePost(context,widget.postId, widget.user);
+                                            viewModel.deletePost(context, widget.postId, widget.user);
                                           },
                                         ),
                                       ],
@@ -198,12 +204,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               ),
                               const SizedBox(height: 20.0),
 
-
-
-                              // 첨부 파일이 있으면 이미지 표시하기
-                              if (viewModel.post.attachments != null &&
-                                  viewModel.post.attachments!.isNotEmpty)
-
+                              // 첨부 파일 표시
+                              if (viewModel.post.attachments != null && viewModel.post.attachments!.isNotEmpty)
                                 Container(
                                   margin: const EdgeInsets.symmetric(horizontal: 20),
                                   height: 200,
@@ -227,14 +229,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     },
                                   ),
                                 ),
-                              SizedBox(height: 30),
-
-
+                              const SizedBox(height: 30),
 
                               // 게시글 내용
                               Padding(
-                                padding:
-                                const EdgeInsets.symmetric(horizontal: 20.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 20.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -301,30 +300,42 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               ),
 
                               // 댓글 리스트
-                              ListView.builder(
-                                shrinkWrap: true,
-                                physics: NeverScrollableScrollPhysics(),
-                                itemCount: viewModel.post.commentList.length,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 4.0),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.grey),
-                                        borderRadius:
-                                        BorderRadius.circular(8.0),
+                              // 댓글 리스트
+                              if (viewModel.post.commentList.isNotEmpty)
+                                ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: viewModel.post.commentList.length,
+                                  itemBuilder: (context, index) {
+                                    final comment = viewModel.post.commentList[index]; // Comment 객체로 처리
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.grey),
+                                          borderRadius: BorderRadius.circular(8.0),
+                                        ),
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              comment.nickname,
+                                              style: const TextStyle(
+                                                  fontFamily: 'SejonghospitalBold',
+                                                  fontSize: 14.0),
+                                            ),
+                                            const SizedBox(height: 4.0),
+                                            Text(
+                                              comment.contents,
+                                              style: const TextStyle(fontFamily: 'SejonghospitalLight'),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Text(
-                                        viewModel.post.commentList[index],
-                                        style: const TextStyle(
-                                            fontFamily: 'SejonghospitalLight'),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
+                                    );
+                                  },
+                                ),
                               const SizedBox(height: 16.0),
                             ],
                           ),
@@ -344,17 +355,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
                               },
                               decoration: InputDecoration(
                                 hintText: '댓글을 입력하세요.',
-                                contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10.0, horizontal: 20.0),
+                                contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30.0),
-                                  borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
+                                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30.0),
-                                  borderSide:
-                                  BorderSide(color: Colors.grey, width: 1.0),
+                                  borderSide: BorderSide(color: Colors.grey, width: 1.0),
                                 ),
                               ),
                             ),
@@ -372,8 +380,10 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                 Icons.arrow_upward,
                                 color: Color.fromRGBO(92, 67, 239, 50),
                               ),
-                              onPressed: () {
-                                viewModel.createComment(widget.postId);
+                              onPressed: () async {
+                                await viewModel.createComment(widget.postId);
+                                // 댓글 작성 후 새로고침
+                                await _refreshPosts(context);
                               },
                             ),
                           ),

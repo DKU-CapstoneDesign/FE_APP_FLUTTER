@@ -1,3 +1,5 @@
+import 'comment.dart';
+
 class Post {
   int id;
   int userId;
@@ -9,8 +11,8 @@ class Post {
   DateTime modifiedAt;
   int likeCount;
   int viewCount;
-  List<String> commentList;
-  List<Map<String, String>>? attachments; //fileName, filePath
+  List<Comment> commentList;
+  List<Map<String, String>>? attachments; // fileName, filePath
 
   Post({
     required this.id,
@@ -27,7 +29,6 @@ class Post {
     this.attachments,
   });
 
-  // JSON으로부터 Post 객체 생성
   factory Post.fromJson(Map<String, dynamic> json) {
     return Post(
       id: json['id'] ?? 0,
@@ -40,12 +41,14 @@ class Post {
       modifiedAt: DateTime.parse(json['modifiedAt'] ?? DateTime.now().toIso8601String()),
       likeCount: json['likeCount'] ?? 0,
       viewCount: json['viewCount'] ?? 0,
-      commentList: List<String>.from(json['commentList'] ?? []),
-      attachments: List<Map<String, String>>.from(json['attachments'].map((attachment) => Map<String, String>.from(attachment))),
+      commentList: (json['commentList'] as List)
+          .map((comment) => Comment.fromJson(comment))
+          .toList(), // 댓글 리스트 처리
+      attachments: List<Map<String, String>>.from(
+          json['attachments']?.map((attachment) => Map<String, String>.from(attachment)) ?? []),
     );
   }
 
-  // Post 객체를 JSON으로 변환
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -58,7 +61,7 @@ class Post {
       'modifiedAt': modifiedAt.toIso8601String(),
       'likeCount': likeCount,
       'viewCount': viewCount,
-      'commentList': commentList,
+      'commentList': commentList.map((comment) => comment.toJson()).toList(),
       'attachments': attachments ?? [], // attachments가 null일 경우 빈 리스트
     };
   }

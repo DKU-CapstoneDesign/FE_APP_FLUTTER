@@ -133,6 +133,7 @@ class PostDataSource {
         final Map<String, dynamic> responseData = json.decode(decodedResponse);
         if (responseData["success"] == true) {
           print("게시글 조회 성공");
+          print(responseData["response"]);
           Map<String, dynamic> clickedPost = responseData["response"];
           // Post 객체 리스트로 반환
           return Post.fromJson(clickedPost);

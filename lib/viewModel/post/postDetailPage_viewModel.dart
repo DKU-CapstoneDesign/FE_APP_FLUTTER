@@ -31,12 +31,21 @@ class PostDetailViewModel extends ChangeNotifier {
     );
   }
 
-  // 게시물 정보 가져오기
-  Future<void> getPostInfo(int postId, User user) async {
-    post = (await datasource.getOnePost(postId, user))!;
-    notifyListeners();
-  }
 
+// 게시물 정보 가져오기
+  Future<void> getPostInfo(int postId, User user) async {
+    try {
+      final postResponse = await datasource.getOnePost(postId, user);
+      if (postResponse != null) {
+        post = postResponse;
+        notifyListeners();
+      } else {
+        print('게시물 조회에 실패했습니다.');
+      }
+    } catch (e) {
+      print('에러 발생: $e');
+    }
+  }
   // 게시물 삭제하기
   Future<void> deletePost(BuildContext context, int postId, User user) async {
     isDeleted = (await datasource.deletePost(postId, user))!;
