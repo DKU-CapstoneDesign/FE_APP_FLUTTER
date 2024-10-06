@@ -61,7 +61,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                     borderSide: BorderSide(
                                         color:
                                         Color.fromRGBO(92, 67, 239, 50),
-                                        width: 3))),
+                                        width: 3
+                                    )
+                                )
+                            ),
                           ),
                         ),
                         SizedBox(width: 20),

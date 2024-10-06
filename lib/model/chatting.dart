@@ -6,7 +6,7 @@ class Chatting {
   final String sender;
   final String receiver;
   late String roomNum;
-  final bool read;
+  final bool read; // 채팅방 리스트에서 읽은 처리 (with roomNum)
   final DateTime createdAt;
 
   Chatting({

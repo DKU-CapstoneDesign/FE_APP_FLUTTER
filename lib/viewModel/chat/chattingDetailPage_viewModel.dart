@@ -11,12 +11,11 @@ class ChattingDetailPageViewModel extends ChangeNotifier {
   final TextEditingController textController = TextEditingController();
   final ChattingDataSource dataSource = ChattingDataSource();
   ChattingList? chattingList;
-
+  List<bool> messageReadStatus = []; //메시지 읽음 처리
 
   ChattingDetailPageViewModel(this.currentUserNickname, this.otherUserNickname) {
     startChat();
   }
-
 
   // 채팅방 생성
   Future<void> startChat() async {
@@ -34,6 +33,7 @@ class ChattingDetailPageViewModel extends ChangeNotifier {
     messageStream.listen((chatList) {
       messages = chatList!.cast<Chatting>();
       notifyListeners();
+
     });
   }
 
@@ -48,6 +48,13 @@ class ChattingDetailPageViewModel extends ChangeNotifier {
       textController.clear();
       notifyListeners();
     }
+  }
+
+  //채팅방 읽음 처리
+  Future<bool> setChatReadStatus()  async {
+    final isRead = dataSource.setChatReadStatus(chattingList!.id.toString(), currentUserNickname); //receiver
+    print(isRead);
+    return isRead;
   }
 
   @override

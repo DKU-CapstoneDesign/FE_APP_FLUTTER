@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../model/user.dart';
@@ -19,6 +21,16 @@ class ChattingDetailPage extends StatefulWidget {
 }
 
 class _ChattingDetailPageState extends State<ChattingDetailPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<ChattingDetailPageViewModel>(context, listen: false)
+          .setChatReadStatus();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ChattingDetailPageViewModel>(
@@ -51,6 +63,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                     itemBuilder: (context, index) {
                       final chatting = viewModel.messages[index];
                       bool isCurrentUser = chatting.sender == widget.currentUserNickname;
+                      bool isRead = viewModel.setChatReadStatus() as bool;
+
 
                       return Align(
                         alignment: isCurrentUser
@@ -61,17 +75,40 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                           margin: const EdgeInsets.symmetric(
                               vertical: 5, horizontal: 10
                           ),
-                          decoration: BoxDecoration(
-                            color: isCurrentUser
-                                ? const Color.fromRGBO(92, 67, 239, 20)
-                                : Colors.grey[300],
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Text(
-                            chatting.message,
-                            style: TextStyle(
-                              color: isCurrentUser ? Colors.white : Colors.black,
-                            ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+
+                              // 상대방이 읽지 않으면 메시지 옆에 1이 뜨도록
+                              if (isCurrentUser && isRead==false)
+                                const Padding(
+                                  padding: EdgeInsets.only(right: 8.0),
+                                  child: Text(
+                                      '1',
+                                      style: TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.black
+                                      ),
+                                    ),
+                                  ),
+
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: isCurrentUser
+                                      ? const Color.fromRGBO(92, 67, 239, 20) // Purple for current user's messages
+                                      : Colors.grey[300],
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Text(
+                                  chatting.message,
+                                  style: TextStyle(
+                                    color: isCurrentUser ? Colors.white : Colors.black,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       );
@@ -96,9 +133,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       IconButton(
                         icon: const Icon(Icons.send),
                         onPressed: () {
-
                           viewModel.sendChat(widget.user);
-
                         },
                       ),
                     ],

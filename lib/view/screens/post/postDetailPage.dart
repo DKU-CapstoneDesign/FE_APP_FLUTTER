@@ -27,6 +27,11 @@ class _PostDetailPageState extends State<PostDetailPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final viewModel = Provider.of<PostDetailViewModel>(context, listen: false);
       await viewModel.getPostInfo(widget.postId, widget.user);
+
+      /*// 댓글이 존재할 때만 getComment를 호출
+      if (viewModel.post.commentList.isNotEmpty) {
+        await viewModel.getComment(widget.postId);
+      }*/
     });
   }
 

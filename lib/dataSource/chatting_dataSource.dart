@@ -70,28 +70,6 @@ class ChattingDataSource {
   }
 
 
-  //////채팅 읽음 처리
-  Future<void> setChatRead(String roomNum, String receiver) async {
-    try {
-      final response = await http.put(
-        Uri.parse('$baseUrl/api/chat/$roomNum/user/$receiver'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'matchedCount': 1,
-          'modifiedCount': 1,
-          'upsertedId': null
-        }),
-      );
-      if (response.statusCode == 200) {
-        print('읽음 처리 성공: ${response.body}');
-      } else {
-        print('읽음 처리 실패: ${response.body}');
-      }
-    } catch (e) {
-      print('에러 발생: $e');
-    }
-  }
-
 
   //////채팅방 목록 (sse)
   Stream<List<ChattingList>?> getChatList(String nickname) async* {
@@ -130,14 +108,14 @@ class ChattingDataSource {
   }
 
   //////채팅방 읽음 상태 목록 (sse)
-  Future<List<ChattingList>?> getChatReadStatusList(String nickname) async {
+  Future<Chatting?> getChatReadStatusList(String nickname) async {
     try {
       final response = await http.get(
           Uri.parse('$baseUrl/api/chat/list/nickname/$nickname'));
       if (response.statusCode == 200) {
         print("채팅방 읽음 목록 가져오기 성공");
-        final List<dynamic> responseData = jsonDecode(response.body);
-        return responseData.map((chat) => ChattingList.fromJson(chat)).toList();
+        final responseData = jsonDecode(response.body);
+        return responseData.map((chat) => Chatting.fromJson(chat));
       } else {
         print("채팅방 읽음 목록 가져오기 실패: ${response.body}");
         return null;
@@ -147,9 +125,30 @@ class ChattingDataSource {
       return null;
     }
   }
-
-
   //////채팅방 읽음 처리
+  //여기서 nickname은 reciever의 nickname
+  Future<bool> setChatReadStatus(String roomNum,String nickname) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$baseUrl/api/chat/$roomNum/user/$nickname'),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+      if (response.statusCode == 200) {
+        print("채팅방 읽음 성공");
+        return true;
+      } else {
+        print('채팅방 읽음 실패: ${response.statusCode}, ${response.body}');
+        return false;
+      }
+    } catch (e) {
+      print('에러 발생: $e');
+      return false;
+    }
+  }
+
+
 
 
 

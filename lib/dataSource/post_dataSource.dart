@@ -118,7 +118,6 @@ class PostDataSource {
 
   ////선택된 게시글 조회
   Future<Post?> getOnePost(int postId, User user) async {
-    print(user.cookie);
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/api/post/$postId'),
@@ -135,7 +134,6 @@ class PostDataSource {
         if (responseData["success"] == true) {
           print("게시글 조회 성공");
           Map<String, dynamic> clickedPost = responseData["response"];
-          print(clickedPost);
           // Post 객체 리스트로 반환
           return Post.fromJson(clickedPost);
         }

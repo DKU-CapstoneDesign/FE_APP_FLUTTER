@@ -1,17 +1,17 @@
 class Comment {
   String contents;
-  String parentCommentId;
+  List<dynamic> childCommentList;
 
   Comment({
     required this.contents,
-    required this.parentCommentId,
+    required this.childCommentList,
   });
 
   // JSON으로부터 Comment 객체 생성
   factory Comment.fromJson(Map<String, dynamic> json){
     return Comment(
         contents: json['contents'] ?? '',
-        parentCommentId: json['parentCommentId'] ?? ''
+        childCommentList: json['childCommentList'] ?? []
     );
   }
 
@@ -19,7 +19,7 @@ class Comment {
   Map<String, dynamic> toJson() {
     return {
       'contents' :contents,
-      'parentCommentId' : parentCommentId
+      'childCommentList' : childCommentList
     };
   }
 }

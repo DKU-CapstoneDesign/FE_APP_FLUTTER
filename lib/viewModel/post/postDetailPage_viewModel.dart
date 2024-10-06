@@ -27,7 +27,7 @@ class PostDetailViewModel extends ChangeNotifier {
       likeCount: 0,
       viewCount: 0,
       commentList: [],
-      attachments : [],
+      attachments: [],
     );
   }
 
@@ -39,7 +39,7 @@ class PostDetailViewModel extends ChangeNotifier {
 
   // 게시물 삭제하기
   Future<void> deletePost(BuildContext context, int postId, User user) async {
-    isDeleted = (await datasource.deletePost(postId,user))!;
+    isDeleted = (await datasource.deletePost(postId, user))!;
     if (isDeleted) {
       Navigator.pop(context, true);
     }
@@ -59,21 +59,19 @@ class PostDetailViewModel extends ChangeNotifier {
 
     if (success) {
       isLiked = !isLiked;
-      post.likeCount = isLiked ? post.likeCount + 1 : post.likeCount - 1; // Adjust like count
+      post.likeCount = isLiked ? post.likeCount + 1 : post.likeCount - 1;
       notifyListeners();
     }
   }
 
   // 댓글 생성하기
-  Future<void> createComment(int postId) async{
-    final newComment = await commentDatasource.createComment(comment, postId);
-
-    if (newComment != null) {
-      post.commentList.add(newComment as String);
-      notifyListeners();
-    }
+  Future<void> createComment(int postId) async {
+    final newComment = await commentDatasource.createComment(
+        comment, postId, user);
   }
 
-  // 댓글 삭제하기
-
+  // 댓글 보기
+  Future<void> getComment(int postId) async{
+    final showComment = await commentDatasource.getComment(postId, user);
+  }
 }
