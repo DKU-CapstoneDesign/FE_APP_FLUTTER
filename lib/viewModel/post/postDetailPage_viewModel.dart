@@ -75,9 +75,9 @@ class PostDetailViewModel extends ChangeNotifier {
   }
 
   // 댓글 생성하기
-  Future<void> createComment(int postId) async {
+  Future<void> createComment(int postId, int parentId) async {
     final newComment = await commentDatasource.createComment(
-      commentController.text, postId, user,
+      commentController.text, postId, user, parentId
     );
     if (newComment != null) {
       commentController.clear();
@@ -95,6 +95,7 @@ class PostDetailViewModel extends ChangeNotifier {
     final deleteComment = await commentDatasource.deleteComment(commentId, user);
     notifyListeners();
   }
+
 
 
   //컨트롤러 해지

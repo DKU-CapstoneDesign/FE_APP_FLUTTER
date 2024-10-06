@@ -8,7 +8,7 @@ class CommentDatasource{
   String baseUrl = 'http://152.69.230.42:8080';
 
   //// 댓글 생성
-  Future<Comment?> createComment(String comment, int postId, User user) async {
+  Future<Comment?> createComment(String comment, int postId, User user, int parentCommentId) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/api/comment/$postId'),
@@ -18,7 +18,7 @@ class CommentDatasource{
         },
         body: jsonEncode({
           'contents': comment,
-          'parentCommentId' :'',
+          'parentCommentId' : parentCommentId,
         }),
       );
       if (response.statusCode == 200) {

@@ -10,14 +10,14 @@ class PostDetailPage extends StatefulWidget {
   final String boardName;
   final User user;
   final int postId;
-  final String currentUserNickname; //현재 유저
+  final String currentUserNickname; // 현재 유저
 
   PostDetailPage({
     Key? key,
     required this.postId,
     required this.boardName,
     required this.currentUserNickname,
-    required this.user
+    required this.user,
   }) : super(key: key);
 
   @override
@@ -25,6 +25,8 @@ class PostDetailPage extends StatefulWidget {
 }
 
 class _PostDetailPageState extends State<PostDetailPage> {
+  int? parentCommentId; // 부모 댓글 ID
+  FocusNode _focusNode = FocusNode(); // 키보드 제어용 FocusNode
 
   @override
   void initState() {
@@ -39,9 +41,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
   // 새로고침 시 호출할 함수
   Future<void> _refreshPosts(BuildContext context) async {
     final viewModel = Provider.of<PostDetailViewModel>(context, listen: false);
-    // 글 내용
     await viewModel.getPostInfo(widget.postId, widget.user);
-    // 댓글
     await viewModel.getComment(widget.postId);
   }
 
@@ -86,6 +86,15 @@ class _PostDetailPageState extends State<PostDetailPage> {
     );
   }
 
+  // 댓글 또는 대댓글 작성 시 호출
+  Future<void> _submitComment(BuildContext context) async {
+    final viewModel = Provider.of<PostDetailViewModel>(context, listen: false);
+    await viewModel.createComment(widget.postId, parentCommentId ?? 0); // 대댓글일 경우 parentCommentId 사용
+    await _refreshPosts(context); // 댓글 작성 후 새로고침
+    parentCommentId = null; // 대댓글 상태 초기화
+    FocusScope.of(context).unfocus(); // 키보드 내리기
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -108,22 +117,21 @@ class _PostDetailPageState extends State<PostDetailPage> {
                   children: [
                     Expanded(
                       child: SingleChildScrollView(
-                        physics: AlwaysScrollableScrollPhysics(), // 스크롤 가능하도록 설정
+                        physics: AlwaysScrollableScrollPhysics(),
                         padding: EdgeInsets.only(bottom: 20.0),
                         child: Padding(
                           padding: const EdgeInsets.all(20.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-
-                              //// 작성자 정보
+                              // 작성자 정보
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () {
-                                        if (widget.currentUserNickname !=  viewModel.post.nickname) {
+                                        if (widget.currentUserNickname != viewModel.post.nickname) {
                                           _showProfileOptions(context, viewModel.post.nickname);
                                         }
                                       },
@@ -162,7 +170,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     ),
                                   ),
 
-                                  // 작성자가 맞을 때 수정/삭제 버튼 표시
                                   if (viewModel.post.nickname == widget.user.nickname)
                                     Row(
                                       children: [
@@ -183,13 +190,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                             );
                                           },
                                         ),
-                                        const Text(
-                                          "|",
-                                          style: TextStyle(
-                                            color: Colors.grey,
-                                            fontSize: 20.0,
-                                          ),
-                                        ),
+                                        const Text("|", style: TextStyle(color: Colors.grey, fontSize: 20.0)),
                                         IconButton(
                                           icon: Icon(Icons.delete),
                                           iconSize: 20.0,
@@ -309,101 +310,197 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   itemBuilder: (context, index) {
                                     final comment = viewModel.post.commentList[index];
 
-                                    return Padding(
-                                      padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.all(15.0),
-                                            child: Row(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                CircleAvatar(
-                                                  radius: 15.0,
-                                                  child: Text(
-                                                    comment.nickname.isNotEmpty ? comment.nickname[0] : '?',
-                                                    style: TextStyle(fontSize: 14.0),
-                                                  ),
-                                                ),
-                                                const SizedBox(width: 10),
+                                    return Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                padding: const EdgeInsets.all(15.0),
+                                                child: Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    CircleAvatar(
+                                                      radius: 15.0,
+                                                      child: Text(
+                                                        comment.nickname.isNotEmpty ? comment.nickname[0] : '?',
+                                                        style: TextStyle(fontSize: 14.0),
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 10),
 
-
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      // 닉네임과 작성 시간
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                    Expanded(
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
-                                                          Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                          // 닉네임과 작성 시간
+                                                          Row(
+                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                                             children: [
-                                                              Text(
-                                                                comment.nickname,
-                                                                style: const TextStyle(
-                                                                    fontFamily: 'SejonghospitalBold',
-                                                                    fontSize: 14.0
-                                                                ),
-                                                              ),
-                                                              const SizedBox(height: 2.0),
-                                                              Text(
-                                                                formatDateTime(comment.createdAt),
-                                                                style: const TextStyle(
-                                                                  fontSize: 12.0,
-                                                                  color: Colors.grey,
-                                                                ),
+                                                              Column(
+                                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                                children: [
+                                                                  Text(
+                                                                    comment.nickname,
+                                                                    style: const TextStyle(
+                                                                      fontFamily: 'SejonghospitalBold',
+                                                                      fontSize: 14.0,
+                                                                    ),
+                                                                  ),
+                                                                  const SizedBox(height: 2.0),
+                                                                  Text(
+                                                                    formatDateTime(comment.createdAt),
+                                                                    style: const TextStyle(
+                                                                      fontSize: 12.0,
+                                                                      color: Colors.grey,
+                                                                    ),
+                                                                  ),
+                                                                ],
                                                               ),
                                                             ],
                                                           ),
+                                                          const SizedBox(height: 15.0),
+
+                                                          // 댓글 내용
+                                                          Text(
+                                                            comment.contents,
+                                                            style: const TextStyle(
+                                                              fontFamily: 'SejonghospitalLight',
+                                                              fontSize: 14.0,
+                                                            ),
+                                                          ),
+                                                          const SizedBox(height: 10.0),
+
+                                                          // 답글 달기
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              setState(() {
+                                                                parentCommentId = comment.id; // 대댓글로 설정
+                                                                _focusNode.requestFocus(); // 키보드 올리기
+                                                              });
+                                                            },
+                                                            child: const Text(
+                                                              '답글 달기',
+                                                              style: TextStyle(
+                                                                color: Colors.grey,
+                                                                fontSize: 14.0,
+                                                              ),
+                                                            ),
+                                                          ),
                                                         ],
                                                       ),
-                                                      const SizedBox(height: 15.0),
+                                                    ),
 
-                                                      // 댓글 내용
-                                                      Text(
-                                                        comment.contents,
-                                                        style: const TextStyle(
-                                                          fontFamily: 'SejonghospitalLight',
-                                                          fontSize: 14.0,
-                                                        ),
-                                                      ),
-                                                      const SizedBox(height: 10.0),
-
-                                                      // 답글 달기
-                                                      GestureDetector(
-                                                        onTap: () {
-                                                          // 답글 달기 기능 처리
+                                                    // 댓글 삭제 (작성자만 가능)
+                                                    if (comment.nickname == widget.currentUserNickname)
+                                                      IconButton(
+                                                        icon: const Icon(Icons.close, color: Colors.grey),
+                                                        iconSize: 18.0,
+                                                        onPressed: () async {
+                                                          await viewModel.deleteComment(comment.id);
+                                                          await _refreshPosts(context);
                                                         },
-                                                        child: const Text(
-                                                          '답글 달기',
-                                                          style: TextStyle(
-                                                            color: Colors.grey,
-                                                            fontSize: 14.0,
-                                                          ),
-                                                        ),
                                                       ),
-                                                    ],
-                                                  ),
+                                                  ],
                                                 ),
+                                              ),
 
-                                                // 댓글 삭제 (내가 작성한 댓글만 삭제 할 수 있도록)
-                                                if (comment.nickname == widget.currentUserNickname)
-                                                  IconButton(
-                                                    icon: const Icon(Icons.close, color: Colors.grey),
-                                                    iconSize: 18.0,
-                                                    onPressed: () async {
-                                                      await viewModel.deleteComment(comment.id);
-                                                      await _refreshPosts(context); // 댓글 삭제 후 새로고침
-                                                    },
-                                                  ),
-                                              ],
-                                            ),
+
+                                              //// 대댓글
+                                              if (comment.childCommentList != null && comment.childCommentList!.isNotEmpty)
+                                                ListView.builder(
+                                                  shrinkWrap: true,
+                                                  physics: const NeverScrollableScrollPhysics(),
+                                                  itemCount: comment.childCommentList!.length,
+                                                  itemBuilder: (context, childIndex) {
+                                                    final reply = comment.childCommentList![childIndex];
+                                                    return Padding(
+                                                      padding: const EdgeInsets.only(left: 40.0, top: 20.0),
+                                                      child: Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          const Text(
+                                                              "↳",
+                                                              style: TextStyle(color:Colors.grey,fontSize: 20
+                                                              ),
+                                                          ), // Reply arrow
+                                                          const SizedBox(width: 10),
+
+                                                          CircleAvatar(
+                                                            radius: 15.0,
+                                                            child: Text(
+                                                              reply.nickname.isNotEmpty ? reply.nickname[0] : '?',
+                                                              style: TextStyle(fontSize: 14.0),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(width: 10),
+
+                                                          Expanded(
+                                                            child: Column(
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Row(
+                                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                                  children: [
+                                                                    Column(
+                                                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                                                      children: [
+                                                                        Text(
+                                                                          reply.nickname,
+                                                                          style: const TextStyle(
+                                                                            fontFamily: 'SejonghospitalBold',
+                                                                            fontSize: 14.0,
+                                                                          ),
+                                                                        ),
+                                                                        const SizedBox(height: 2.0),
+                                                                        Text(
+                                                                          formatDateTime(reply.createdAt),
+                                                                          style: const TextStyle(
+                                                                            fontSize: 12.0,
+                                                                            color: Colors.grey,
+                                                                          ),
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                const SizedBox(height: 15.0),
+
+                                                                Text(
+                                                                  reply.contents,
+                                                                  style: const TextStyle(
+                                                                    fontFamily: 'SejonghospitalLight',
+                                                                    fontSize: 14.0,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+
+                                                          // 대댓글 삭제 (작성자만 가능)
+                                                          if (reply.nickname == widget.currentUserNickname)
+                                                            IconButton(
+                                                              icon: const Icon(Icons.close, color: Colors.grey),
+                                                              iconSize: 18.0,
+                                                              onPressed: () async {
+                                                                await viewModel.deleteComment(reply.id);
+                                                                await _refreshPosts(context);
+                                                              },
+                                                            ),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  },
+                                                ),
+                                              const SizedBox(height: 16.0),
+                                              Divider(color: Colors.grey[300]),
+                                            ],
                                           ),
-                                          Divider(color: Colors.grey[300]),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     );
                                   },
                                 ),
@@ -421,10 +518,15 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         children: [
                           Expanded(
                             child: TextField(
+                              focusNode: _focusNode, // 키보드 제어용 FocusNode
                               controller: viewModel.commentController,
                               decoration: InputDecoration(
+                                prefixIcon: parentCommentId != null // 대댓글일 경우 화살표 표시
+                                    ? const Icon(Icons.reply, color: Color.fromRGBO(92, 67, 239, 50))
+                                    : null,
                                 hintText: '댓글을 입력하세요.',
-                                contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 10.0, horizontal: 20.0),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(30.0),
                                   borderSide: BorderSide(color: Colors.grey, width: 1.0),
@@ -450,11 +552,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                 color: Color.fromRGBO(92, 67, 239, 50),
                               ),
                               onPressed: () async {
-                                await viewModel.createComment(widget.postId);
-                                // 댓글 작성 후 새로고침
-                                await _refreshPosts(context);
-                                // 키보드 내리기
-                                FocusScope.of(context).unfocus();
+                                await _submitComment(context);
                               },
                             ),
                           ),
