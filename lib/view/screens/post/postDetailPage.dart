@@ -421,9 +421,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         children: [
                           Expanded(
                             child: TextField(
-                              onChanged: (value) {
-                                viewModel.comment = value;
-                              },
+                              controller: viewModel.commentController,
                               decoration: InputDecoration(
                                 hintText: '댓글을 입력하세요.',
                                 contentPadding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
@@ -455,6 +453,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                 await viewModel.createComment(widget.postId);
                                 // 댓글 작성 후 새로고침
                                 await _refreshPosts(context);
+                                // 키보드 내리기
+                                FocusScope.of(context).unfocus();
                               },
                             ),
                           ),

@@ -8,11 +8,11 @@ import '../../model/user.dart';
 class PostDetailViewModel extends ChangeNotifier {
   late Post post;
   final User user;
-  String comment = '';
   final PostDataSource datasource;
   final CommentDatasource commentDatasource;
   bool isLiked = false;
   bool isDeleted = false;
+  final TextEditingController commentController = TextEditingController();
 
   PostDetailViewModel(this.datasource, this.user, this.commentDatasource) {
     post = Post(
@@ -32,7 +32,7 @@ class PostDetailViewModel extends ChangeNotifier {
   }
 
 
-// 게시물 정보 가져오기
+  // 게시물 정보 가져오기
   Future<void> getPostInfo(int postId, User user) async {
     try {
       final postResponse = await datasource.getOnePost(postId, user);
@@ -46,6 +46,7 @@ class PostDetailViewModel extends ChangeNotifier {
       print('에러 발생: $e');
     }
   }
+
   // 게시물 삭제하기
   Future<void> deletePost(BuildContext context, int postId, User user) async {
     isDeleted = (await datasource.deletePost(postId, user))!;
@@ -76,7 +77,12 @@ class PostDetailViewModel extends ChangeNotifier {
   // 댓글 생성하기
   Future<void> createComment(int postId) async {
     final newComment = await commentDatasource.createComment(
-        comment, postId, user);
+      commentController.text, postId, user,
+    );
+    if (newComment != null) {
+      commentController.clear();
+      notifyListeners();
+    }
   }
 
   // 댓글 보기
@@ -87,5 +93,13 @@ class PostDetailViewModel extends ChangeNotifier {
   //댓글 삭제하기
   Future<void> deleteComment(int postId) async{
     final showComment = await commentDatasource.getComment(postId, user);
+  }
+
+
+  //컨트롤러 해지
+  @override
+  void dispose() {
+    commentController.dispose();
+    super.dispose();
   }
 }
