@@ -12,7 +12,24 @@ class EditPostViewModel extends ChangeNotifier {
   final Post post;
   final ImagePicker picker = ImagePicker();
 
-  EditPostViewModel(this.datasource, this.post);
+  EditPostViewModel(this.datasource, this.post) {
+    // 게시글 수정 시 기존 첨부 파일 초기화
+    initializeAttachments();
+  }
+
+  // 기존 첨부 파일 초기화
+  void initializeAttachments() {
+    // 기존에 저장된 첨부 파일이 있을 경우 attachments에 추가
+    if (post.attachments != null && post.attachments!.isNotEmpty) {
+      attachments = post.attachments!.map((attachment) {
+        return {
+          'fileName': attachment['fileName'] ?? '',
+          'filePath': attachment['filePath'] ?? ''
+        };
+      }).toList();
+    }
+    notifyListeners();
+  }
 
   // 여러 이미지 선택 로직
   Future<void> getImage() async {
