@@ -48,11 +48,9 @@ class CommentDatasource{
         },
       );
       if (response.statusCode == 200) {
-        print(response);
         // 응답을 바이트로 변환한 후 UTF-8로 디코딩
         final decodedResponse = utf8.decode(response.bodyBytes);
         // 디코딩한 데이터를 JSON 파싱
-        print('!!!!!!!!!!!${decodedResponse}');
         final responseData = json.decode(decodedResponse);
         if (responseData["success"] == true) {
           print("댓글 조회 성공");

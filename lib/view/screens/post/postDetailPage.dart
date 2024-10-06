@@ -394,7 +394,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                                     icon: const Icon(Icons.close, color: Colors.grey),
                                                     iconSize: 18.0,
                                                     onPressed: () async {
-                                                      await viewModel.deleteComment(widget.postId);
+                                                      await viewModel.deleteComment(comment.id);
                                                       await _refreshPosts(context); // 댓글 삭제 후 새로고침
                                                     },
                                                   ),

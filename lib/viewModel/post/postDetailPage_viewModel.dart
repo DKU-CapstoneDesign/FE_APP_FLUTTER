@@ -87,12 +87,13 @@ class PostDetailViewModel extends ChangeNotifier {
 
   // 댓글 보기
   Future<void> getComment(int postId) async{
-    final showComment = await commentDatasource.getComment(postId, user);
+    await commentDatasource.getComment(postId, user);
   }
 
   //댓글 삭제하기
-  Future<void> deleteComment(int postId) async{
-    final showComment = await commentDatasource.getComment(postId, user);
+  Future<void> deleteComment(int commentId) async{
+    final deleteComment = await commentDatasource.deleteComment(commentId, user);
+    notifyListeners();
   }
 
 
