@@ -23,7 +23,7 @@ class _ChatBotPageState extends State<ChatBotPage> {
           title: const Text(
             "챗봇 코리",
             style: TextStyle(
-              fontSize: 22,
+              fontSize: 20,
               color: Colors.black,
               fontFamily: 'SejonghospitalBold',
             ),

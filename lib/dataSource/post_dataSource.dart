@@ -134,6 +134,7 @@ class PostDataSource {
         if (responseData["success"] == true) {
           print("게시글 조회 성공");
           Map<String, dynamic> clickedPost = responseData["response"];
+          print(responseData["response"]);
           // Post 객체 리스트로 반환
           return Post.fromJson(clickedPost);
         }

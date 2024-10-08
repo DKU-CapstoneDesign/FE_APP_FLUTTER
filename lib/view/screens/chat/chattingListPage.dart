@@ -55,7 +55,7 @@ class _ChattingListPageState extends State<ChattingListPage> {
               children: [
                 SizedBox(height: 10.0),
                 Infobox("채팅 페이지입니다", "1:1 대화로 친구를 만들어봐요"),
-                SizedBox(height: 10.0),
+                SizedBox(height: 35.0),
                 Expanded(
                   child: viewModel.chatList.isEmpty
                       ? Center(
