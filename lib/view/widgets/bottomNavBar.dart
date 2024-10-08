@@ -69,6 +69,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             selectedItemColor: Color.fromRGBO(92, 67, 239, 50),
             showSelectedLabels: false,
             showUnselectedLabels: false,
+            backgroundColor: Colors.white,
             items: const <BottomNavigationBarItem>[
               BottomNavigationBarItem(
                 icon: Icon(Icons.home),
