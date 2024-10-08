@@ -27,14 +27,26 @@ class PostDetailPage extends StatefulWidget {
 class _PostDetailPageState extends State<PostDetailPage> {
   int? parentCommentId; // 부모 댓글 ID
   FocusNode _focusNode = FocusNode(); // 키보드 제어용 FocusNode
+  bool isLikeButtonDisabled = false; // 좋아요 한번 더 못 누르게
+  bool hasLiked = false; // 로컬에서 좋아요 상태 확인
 
   @override
   void initState() {
     super.initState();
+    loadLikeStatus();  // 로컬에서 좋아요 상태를 불러와 UI에 반영
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final viewModel = Provider.of<PostDetailViewModel>(context, listen: false);
       await viewModel.getPostInfo(widget.postId, widget.user);
       print(viewModel.post.commentList);
+    });
+  }
+
+  Future<void> loadLikeStatus() async {
+    final viewModel = Provider.of<PostDetailViewModel>(context, listen: false);
+    bool liked = await viewModel.hasLikedLocally(widget.postId, widget.user.id);
+    setState(() {
+      hasLiked = liked;
+      isLikeButtonDisabled = liked; // 이미 좋아요를 눌렀다면 버튼 비활성화
     });
   }
 
@@ -264,15 +276,20 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     children: [
                                       IconButton(
                                         icon: Icon(
-                                          viewModel.isLiked
-                                              ? Icons.thumb_up_alt
-                                              : Icons.thumb_up_alt_outlined,
-                                          color: viewModel.isLiked
+                                          hasLiked ? Icons.thumb_up_alt : Icons.thumb_up_alt_outlined,
+                                          color: hasLiked
                                               ? Color.fromRGBO(92, 67, 239, 1)
                                               : Colors.grey,
                                         ),
-                                        onPressed: () async {
+                                        onPressed: isLikeButtonDisabled
+                                            ? null // 버튼이 비활성화되면 클릭 막기
+                                            : () async {
                                           await viewModel.toggleLike(widget.postId, widget.user.id, widget.user);
+                                          setState(() {
+                                            isLikeButtonDisabled = true; // 버튼 비활성화
+                                            hasLiked = true;
+                                          });
+                                          await viewModel.saveLikeLocally(widget.postId, widget.user.id); // 로컬에 저장
                                         },
                                       ),
                                       Text(
@@ -408,7 +425,6 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                                 ),
                                               ),
 
-
                                               //// 대댓글
                                               if (comment.childCommentList != null && comment.childCommentList!.isNotEmpty)
                                                 ListView.builder(
@@ -423,9 +439,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                                         crossAxisAlignment: CrossAxisAlignment.start,
                                                         children: [
                                                           const Text(
-                                                              "↳",
-                                                              style: TextStyle(color:Colors.grey,fontSize: 20
-                                                              ),
+                                                            "↳",
+                                                            style: TextStyle(color:Colors.grey,fontSize: 20
+                                                            ),
                                                           ),
                                                           const SizedBox(width: 10),
 
