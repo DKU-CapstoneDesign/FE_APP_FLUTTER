@@ -2,8 +2,6 @@ import 'package:capstonedesign/model/chatBot.dart';
 import 'package:flutter/material.dart';
 import '../../dataSource/chatBot_dataSource.dart';
 
-
-
 class ChatBotViewModel extends ChangeNotifier {
   final ChatBotDataSource _dataSource;
   final List<Chatbot> _messages = [Chatbot(text: "안녕하세요 여러분의 한국 생활을 도와주는 챗봇 코리입니다! 궁금하신걸 뭐든지 물어봐주세요!", isUserMessage: false)];

@@ -94,20 +94,35 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                   ),
 
                               Container(
-                                padding: const EdgeInsets.all(10),
+                                padding: const EdgeInsets.all(20),
+                                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                                 decoration: BoxDecoration(
                                   color: isCurrentUser
-                                      ? const Color.fromRGBO(92, 67, 239, 20) // Purple for current user's messages
+                                      ? const Color.fromRGBO(92, 67, 239, 1)
                                       : Colors.grey[300],
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: isCurrentUser
+                                      ? const BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                    bottomLeft: Radius.circular(20),
+                                    bottomRight: Radius.zero, // Right side 뾰족하게
+                                  )
+                                      : const BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                    bottomRight: Radius.circular(20),
+                                    bottomLeft: Radius.zero, // Left side 뾰족하게
+                                  ),
                                 ),
                                 child: Text(
                                   chatting.message,
                                   style: TextStyle(
                                     color: isCurrentUser ? Colors.white : Colors.black,
+                                    fontSize: 16,
                                   ),
                                 ),
-                              ),
+                              )
+
                             ],
                           ),
                         ),
@@ -118,7 +133,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
 
                 // 메시지 입력 창
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 10.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
                   color: const Color.fromRGBO(211, 211, 211, 40),
                   child: Row(
                     children: <Widget>[

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../../../dataSource/chatBot_dataSource.dart';
 import '../../../viewModel/chatBot/chatBotPage_viewModel.dart';
 
@@ -15,33 +14,91 @@ class _ChatBotPageState extends State<ChatBotPage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => ChatBotViewModel(ChatBotDataSource()), // ViewModel에 DataSource 주입
+      create: (context) => ChatBotViewModel(ChatBotDataSource()),
       child: Scaffold(
+        backgroundColor: const Color(0xFFEDE7F6),
         appBar: AppBar(
+          backgroundColor: Colors.white,
           centerTitle: true,
-          title: Text('챗봇 코리'),
+          title: const Text(
+            "챗봇 코리",
+            style: TextStyle(
+              fontSize: 22,
+              color: Colors.black,
+              fontFamily: 'SejonghospitalBold',
+            ),
+          ),
         ),
         body: Column(
           children: [
+            // 메시지 리스트
             Expanded(
               child: Consumer<ChatBotViewModel>(
                 builder: (context, viewModel, child) {
                   return ListView.builder(
+                    reverse: false, // 최신 메시지를 아래에 표시
                     itemCount: viewModel.messages.length,
                     itemBuilder: (context, index) {
                       final message = viewModel.messages[index];
+                      bool isUserMessage = message.isUserMessage;
+
                       return Align(
-                        alignment: message.isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
+                        alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
                         child: Container(
-                          padding: EdgeInsets.all(10.0),
-                          margin: message.isUserMessage
-                              ? EdgeInsets.only(left: 96.0, top: 8.0, right: 8.0, bottom: 8.0)
-                              : EdgeInsets.only(left: 8.0, top: 8.0, right: 96.0, bottom: 8.0),
-                          decoration: BoxDecoration(
-                            color: message.isUserMessage ? Colors.blue[200] : Colors.grey[300],
-                            borderRadius: BorderRadius.circular(10.0),
+                          padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
+                          margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // 챗봇 메시지일 때만 프로필 이미지와 이름 추가
+                              if (!isUserMessage)
+                                Row(
+                                  children: [
+                                    Image.asset('assets/img/chatBot.png', width: 35, height: 35),
+                                    const SizedBox(width: 10),
+                                    const Text(
+                                      '코리 박사',
+                                      style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black,
+                                      fontFamily: 'SejonghospitalBold',
+                                    ),
+                                    ),
+                                  ],
+                                ),
+                              if (!isUserMessage) const SizedBox(height: 10),
+
+                              Container(
+                                padding: const EdgeInsets.all(15),
+                                margin: const EdgeInsets.symmetric(horizontal: 10),
+                                decoration: BoxDecoration(
+                                  color: isUserMessage
+                                      ? const Color.fromRGBO(92, 67, 239, 1)
+                                      : Colors.white,
+                                  borderRadius: isUserMessage
+                                      ? const BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                    bottomLeft: Radius.circular(20),
+                                    bottomRight: Radius.zero, // Right side 뾰족하게
+                                  )
+                                      : const BorderRadius.only(
+                                    topLeft: Radius.circular(20),
+                                    topRight: Radius.circular(20),
+                                    bottomRight: Radius.circular(20),
+                                    bottomLeft: Radius.zero, // Left side 뾰족하게
+                                  ),
+                                ),
+                                child: Text(
+                                  message.text,
+                                  style: TextStyle(
+                                    color: isUserMessage ? Colors.white : Colors.black,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              )
+                            ],
                           ),
-                          child: Text(message.text),
                         ),
                       );
                     },
@@ -49,6 +106,8 @@ class _ChatBotPageState extends State<ChatBotPage> {
                 },
               ),
             ),
+
+            // 메시지 입력 창
             ChatInputField(),
           ],
         ),
@@ -76,38 +135,28 @@ class _ChatInputFieldState extends State<ChatInputField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+      color: Colors.white,
       child: Row(
         children: [
           Expanded(
             child: TextField(
               controller: _textController,
               focusNode: _focusNode,
-              decoration: InputDecoration(
+              decoration: const InputDecoration.collapsed(
                 hintText: '메시지 입력...',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-                contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
               ),
             ),
           ),
-          SizedBox(width: 8.0),
-          GestureDetector(
-            onTap: () {
+          IconButton(
+            icon: const Icon(Icons.send),
+            onPressed: () {
               final message = _textController.text.trim();
               if (message.isNotEmpty) {
                 context.read<ChatBotViewModel>().sendMessage(message);
                 _textController.clear();
               }
             },
-            child: CircleAvatar(
-              backgroundColor: Theme.of(context).primaryColor,
-              child: Icon(
-                Icons.send,
-                color: Colors.white,
-              ),
-            ),
           ),
         ],
       ),
