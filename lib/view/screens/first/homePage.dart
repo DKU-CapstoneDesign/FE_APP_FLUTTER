@@ -180,7 +180,7 @@ class _HomePageState extends State<HomePage> {
                                       child: Padding(
                                         padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
                                         child: Text(
-                                          "지금 불타는 글 🔥",
+                                          "인기 급 상승 글 🔥",
                                           style: TextStyle(
                                             fontSize: 20,
                                             fontFamily: 'Sejonghospital',
@@ -196,14 +196,14 @@ class _HomePageState extends State<HomePage> {
                                           itemBuilder: (context, index) {
                                             var post = viewModel.posts[index];
                                             return Padding(
-                                              padding: const EdgeInsets.only(bottom: 10.0), // Add spacing between list items
+                                              padding: const EdgeInsets.only(bottom: 10.0),
                                               child: Container(
                                                 decoration: BoxDecoration(
                                                   color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(14.0), // Rounded corners
+                                                  borderRadius: BorderRadius.circular(14.0),
                                                   boxShadow: [
                                                     BoxShadow(
-                                                      color: Colors.grey.withOpacity(0.2), // Light shadow
+                                                      color: Colors.grey.withOpacity(0.2),
                                                       spreadRadius: 2,
                                                       blurRadius: 5,
                                                     ),
@@ -242,7 +242,7 @@ class _HomePageState extends State<HomePage> {
                                                             create: (_) => PostDetailViewModel(PostDataSource(), widget.user, CommentDatasource()),
                                                             child: PostDetailPage(
                                                                 postId: post['id'],
-                                                                boardName: post['boardName'],
+                                                                boardName: "HOT 게시판",
                                                                 currentUserNickname: widget.user.nickname,
                                                                 user: widget.user
                                                             ),

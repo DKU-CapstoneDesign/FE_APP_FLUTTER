@@ -83,7 +83,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromRGBO(253, 247, 254, 10),
+                            backgroundColor: Colors.white,
                             foregroundColor: Color.fromRGBO(92, 67, 239, 50),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
@@ -162,7 +162,7 @@ class _SignUpPageState extends State<SignUpPage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Color.fromRGBO(253, 247, 254, 10),
+                            backgroundColor: Colors.white,
                             foregroundColor: Color.fromRGBO(92, 67, 239, 50),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
@@ -208,7 +208,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color.fromRGBO(253, 247, 254, 10),
+                          backgroundColor: Colors.white,
                           foregroundColor: Color.fromRGBO(92, 67, 239, 50),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
