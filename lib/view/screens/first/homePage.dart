@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(30, 0, 30, 30),
+                    padding: const EdgeInsets.fromLTRB(30, 0, 30, 5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
