@@ -24,7 +24,7 @@ class _PostListPageState extends State<PostListPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final viewModel = Provider.of<PostListViewModel>(context, listen: false);
-      await viewModel.getPostList(widget.boardName);
+      await viewModel.getPostList(widget.user,widget.boardName);
     });
   }
 
@@ -47,7 +47,7 @@ class _PostListPageState extends State<PostListPage> {
   // 새로고침 시 호출할 함수
   Future<void> _refreshPosts(BuildContext context) async {
     final viewModel = Provider.of<PostListViewModel>(context, listen: false);
-    await viewModel.getPostList(widget.boardName);
+    await viewModel.getPostList(widget.user,widget.boardName);
   }
 
   @override

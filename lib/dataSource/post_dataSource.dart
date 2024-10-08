@@ -86,10 +86,13 @@ class PostDataSource {
   }
 
   ////전체 게시글 조회
-  Future<List?> getAllPost() async {
+  Future<List?> getAllPost(User user) async {
     try {
-      final response = await http.get(Uri.parse('$baseUrl/api/posts'));
-
+      final response = await http.get(Uri.parse('$baseUrl/api/posts'),
+        headers: {
+          'Cookie': user.cookie,
+        },
+      );
       if (response.statusCode == 200) {
         // 응답을 바이트로 변환한 후 UTF-8로 디코딩
         final decodedResponse = utf8.decode(response.bodyBytes);

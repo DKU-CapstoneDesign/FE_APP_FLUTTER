@@ -2,6 +2,7 @@ import 'package:capstonedesign/dataSource/post_dataSource.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../model/post.dart';
+import '../../model/user.dart';
 
 class PostListViewModel extends ChangeNotifier {
   final PostDataSource dataSource;
@@ -12,7 +13,7 @@ class PostListViewModel extends ChangeNotifier {
   PostListViewModel(this.dataSource);
 
   // 게시물 목록 가져오기
-  Future<void> getPostList(String boardName) async {
+  Future<void> getPostList(User user,String boardName) async {
     switch (boardName) {
       case "자유게시판":
         boardName = "ANY";
@@ -27,7 +28,7 @@ class PostListViewModel extends ChangeNotifier {
     isLoading = true;
     notifyListeners();
 
-    List<dynamic>? allPosts = await dataSource.getAllPost();
+    List<dynamic>? allPosts = await dataSource.getAllPost(user);
     // boardName과 같은 category만 필터링
     posts = allPosts?.where((post) => post['category'] == boardName).toList() ?? [];
     isLoading = false; //데이터를 받아왔다면 로딩 끄기

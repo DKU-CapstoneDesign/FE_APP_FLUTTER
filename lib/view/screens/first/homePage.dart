@@ -1,14 +1,19 @@
 import 'package:capstonedesign/dataSource/post_dataSource.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../dataSource/comment_dataSource.dart';
 import '../../../dataSource/discover_dataSource.dart';
 import '../../../dataSource/fortune_dataSource.dart';
 import '../../../model/discover.dart';
+import '../../../model/user.dart';
 import '../../../viewModel/first/homePage_viewModel.dart';
+import '../../../viewModel/post/postDetailPage_viewModel.dart';
 import '../../widgets/postListView.dart';
+import '../post/postDetailPage.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key? key}) : super(key: key);
+  final User user;
+  HomePage({Key? key, required this.user}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -25,18 +30,21 @@ class _HomePageState extends State<HomePage> {
     "https://img.freepik.com/free-vector/error-404-concept-for-landing-page_23-2148237748.jpg?w=1380&t=st=1725265497~exp=1725266097~hmac=d7a95048d969f691ccefe06c9d42eadd35021b0542f025271d0ca609a3945969",
   );
 
+
+
+
   @override
   Widget build(BuildContext context) {
     //상태 관리
     return ChangeNotifierProvider(
-      create: (_) => HomeViewModel(
+      create: (_) => HomePageViewModel(
         discoverDatasource: DiscoverDatasource(),
         fortuneDataSource: FortuneDataSource(),
         postDataSource: PostDataSource(),
       )..loadInitialData(), //loadInitialData()를 통해 데이터를 즉시 가져오기
 
       child: Scaffold(
-        body: Consumer<HomeViewModel>(
+        body: Consumer<HomePageViewModel>(
           builder: (context, viewModel, child) {
             return SafeArea(
               child: Column(
@@ -98,6 +106,7 @@ class _HomePageState extends State<HomePage> {
                                 onTap: () {
                                   setState(() {
                                     isFestivalSelected = false;
+                                    viewModel.getPostList(widget.user);
                                   });
                                 },
                                 child: Column(
@@ -129,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                     ),
                   ),
 
-                  //탭바 아래 나올 내용
+                  //// 탭바 아래 나올 내용
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(
@@ -138,78 +147,121 @@ class _HomePageState extends State<HomePage> {
                           const SizedBox(height: 16),
                           // PostListView 위젯을 이용해서 내용 컨트롤
 
-                          // DISCOVRT를 눌렀을 떄
-                          isFestivalSelected
-                              ? PostListView(
-                            cardForms: viewModel.festivals.isNotEmpty
-                                ? viewModel.festivals.map((festival) {
-                              return Discover(
-                                title: festival.title,
-                                content: festival.content,
-                                imageUrl: festival.imageUrl,
-                              );
-                            }).toList()
-                                : [errorPost],
-                          )
+                          // DISCOVER를 눌렀을 떄
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: isFestivalSelected
+                                ? PostListView(
+                              cardForms: viewModel.festivals.isNotEmpty
+                                  ? viewModel.festivals.map((festival) {
+                                return Discover(
+                                  title: festival.title,
+                                  content: festival.content,
+                                  imageUrl: festival.imageUrl,
+                                );
+                              }).toList()
+                                  : [errorPost],
+                            )
 
-                          //TODAY를 눌렀을 때
-                              : ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: viewModel.posts.length, // 핫 게시물의 개수
-                            itemBuilder: (context, index) {
-                              return Padding(
-                                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                            //TODAY를 눌렀을 때
+                                : Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                              child: Container(
+                                width: double.infinity,
+                                height: 500.0,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(14.0),
+                                  color: Color(0xFFEDE7F6),
+                                ),
                                 child: Column(
-                                  mainAxisSize: MainAxisSize.min,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      height: 180,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.white),
-                                      ),
+                                    const Center(
                                       child: Padding(
-                                        padding: const EdgeInsets.fromLTRB(30, 30, 30, 0),
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              viewModel.posts[index].title,
-                                              style: const TextStyle(
-                                                fontSize: 22,
-                                                color: Colors.white,
-                                                fontFamily: 'SejonghospitalBold',
-                                              ),
-                                            ),
-                                            SizedBox(height: 10),
-                                            Divider(
-                                              color: Colors.white,
-                                              thickness: 1,
-                                            ),
-                                            SizedBox(height: 10.0),
-                                            const Row(
-                                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "자세히 보기                  >",
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                    color: Colors.white,
-                                                    fontFamily: 'SejonghospitalLight',
+                                        padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
+                                        child: Text(
+                                          "지금 불타는 글 🔥",
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                            fontFamily: 'Sejonghospital',
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                                        child: ListView.builder(
+                                          itemCount: (viewModel?.posts.length ?? 0) > 4 ? 4 : viewModel.posts.length,
+                                          itemBuilder: (context, index) {
+                                            var post = viewModel.posts[index];
+                                            return Padding(
+                                              padding: const EdgeInsets.only(bottom: 10.0), // Add spacing between list items
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: BorderRadius.circular(14.0), // Rounded corners
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey.withOpacity(0.2), // Light shadow
+                                                      spreadRadius: 2,
+                                                      blurRadius: 5,
+                                                    ),
+                                                  ],
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
+                                                  child: ListTile(
+                                                    title: Text(
+                                                      post['title'],
+                                                      style: const TextStyle(
+                                                        fontSize: 20,
+                                                        fontFamily: 'Sejonghospitallight',
+                                                      ),
+                                                    ),
+                                                    subtitle: Padding(
+                                                      padding: const EdgeInsets.only(top: 4.0),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(post['contents']),
+                                                          ),
+                                                          Text(
+                                                            '좋아요 ${post['likeCount']}개',
+                                                            style: TextStyle(color: Colors.grey),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) => ChangeNotifierProvider(
+                                                            create: (_) => PostDetailViewModel(PostDataSource(), widget.user, CommentDatasource()),
+                                                            child: PostDetailPage(
+                                                                postId: post['id'],
+                                                                boardName: post['boardName'],
+                                                                currentUserNickname: widget.user.nickname,
+                                                                user: widget.user
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
                                                   ),
                                                 ),
-                                              ],
-                                            ),
-                                          ],
+                                              ),
+                                            );
+                                          },
                                         ),
                                       ),
                                     ),
                                   ],
                                 ),
-                              );
-                            },
+                              ),
+                            ),
                           ),
                           const SizedBox(height: 60),
                           Center(

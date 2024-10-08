@@ -20,20 +20,22 @@ class _DiscoverPageState extends State<DiscoverPage> {
       create: (_) => DiscoverViewModel(),
       child: Scaffold(
         body: Padding(
-          padding: const EdgeInsets.fromLTRB(10, 60, 10, 10),
+          padding: const EdgeInsets.fromLTRB(0, 60, 0, 0),
           child: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                //// 검색
                 const Row(
                   children: [
-                    SizedBox(width: 15),
+                    SizedBox(width: 30),
                     SizedBox(
                       width: 350,
                       height: 45,
                       child: TextField(
                         decoration: InputDecoration(
                           filled: true,
+                          fillColor: Color.fromRGBO(238, 238, 238, 1),
                           contentPadding: EdgeInsets.symmetric(vertical: 10),
                           prefixIcon: Icon(Icons.search, color: Colors.black54),
                           hintText: '어디로 가세요?',
@@ -48,8 +50,10 @@ class _DiscoverPageState extends State<DiscoverPage> {
                   ],
                 ),
                 const SizedBox(height: 10),
+
+                //// 선택 토글
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     ElevatedButton(
                       onPressed: () {
@@ -61,15 +65,22 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: selectedCategory == 'festival'
-                            ? const Color.fromRGBO(92, 67, 239, 50)
-                            : const Color.fromRGBO(245, 245, 245, 20),
+                            ? const Color.fromRGBO(92, 67, 239, 60)
+                            : Color(0xFFEDE7F6),
                         foregroundColor: selectedCategory == 'festival'
                             ? const Color.fromRGBO(245, 245, 245, 20)
                             : Colors.black,
                         side: const BorderSide(color: Colors.white54, width: 1),
                       ),
-                      child: const Text('# 축제'),
+                      child: const Text(
+                        '🎡 축제',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: 'SejonghospitalLight',
+                        ),
+                      ),
                     ),
+                    const SizedBox(width: 10),
                     ElevatedButton(
                       onPressed: () {
                         setState(() {
@@ -78,18 +89,24 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: selectedCategory == 'sight'
-                            ? const Color.fromRGBO(92, 67, 239, 50)
-                            : const Color.fromRGBO(245, 245, 245, 20),
+                            ? const Color.fromRGBO(92, 67, 239, 60)
+                            : Color(0xFFEDE7F6),
                         foregroundColor: selectedCategory == 'sight'
                             ? const Color.fromRGBO(245, 245, 245, 20)
                             : Colors.black,
                         side: const BorderSide(color: Colors.white54, width: 1),
                       ),
-                      child: const Text('# 주변명소'),
+                      child: const Text('👀 주변 명소',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: 'SejonghospitalLight',
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
+
+               //// 글 목록
                 Consumer<DiscoverViewModel>(
                   builder: (context, viewModel, child) {
                     final posts = viewModel.filteredDiscoverPosts(selectedCategory);
@@ -104,15 +121,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
     );
   }
 
+
+  //// grid 형식의 글
   Widget _buildGridView(List<Discover> posts) {
     return GridView.builder(
+      padding: const EdgeInsets.fromLTRB(0, 30, 0, 10),
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3, // 3 columns
-        crossAxisSpacing: 5, // Horizontal spacing
-        mainAxisSpacing: 5, // Vertical spacing
-        childAspectRatio: 1, // 1:1 aspect ratio for same-size images
+        crossAxisCount: 3, // 열 갯수
+        crossAxisSpacing: 5, // 양 옆
+        mainAxisSpacing: 5, // 위 아래
+        childAspectRatio: 1, // 1:1
       ),
       itemCount: posts.length,
       itemBuilder: (context, index) {

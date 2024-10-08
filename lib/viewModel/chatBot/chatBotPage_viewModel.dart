@@ -20,7 +20,6 @@ class ChatBotViewModel extends ChangeNotifier {
         _messages.add(Chatbot(text: chatBotResponse, isUserMessage: false));
         notifyListeners();
       } catch (e) {
-        // 에러 처리 로직 추가 가능
         _messages.add(Chatbot(text: "챗봇 응답을 가져오는 중 오류가 발생했습니다.", isUserMessage: false));
         notifyListeners();
       }

@@ -26,7 +26,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
     super.initState();
     // User 객체를 각 페이지에 전달
     _pages = <Widget>[
-      HomePage(),
+      HomePage(user: widget.user),
       DiscoverPage(),
       ForumPage(user: widget.user),
       ChangeNotifierProvider(

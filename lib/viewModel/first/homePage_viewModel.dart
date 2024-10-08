@@ -4,9 +4,10 @@ import '../../dataSource/fortune_dataSource.dart';
 import '../../dataSource/post_dataSource.dart';
 import '../../model/discover.dart';
 import '../../model/fortune.dart';
+import '../../model/user.dart';
 
 
-class HomeViewModel extends ChangeNotifier {
+class HomePageViewModel extends ChangeNotifier {
   List<Discover> festivals = [];
   String fortuneToday = '';
   List<dynamic> posts = [];
@@ -14,7 +15,7 @@ class HomeViewModel extends ChangeNotifier {
   final FortuneDataSource fortuneDataSource;
   final PostDataSource postDataSource;
 
-  HomeViewModel({
+  HomePageViewModel({
     required this.discoverDatasource,
     required this.fortuneDataSource,
     required this.postDataSource,
@@ -40,9 +41,9 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   // 게시물 목록 가져오기
-  Future<void> getPostList() async {
-
-    posts = (await postDataSource.getAllPost()) ?? [];
+  Future<void> getPostList(User user) async {
+    posts = (await postDataSource.getAllPost(user))!;
+    print("1111111$posts");
     notifyListeners();
   }
 
