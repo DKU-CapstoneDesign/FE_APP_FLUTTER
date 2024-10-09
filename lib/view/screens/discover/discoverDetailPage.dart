@@ -1,118 +1,253 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-
+import 'package:provider/provider.dart';
+import '../../../dataSource/comment_dataSource.dart';
+import '../../../dataSource/post_dataSource.dart';
 import '../../../model/discover.dart';
-
+import '../../../model/user.dart';
+import '../../../viewModel/discover/discoverDetailPage_viewModel.dart';
 
 class DiscoverDetailPage extends StatefulWidget {
   final Discover discover;
-  const DiscoverDetailPage({Key? key, required this.discover}) : super(key: key);
+  final String boardName;
+  final User user;
+  final int postId;
+  final String currentUserNickname;
+
+  const DiscoverDetailPage({
+    Key? key,
+    required this.discover,
+    required this.boardName,
+    required this.user,
+    required this.postId,
+    required this.currentUserNickname,
+  }) : super(key: key);
 
   @override
   State<DiscoverDetailPage> createState() => _DiscoverDetailPageState();
 }
 
 class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
-  final TextEditingController _commentController = TextEditingController();
   bool isLikeClicked = false;
+  FocusNode _focusNode = FocusNode(); // FocusNode for handling the keyboard
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.discover.title),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(height: 30,),
-            Image.network(
-              widget.discover.imageUrl, width: MediaQuery.of(context).size.width * 0.7,
-            ),
-            SizedBox(height: 20,),
-            SizedBox(
-              height: 40,
-              child: Padding(
-                padding: EdgeInsets.only(left: 25),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isLikeClicked = !isLikeClicked;
-                      });
-                    },
-                    child: AnimatedContainer(
-                      duration: Duration(milliseconds: 300), // 애니메이션 지속 시간
-                      curve: Curves.easeInOut, // 애니메이션 커브 설정
-                      width: isLikeClicked ? 50 : 40, // 클릭 여부에 따라 너비 조정
-                      height: isLikeClicked ? 50 : 40, // 클릭 여부에 따라 높이 조정
-                      child: Icon(
-                        Icons.thumb_up,
-                        color: isLikeClicked ? Colors.blue : Colors.grey, // 좋아요 상태에 따라 색상 변경
-                        size: 30, // 아이콘 크기
-                      ),
+  void initState() {
+    super.initState();
+    // Initialize ViewModel and get post info and comments after the widget is built
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final viewModel = Provider.of<DiscoverDetailViewModel>(context, listen: false);
+      await viewModel.getPostInfo(widget.postId, widget.user);
+      await viewModel.getComment(widget.postId);
+    });
+  }
+
+  //// Function to show the comment sheet
+  void _showCommentSheet(BuildContext context) {
+    final viewModel = Provider.of<DiscoverDetailViewModel>(context, listen: false);
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (BuildContext context) {
+    return FractionallySizedBox(
+    heightFactor: 0.7, // Sheet takes up 70% of the screen height
+    child: Padding(
+    padding: MediaQuery.of(context).viewInsets,
+    child: Column(
+    mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 10),
+        // Small bar at the top of the modal for drag indication
+        Container(
+          height: 4,
+          width: 40,
+          decoration: BoxDecoration(
+            color: Colors.grey[300],
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        const SizedBox(height: 10),
+        const Text(
+          '댓글',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        const SizedBox(height: 20),
+        const Divider(
+          height: 1,
+          color: Colors.grey,
+        ),
+        const SizedBox(height: 20),
+
+        // Comment List
+        Expanded(
+          child: ListView.builder(
+            itemCount: viewModel.post.commentList.length,
+            itemBuilder: (context, index) {
+              final comment = viewModel.post.commentList[index];
+              return ListTile(
+                leading: CircleAvatar(
+                  child: Text(
+                    comment.nickname.isNotEmpty ? comment.nickname[0] : '?',
+                  ),
+                ),
+                title: Text(comment.nickname),
+                subtitle: Text(comment.contents),
+              );
+            },
+          ),
+        ),
+
+        // Comment Input Field
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  focusNode: _focusNode, // Control keyboard focus
+                  controller: viewModel.commentController,
+                  decoration: InputDecoration(
+                    hintText: '댓글을 입력하세요.',
+                    contentPadding: const EdgeInsets.symmetric(
+                        vertical: 10.0, horizontal: 20.0),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                      borderSide: const BorderSide(color: Colors.grey, width: 1.0),
                     ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(height: 30,),
-            Padding(
-              padding: EdgeInsets.only(left:30, right: 30),
-              child: Text(
-                widget.discover.content,
-                style: TextStyle(
-                  fontSize: 17
+              const SizedBox(width: 8.0),
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                      color: const Color.fromRGBO(92, 67, 239, 50),
+                      width: 2.0),
                 ),
-              ),
-            ),
-            SizedBox(height: 30,),
-            Padding(
-              padding: EdgeInsets.only(left:30),
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  "댓글",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold
+                child: IconButton(
+                  icon: const Icon(
+                    Icons.arrow_upward,
+                    color: Color.fromRGBO(92, 67, 239, 50),
                   ),
+                  onPressed: () async {
+                    await viewModel.createComment(widget.postId, 0); // Add a comment
+                    _focusNode.unfocus(); // Dismiss the keyboard
+                  },
                 ),
               ),
-            ),
-            SizedBox(height: 20,),
-            Padding(
-              padding: EdgeInsets.only(left: 30, right: 30),
-              child: Text(
-                "s simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-              ),
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Padding(
-        padding: EdgeInsets.only(left: 8, right: 8, bottom: 20, top: 8),
-        child: TextField(
-          controller: _commentController,
-          decoration: InputDecoration(
-              hintText: "댓글 입력...",
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-              suffixIcon: IconButton(
-                icon: Icon(Icons.send),
-                onPressed: () {
-                  _commentController.clear();
-                },
-              )
+            ],
           ),
         ),
+      ],
+    ),
+    ),
+    );
+    },
+    );
+  }
 
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (context) => DiscoverDetailViewModel(widget.user, PostDataSource(), CommentDatasource()), // ViewModel creation
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.boardName),
+        ),
+        body: Consumer<DiscoverDetailViewModel>(
+          builder: (context, viewModel, child) {
+            return GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(), // Hide keyboard when tapped outside
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(40, 30, 40, 10),
+                      child: Center(
+                        child: Text(
+                          widget.discover.title,
+                          style: const TextStyle(
+                            fontFamily: 'Sejonghospital',
+                            fontSize: 22,
+                          ),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: Image.network(
+                        widget.discover.imageUrl,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+
+                    // Like and Comment Buttons
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(40, 0, 40, 10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isLikeClicked = !isLikeClicked;
+                              });
+                            },
+                            child: Icon(
+                              Icons.thumb_up,
+                              color: isLikeClicked
+                                  ? const Color.fromRGBO(92, 67, 239, 1)
+                                  : Colors.grey,
+                              size: 30,
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          GestureDetector(
+                            onTap: () {
+                              _showCommentSheet(context); // Show comment sheet when comment icon is tapped
+                            },
+                            child: const Icon(
+                              Icons.comment,
+                              color: Colors.grey,
+                              size: 30,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 30),
+
+                    // Post Content
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(40, 0, 40, 10),
+                      child: Text(
+                        widget.discover.content,
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontFamily: 'SejonghospitalLight',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
       ),
-
     );
   }
 }

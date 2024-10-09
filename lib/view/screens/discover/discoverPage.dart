@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../model/discover.dart';
+import '../../../model/user.dart';
 import '../../../viewModel/discover/discoverPage_viewModel.dart';
 import 'discoverDetailPage.dart';
 
 class DiscoverPage extends StatefulWidget {
-  const DiscoverPage({Key? key}) : super(key: key);
+  final User user;
+  const DiscoverPage({Key? key, required this.user}) : super(key: key);
 
   @override
   State<DiscoverPage> createState() => _DiscoverPageState();
@@ -139,7 +141,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         return GestureDetector(
           onTap: () {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => DiscoverDetailPage(discover: posts[index]),
+              builder: (context) => DiscoverDetailPage(discover: posts[index], boardName: '', user: widget.user, postId: 0, currentUserNickname: '',),
             ));
           },
           child: Image.network(

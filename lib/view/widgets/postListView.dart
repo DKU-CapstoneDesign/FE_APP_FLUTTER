@@ -29,7 +29,7 @@ class _PostListViewState extends State<PostListView> {
                 print("post clicked!!!");
                 Navigator.of(context).push(MaterialPageRoute(
                     builder: (context) =>
-                        DiscoverDetailPage(discover: widget.cardForms[index])));
+                        DiscoverDetailPage(discover: widget.cardForms[index], boardName: '', user: widget. , postId: null, currentUserNickname: '',)));
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
