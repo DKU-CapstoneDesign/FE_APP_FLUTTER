@@ -2,7 +2,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ChatBotDataSource {
-  final String baseUrl = 'http://144.24.81.41:8080'; //(예비 서버)
+  final String baseUrl = 'http://144.24.81.41:80'; //(예비 서버)
 
   Future<String?> getChatBotResponse(String message) async{
     try{

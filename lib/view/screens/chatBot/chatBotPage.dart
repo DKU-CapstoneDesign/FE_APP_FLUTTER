@@ -23,7 +23,7 @@ class _ChatBotPageState extends State<ChatBotPage> {
           backgroundColor: Colors.white,
           centerTitle: true,
           title: const Text(
-            "챗봇 코리",
+            "코리 박사",
             style: TextStyle(
               fontSize: 20,
               color: Colors.black,
@@ -47,7 +47,7 @@ class _ChatBotPageState extends State<ChatBotPage> {
                       return Align(
                         alignment: isUserMessage ? Alignment.centerRight : Alignment.centerLeft,
                         child: Container(
-                          padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
+                          padding: const EdgeInsets.fromLTRB(10, 10, 10, 40),
                           margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
