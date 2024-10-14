@@ -1,3 +1,4 @@
+import 'package:capstonedesign/model/discover_festival.dart';
 import 'package:flutter/material.dart';
 import '../../dataSource/discover_dataSource.dart';
 import '../../dataSource/fortune_dataSource.dart';
@@ -8,7 +9,7 @@ import '../../model/user.dart';
 
 
 class HomePageViewModel extends ChangeNotifier {
-  List<Discover> festivals = [];
+  List<DiscoverFestival> festivals = [];
   String fortuneToday = '';
   List<dynamic> posts = [];
   final DiscoverDatasource discoverDatasource;

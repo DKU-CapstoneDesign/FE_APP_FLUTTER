@@ -2,19 +2,25 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ChatBotDataSource {
-  final String _baseUrl = 'http://ec2-44-223-67-116.compute-1.amazonaws.com:8080';
+  final String baseUrl = 'http://144.24.81.41:8080'; //(예비 서버)
 
-  Future<String> getChatBotResponse(String message) async {
-    final url = Uri.parse('$_baseUrl/chatbot/get-answer/');
-    final headers = {'Content-Type': 'application/json'};
-    final body = jsonEncode({'query': message});
-    final response = await http.post(url, headers: headers, body: body);
-
-    if (response.statusCode == 200) {
-      final jsonResponse = jsonDecode(response.body);
-      return jsonResponse['answer'];
-    } else {
-      throw Exception("챗봇 가져오기 실패 : ${response.body}");
+  Future<String?> getChatBotResponse(String message) async{
+    try{
+      final response = await http.post(
+        Uri.parse('$baseUrl/chatbot/get-answer/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'query': message}),
+      );
+      if (response.statusCode == 200) {
+        print("챗봇 성공");
+        final jsonResponse = jsonDecode(response.body);
+        return jsonResponse['answer'];
+      } else {
+        print("챗봇 가져오기 실패 : : ${response.body}");
+        return null;
+      }
+    } catch(e){
+      print('오류 발생: $e');
     }
   }
 }

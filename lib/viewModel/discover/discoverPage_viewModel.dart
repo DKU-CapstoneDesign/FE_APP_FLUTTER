@@ -1,30 +1,61 @@
 import 'package:flutter/material.dart';
+import '../../dataSource/discover_dataSource.dart';
 
-import '../../model/discover_sight.dart';
 
 
 class DiscoverViewModel extends ChangeNotifier {
-  //만약 정보를 가져오지 못했을 경우 에러를 표시함
-  final List<Discover> _discoverPosts = [
-    Discover(
-        title: '정보를 불러오지 못했습니다.',
-        content: '관리자에게 연락해주세요',
-        imageUrl: "https://img.freepik.com/free-vector/error-404-concept-for-landing-page_23-2148237748.jpg?w=1380&t=st=1725265497~exp=1725266097~hmac=d7a95048d969f691ccefe06c9d42eadd35021b0542f025271d0ca609a3945969"
-    ),
-    Discover(
-        title: '정보를 불러오지 못했습니다.',
-        content: '관리자에게 연락해주세요',
-        imageUrl: "https://img.freepik.com/free-vector/error-404-concept-for-landing-page_23-2148237748.jpg?w=1380&t=st=1725265497~exp=1725266097~hmac=d7a95048d969f691ccefe06c9d42eadd35021b0542f025271d0ca609a3945969"
-    ),
-  ];
+  DiscoverDatasource datasource = DiscoverDatasource();
+  // 이미지만 들고 옴
+  List<String> allImage  = [];
+  List<String> festivalImage = [];
+  List<String> sightImage = [];
+  List<String> advertiseImage = [];
 
-  List<Discover> get discoverPosts => _discoverPosts;
 
-  List<Discover> filteredDiscoverPosts(String category) {
-    if (category == 'all') {
-      return _discoverPosts;
+  //// discover 이미지 들고오기
+  Future<void> fetchAllPosts() async {
+    final festivals = await datasource.getFestivals();
+    final sights = await datasource.getSights();
+    final advertises = await datasource.getAdvertise();
+
+    // image_url만 각 리스트에 저장
+    festivalImage = festivals!.map((item) => item.image_url).toList();
+    sightImage = sights!.map((item) => item.image_url).toList();
+    advertiseImage = advertises!.map((item) => item.image_url).toList();
+
+    // 모든 image_url을 합쳐서 allImageUrls에 저장 후, 랜덤하게 섞음
+    allImage = [...festivalImage, ...sightImage, ...advertiseImage];
+    allImage.shuffle(); //랜덤
+    notifyListeners();
+  }
+  // 토글 클릭 시 필터링
+  List<String> filteredDiscoverPosts(String category) {
+    if (category == 'festival') {
+      return festivalImage;
+    } else if (category == 'sight') {
+      return sightImage;
+    } else if (category == 'advertise') {
+      return advertiseImage;
     } else {
-      return _discoverPosts.where((post) => post.title.toLowerCase().contains(category.toLowerCase())).toList();
+      return allImage;
     }
+  }
+
+
+  //// 지역 검색
+  Future<void> searchDiscover() async {
+    final festivals = await datasource.getFestivals();
+    final sights = await datasource.getSights();
+    final advertises = await datasource.getAdvertise();
+
+    // image_url만 각 리스트에 저장
+    festivalImage = festivals!.map((item) => item.image_url).toList();
+    sightImage = sights!.map((item) => item.image_url).toList();
+    advertiseImage = advertises!.map((item) => item.image_url).toList();
+
+    // 모든 image_url을 합쳐서 allImageUrls에 저장 후, 랜덤하게 섞음
+    allImage = [...festivalImage, ...sightImage, ...advertiseImage];
+    allImage.shuffle(); //랜덤
+    notifyListeners();
   }
 }

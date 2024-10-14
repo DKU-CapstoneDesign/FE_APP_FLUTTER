@@ -1,8 +1,7 @@
+import 'package:capstonedesign/model/discover_festival.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../model/discover_sight.dart';
-import '../../../model/user.dart';
-import '../../../viewModel/discover/discoverPage_viewModel.dart';
+import '../../../viewModel/discover/discoverDetailPage_viewModel.dart';
 import 'discoverDetailPage.dart';
 
 class DiscoverPage extends StatefulWidget {
@@ -13,12 +12,21 @@ class DiscoverPage extends StatefulWidget {
 }
 
 class _DiscoverPageState extends State<DiscoverPage> {
-  String selectedCategory = 'all';
+  String selectedCategory = 'all'; // 초기 카테고리 설정
+
+  @override
+  void initState() {
+    super.initState();
+    // ViewModel 초기화 및 데이터 로드
+   /* WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<DiscoverDetailViewModel>(context, listen: false).fetchAllPosts();
+    });*/
+  }
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => DiscoverViewModel(),
+      create: (_) => DiscoverDetailViewModel(),
       child: Scaffold(
         body: Padding(
           padding: const EdgeInsets.fromLTRB(0, 60, 0, 0),
@@ -26,7 +34,6 @@ class _DiscoverPageState extends State<DiscoverPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                //// 검색
                 const Row(
                   children: [
                     SizedBox(width: 30),
@@ -52,7 +59,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 ),
                 const SizedBox(height: 10),
 
-                //// 선택 토글
+                //// 카테고리 선택 버튼 (축제, 명소, 쇼핑)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -97,7 +104,34 @@ class _DiscoverPageState extends State<DiscoverPage> {
                             : Colors.black,
                         side: const BorderSide(color: Colors.white54, width: 1),
                       ),
-                      child: const Text('👀 주변 명소',
+                      child: const Text(
+                        '👀 주변 명소',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: 'SejonghospitalLight',
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          selectedCategory = selectedCategory == 'advertise'
+                              ? 'all'
+                              : 'advertise';
+                        });
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: selectedCategory == 'advertise'
+                            ? const Color.fromRGBO(92, 67, 239, 60)
+                            : Color(0xFFEDE7F6),
+                        foregroundColor: selectedCategory == 'advertise'
+                            ? const Color.fromRGBO(245, 245, 245, 20)
+                            : Colors.black,
+                        side: const BorderSide(color: Colors.white54, width: 1),
+                      ),
+                      child: const Text(
+                        '🛍 쇼핑',
                         style: TextStyle(
                           fontSize: 15,
                           fontFamily: 'SejonghospitalLight',
@@ -107,13 +141,13 @@ class _DiscoverPageState extends State<DiscoverPage> {
                   ],
                 ),
 
-               //// 글 목록
-                Consumer<DiscoverViewModel>(
+                //// 글 목록 표시
+                /*Consumer<DiscoverDetailViewModel>(
                   builder: (context, viewModel, child) {
                     final posts = viewModel.filteredDiscoverPosts(selectedCategory);
                     return _buildGridView(posts);
                   },
-                ),
+                ),*/
               ],
             ),
           ),
@@ -122,18 +156,17 @@ class _DiscoverPageState extends State<DiscoverPage> {
     );
   }
 
-
-  //// grid 형식의 글
-  Widget _buildGridView(List<Discover> posts) {
+  //// Grid 형태로 글 목록 표시
+  Widget _buildGridView(List<DiscoverFestival> posts) {
     return GridView.builder(
       padding: const EdgeInsets.fromLTRB(0, 30, 0, 10),
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3, // 열 갯수
-        crossAxisSpacing: 5, // 양 옆
-        mainAxisSpacing: 5, // 위 아래
-        childAspectRatio: 1, // 1:1
+        crossAxisSpacing: 5, // 좌우 간격
+        mainAxisSpacing: 5, // 상하 간격
+        childAspectRatio: 1, // 1:1 비율
       ),
       itemCount: posts.length,
       itemBuilder: (context, index) {
@@ -144,7 +177,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
             ));
           },
           child: Image.network(
-            posts[index].imageUrl,
+            posts[index].image_url,
             fit: BoxFit.cover,
           ),
         );

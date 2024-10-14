@@ -64,14 +64,50 @@ class DiscoverDatasource {
         },
       );
       if (response.statusCode == 200) {
-        final List<dynamic> sightJson = jsonDecode(utf8.decode(response.bodyBytes));
+        final List<dynamic> advertiseJson = jsonDecode(utf8.decode(response.bodyBytes));
         // Advertise 객체로 변환하여 반환;
-        return sightJson.map((json) => DiscoverAdvertisement.fromJson(json)).toList();
+        return advertiseJson.map((json) => DiscoverAdvertisement.fromJson(json)).toList();
       } else {
         print("쇼핑 가져오기 실패: : ${response.body}");
         return null;
       }
     } catch(e){
+      print('오류 발생: $e');
+    }
+  }
+
+
+  //////지역 검색하기
+  List<Map<String, dynamic>> festivalResult = [];
+  List<Map<String, dynamic>> sightResult = [];
+
+  Future<void> searchDiscover(String region) async {
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/search/get-region-data/'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'region': region}),
+      );
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+
+        List<dynamic> searchResult = jsonResponse['answer']; // 전체 결과를 저장
+        festivalResult.clear();
+        sightResult.clear();
+
+        // 검색 결과를 분류하여 festivalResult와 sightResult에 추가
+        searchResult.forEach((eachResult) {
+          if (eachResult['type'] == 'festival') {
+            festivalResult.add(eachResult);
+          } else if (eachResult['type'] == 'sight') {
+            sightResult.add(eachResult);
+          }
+        });
+      } else {
+        print("검색 실패: ${response.body}");
+      }
+    } catch (e) {
       print('오류 발생: $e');
     }
   }

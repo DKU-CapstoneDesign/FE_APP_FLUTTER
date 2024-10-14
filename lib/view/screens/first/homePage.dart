@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
         discoverDatasource: DiscoverDatasource(),
         fortuneDataSource: FortuneDataSource(),
         postDataSource: PostDataSource(),
-      )..loadInitialData(), //loadInitialData()를 통해 데이터를 즉시 가져오기
+      ),//..loadInitialData(), //loadInitialData()를 통해 데이터를 즉시 가져오기
 
       child: Scaffold(
         body: Consumer<HomePageViewModel>(
@@ -154,17 +154,17 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.all(8.0),
                             child: isFestivalSelected
                                 ? PostListView(
-                              cardForms: viewModel.festivals.isNotEmpty
-                                  ? viewModel.festivals.map((festival) {
-                                return DiscoverFestival(
-                                  name: festival.name,
+                              cardForms: //viewModel.festivals.isNotEmpty
+                                   //` ? viewModel.festivals.map((festival) {
+                               /* return DiscoverFestival(
+                                  name: festival?.name,
                                   image_url: festival.image_url,
                                   address: festival.address,
                                   period : festival.period,
                                   detail_info : festival.detail_info
-                                );
-                              }).toList()
-                                  : [errorPost],
+                                );*/
+                              //}).toList()
+                                   [errorPost],
                             )
 
                             //TODAY를 눌렀을 때

@@ -1,10 +1,11 @@
+import 'package:capstonedesign/model/discover_festival.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/model/discover_sight.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../screens/discover/discoverDetailPage.dart';
 
 class PostListView extends StatefulWidget {
-  final List<Discover> cardForms;
+  final List<DiscoverFestival> cardForms;
   const PostListView({Key? key, required this.cardForms}) : super(key: key);
 
   @override
@@ -37,7 +38,7 @@ class _PostListViewState extends State<PostListView> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Image.network(
-                      widget.cardForms[index].imageUrl,
+                      widget.cardForms[index].image_url,
                       height: 250.0,
                       width: double.infinity,
                       fit: BoxFit.cover,
@@ -55,7 +56,7 @@ class _PostListViewState extends State<PostListView> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.cardForms[index].title,
+                              widget.cardForms[index].name,
                               style: const TextStyle(
                                 fontSize: 22,
                                 color: Colors.white,

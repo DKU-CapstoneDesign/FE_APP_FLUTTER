@@ -1,3 +1,4 @@
+import 'package:capstonedesign/model/discover_festival.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -8,7 +9,7 @@ import '../../../model/user.dart';
 import '../../../viewModel/discover/discoverDetailPage_viewModel.dart';
 
 class DiscoverDetailPage extends StatefulWidget {
-  final Discover discover;
+  final DiscoverFestival discover;
 
   const DiscoverDetailPage({
     Key? key,
@@ -99,7 +100,7 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
               Expanded(
                 child: TextField(
                   focusNode: _focusNode, // Control keyboard focus
-                  controller: viewModel.commentController,
+
                   decoration: InputDecoration(
                     hintText: '댓글을 입력하세요.',
                     contentPadding: const EdgeInsets.symmetric(
@@ -164,7 +165,7 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
                       padding: const EdgeInsets.fromLTRB(40, 0, 40, 10),
                       child: Center(
                         child: Text(
-                          widget.discover.title,
+                          widget.discover.name,
                           style: const TextStyle(
                             fontFamily: 'Sejonghospital',
                             fontSize: 22,
@@ -175,7 +176,7 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
                     const SizedBox(height: 20),
                     Center(
                       child: Image.network(
-                        widget.discover.imageUrl,
+                        widget.discover.image_url,
                         width: double.infinity,
                         fit: BoxFit.cover,
                       ),
@@ -223,7 +224,7 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
                     Padding(
                       padding: const EdgeInsets.fromLTRB(40, 0, 40, 10),
                       child: Text(
-                        widget.discover.content,
+                        widget.discover.detail_info,
                         style: const TextStyle(
                           fontSize: 17,
                           fontFamily: 'SejonghospitalLight',

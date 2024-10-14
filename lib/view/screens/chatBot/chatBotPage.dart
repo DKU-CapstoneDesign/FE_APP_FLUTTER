@@ -11,6 +11,8 @@ class ChatBotPage extends StatefulWidget {
 }
 
 class _ChatBotPageState extends State<ChatBotPage> {
+  late ChatBotViewModel viewModel;
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
