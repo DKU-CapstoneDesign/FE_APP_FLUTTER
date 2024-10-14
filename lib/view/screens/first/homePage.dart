@@ -1,9 +1,11 @@
 import 'package:capstonedesign/dataSource/post_dataSource.dart';
+import 'package:capstonedesign/model/discover_festival.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../dataSource/comment_dataSource.dart';
 import '../../../dataSource/discover_dataSource.dart';
 import '../../../dataSource/fortune_dataSource.dart';
+import '../../../model/discover_festival.dart';
 import '../../../model/discover_sight.dart';
 import '../../../model/user.dart';
 import '../../../viewModel/first/homePage_viewModel.dart';
@@ -23,14 +25,13 @@ class _HomePageState extends State<HomePage> {
   bool isFestivalSelected = true; // 탭바 컨트롤을 위한 변수
 
   //만약 정보를 가져오지 못했을 경우 에러를 표시함
-  Discover errorPost = Discover(
-    title: '정보를 불러오지 못했습니다.',
-    content: '관리자에게 연락해주세요',
-    imageUrl:
-    "https://img.freepik.com/free-vector/error-404-concept-for-landing-page_23-2148237748.jpg?w=1380&t=st=1725265497~exp=1725266097~hmac=d7a95048d969f691ccefe06c9d42eadd35021b0542f025271d0ca609a3945969",
+  DiscoverFestival errorPost = DiscoverFestival(
+    name:'정보를 불러오지 못했습니다.',
+    image_url:  "https://img.freepik.com/free-vector/error-404-concept-for-landing-page_23-2148237748.jpg?w=1380&t=st=1725265497~exp=1725266097~hmac=d7a95048d969f691ccefe06c9d42eadd35021b0542f025271d0ca609a3945969",
+    address: "",
+    period : "",
+    detail_info : '관리자에게 연락해주세요',
   );
-
-
 
 
   @override
@@ -148,16 +149,19 @@ class _HomePageState extends State<HomePage> {
                           // PostListView 위젯을 이용해서 내용 컨트롤
 
                           // DISCOVER를 눌렀을 떄
+                          // 축제 정보를 가져옴
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: isFestivalSelected
                                 ? PostListView(
                               cardForms: viewModel.festivals.isNotEmpty
                                   ? viewModel.festivals.map((festival) {
-                                return Discover(
-                                  title: festival.title,
-                                  content: festival.content,
-                                  imageUrl: festival.imageUrl,
+                                return DiscoverFestival(
+                                  name: festival.name,
+                                  image_url: festival.image_url,
+                                  address: festival.address,
+                                  period : festival.period,
+                                  detail_info : festival.detail_info
                                 );
                               }).toList()
                                   : [errorPost],

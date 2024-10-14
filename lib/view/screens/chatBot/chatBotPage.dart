@@ -106,8 +106,6 @@ class _ChatBotPageState extends State<ChatBotPage> {
                 },
               ),
             ),
-
-            // 메시지 입력 창
             ChatInputField(),
           ],
         ),
@@ -116,6 +114,8 @@ class _ChatBotPageState extends State<ChatBotPage> {
   }
 }
 
+
+// 메시지 입력 창
 class ChatInputField extends StatefulWidget {
   @override
   _ChatInputFieldState createState() => _ChatInputFieldState();

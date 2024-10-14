@@ -5,11 +5,10 @@ import '../../dataSource/chatBot_dataSource.dart';
 class ChatBotViewModel extends ChangeNotifier {
   final ChatBotDataSource _dataSource;
   final List<Chatbot> _messages = [Chatbot(text: "안녕하세요 :)\n여러분의 한국 생활을 도와주는 코리박사입니다! 궁금하신걸 뭐든지 물어봐주세요!", isUserMessage: false)];
-
   ChatBotViewModel(this._dataSource);
-
   List<Chatbot> get messages => List.unmodifiable(_messages);
 
+  //챗봇에게 메시지 보내기
   Future<void> sendMessage(String message) async {
     if (message.isNotEmpty) {
       _messages.add(Chatbot(text: message, isUserMessage: true));
