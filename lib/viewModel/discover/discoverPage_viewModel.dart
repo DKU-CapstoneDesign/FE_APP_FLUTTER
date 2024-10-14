@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../model/discover.dart';
+import '../../model/discover_sight.dart';
 
 
 class DiscoverViewModel extends ChangeNotifier {

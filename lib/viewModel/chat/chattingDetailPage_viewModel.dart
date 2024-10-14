@@ -51,11 +51,11 @@ class ChattingDetailPageViewModel extends ChangeNotifier {
   }
 
   //채팅방 읽음 처리
-  Future<bool> setChatReadStatus()  async {
+ /* Future<bool> setChatReadStatus()  async {
     final isRead = dataSource.setChatReadStatus(chattingList!.id.toString(), currentUserNickname); //receiver
     print(isRead);
     return isRead;
-  }
+  }*/
 
   @override
   void dispose() {

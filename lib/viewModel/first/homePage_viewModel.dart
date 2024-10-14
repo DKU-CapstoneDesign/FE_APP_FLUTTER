@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../dataSource/discover_dataSource.dart';
 import '../../dataSource/fortune_dataSource.dart';
 import '../../dataSource/post_dataSource.dart';
-import '../../model/discover.dart';
+import '../../model/discover_sight.dart';
 import '../../model/fortune.dart';
 import '../../model/user.dart';
 
@@ -21,34 +21,23 @@ class HomePageViewModel extends ChangeNotifier {
     required this.postDataSource,
   });
 
+
+  // 축제 정보
   Future<void> fetchFestivals() async {
-    try {
-      festivals = (await discoverDatasource.fetchFestivals())!;
-      notifyListeners();
-    } catch (e) {
-      // Handle error
-    }
-  }
-
-  Future<void> getFortune(String birthMonth, String birthDay) async {
-    try {
-      Fortune fortune = await fortuneDataSource.getFortune(birthMonth, birthDay);
-      fortuneToday = fortune.answer;
-      notifyListeners();
-    } catch (e) {
-      // Handle error
-    }
-  }
-
-  // 게시물 목록 가져오기
-  Future<void> getPostList(User user) async {
-    posts = (await postDataSource.getAllPost(user))!;
-    print("1111111$posts");
+    festivals = (await discoverDatasource.getFestivals())!;
     notifyListeners();
   }
 
-  void loadInitialData() {
-    fetchFestivals();
-    getFortune('1', '22');
+  // 오늘의 운세
+  Future<void> getFortune(String birthMonth, String birthDay) async {
+    Fortune fortune = await fortuneDataSource.getFortune(birthMonth, birthDay);
+    fortuneToday = fortune.answer;
+    notifyListeners();
+  }
+
+  // 가장 최근 게시물
+  Future<void> getPostList(User user) async {
+    posts = (await postDataSource.getAllPost(user))!;
+    notifyListeners();
   }
 }

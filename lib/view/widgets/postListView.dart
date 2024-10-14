@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:capstonedesign/model/discover.dart';
+import 'package:capstonedesign/model/discover_sight.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import '../screens/discover/discoverDetailPage.dart';
 
@@ -26,10 +26,9 @@ class _PostListViewState extends State<PostListView> {
             ),
             child: GestureDetector(
               onTap: () {
-                print("post clicked!!!");
                 Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) =>
-                        DiscoverDetailPage(discover: widget.cardForms[index], boardName: '', user: widget. , postId: null, currentUserNickname: '',)));
+                  builder: (context) => DiscoverDetailPage(discover: widget.cardForms[index]),
+                ));
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
@@ -64,7 +63,7 @@ class _PostListViewState extends State<PostListView> {
                               ),
                             ),
                             SizedBox(height: 10),
-                            Divider(
+                            const Divider(
                               color: Colors.white,
                               thickness: 1,
                             ),

@@ -25,10 +25,11 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    // 읽음 처리는 추후 구현
+   /* WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<ChattingDetailPageViewModel>(context, listen: false)
           .setChatReadStatus();
-    });
+    });*/
   }
 
   @override
@@ -63,7 +64,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                     itemBuilder: (context, index) {
                       final chatting = viewModel.messages[index];
                       bool isCurrentUser = chatting.sender == widget.currentUserNickname;
-                      bool isRead = viewModel.setChatReadStatus() as bool;
+                      // 읽음 처리는 추후 구현
+                      //bool isRead = viewModel.setChatReadStatus() as bool;
 
 
                       return Align(
@@ -80,7 +82,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
 
-                              // 상대방이 읽지 않으면 메시지 옆에 1이 뜨도록
+                              // 읽음 처리는 추후 구현
+                             /* // 상대방이 읽지 않으면 메시지 옆에 1이 뜨도록
                               if (isCurrentUser && isRead==false)
                                 const Padding(
                                   padding: EdgeInsets.only(right: 8.0),
@@ -92,9 +95,9 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                       ),
                                     ),
                                   ),
-
+*/
                               Container(
-                                padding: const EdgeInsets.all(20),
+                                padding: const EdgeInsets.all(15),
                                 margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                                 decoration: BoxDecoration(
                                   color: isCurrentUser

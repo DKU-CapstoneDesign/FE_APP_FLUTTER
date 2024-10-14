@@ -3,24 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../dataSource/comment_dataSource.dart';
 import '../../../dataSource/post_dataSource.dart';
-import '../../../model/discover.dart';
+import '../../../model/discover_sight.dart';
 import '../../../model/user.dart';
 import '../../../viewModel/discover/discoverDetailPage_viewModel.dart';
 
 class DiscoverDetailPage extends StatefulWidget {
   final Discover discover;
-  final String boardName;
-  final User user;
-  final int postId;
-  final String currentUserNickname;
 
   const DiscoverDetailPage({
     Key? key,
     required this.discover,
-    required this.boardName,
-    required this.user,
-    required this.postId,
-    required this.currentUserNickname,
   }) : super(key: key);
 
   @override
@@ -37,8 +29,6 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
     // Initialize ViewModel and get post info and comments after the widget is built
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final viewModel = Provider.of<DiscoverDetailViewModel>(context, listen: false);
-      await viewModel.getPostInfo(widget.postId, widget.user);
-      await viewModel.getComment(widget.postId);
     });
   }
 
@@ -83,9 +73,9 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
         const SizedBox(height: 20),
 
         // Comment List
-        Expanded(
+       /* Expanded(
           child: ListView.builder(
-            itemCount: viewModel.post.commentList.length,
+            itemCount: viewModel.commentList.length,
             itemBuilder: (context, index) {
               final comment = viewModel.post.commentList[index];
               return ListTile(
@@ -99,7 +89,7 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
               );
             },
           ),
-        ),
+        ),*/
 
         // Comment Input Field
         Padding(
@@ -139,7 +129,7 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
                     color: Color.fromRGBO(92, 67, 239, 50),
                   ),
                   onPressed: () async {
-                    await viewModel.createComment(widget.postId, 0); // Add a comment
+
                     _focusNode.unfocus(); // Dismiss the keyboard
                   },
                 ),
@@ -158,10 +148,9 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (context) => DiscoverDetailViewModel(widget.user, PostDataSource(), CommentDatasource()), // ViewModel creation
+      create: (context) => DiscoverDetailViewModel(), // ViewModel creation
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.boardName),
         ),
         body: Consumer<DiscoverDetailViewModel>(
           builder: (context, viewModel, child) {
@@ -172,7 +161,7 @@ class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(40, 30, 40, 10),
+                      padding: const EdgeInsets.fromLTRB(40, 0, 40, 10),
                       child: Center(
                         child: Text(
                           widget.discover.title,

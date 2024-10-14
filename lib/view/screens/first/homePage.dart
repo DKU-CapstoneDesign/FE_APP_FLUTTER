@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import '../../../dataSource/comment_dataSource.dart';
 import '../../../dataSource/discover_dataSource.dart';
 import '../../../dataSource/fortune_dataSource.dart';
-import '../../../model/discover.dart';
+import '../../../model/discover_sight.dart';
 import '../../../model/user.dart';
 import '../../../viewModel/first/homePage_viewModel.dart';
 import '../../../viewModel/post/postDetailPage_viewModel.dart';
@@ -178,9 +178,9 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     const Center(
                                       child: Padding(
-                                        padding: EdgeInsets.fromLTRB(10, 20, 10, 10),
+                                        padding: EdgeInsets.fromLTRB(10, 40, 10, 10),
                                         child: Text(
-                                          "인기 급 상승 글 🔥",
+                                          "최신 글, 지금 바로 확인하세요!",
                                           style: TextStyle(
                                             fontSize: 20,
                                             fontFamily: 'Sejonghospital',
