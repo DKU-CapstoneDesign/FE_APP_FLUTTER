@@ -35,16 +35,21 @@ class _HomePageState extends State<HomePage> {
 
 
   @override
+  void initState() {
+    super.initState();
+    // 운세
+    String birthMonth = widget.user.birthDate.substring(5, 7);
+    String birthDay = widget.user.birthDate.substring(8, 10);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final viewModel = Provider.of<HomePageViewModel>(context, listen: false);
+      await viewModel.getFortune(birthMonth,birthDay);
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     //상태 관리
-    return ChangeNotifierProvider(
-      create: (_) => HomePageViewModel(
-        discoverDatasource: DiscoverDatasource(),
-        fortuneDataSource: FortuneDataSource(),
-        postDataSource: PostDataSource(),
-      ),//..loadInitialData(), //loadInitialData()를 통해 데이터를 즉시 가져오기
-
-      child: Scaffold(
+    return Scaffold(
         body: Consumer<HomePageViewModel>(
           builder: (context, viewModel, child) {
             return SafeArea(
@@ -283,11 +288,33 @@ class _HomePageState extends State<HomePage> {
                                   endIndent: 150,
                                 ),
                                 SizedBox(height: 10),
-                                Text(
-                                  ' ❝    ${viewModel.fortuneToday}    ❞',
-                                  style: const TextStyle(fontSize: 20, fontFamily: 'Sejonghospitallight'),
+                                Padding(
+                                  padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        '❝',
+                                        style: TextStyle(fontSize: 20, fontFamily: 'Sejonghospitallight'),
+                                      ),
+                                      Text(
+                                        '${viewModel.fortuneToday}',
+                                        style: const TextStyle(fontSize: 20, fontFamily: 'Sejonghospitallight'),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      const Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          Text(
+                                            '❞',
+                                            style: TextStyle(fontSize: 20, fontFamily: 'Sejonghospitallight'),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                                SizedBox(height: 100),
+                                const SizedBox(height: 100),
                               ],
                             ),
                           )
@@ -300,7 +327,6 @@ class _HomePageState extends State<HomePage> {
             );
           },
         ),
-      ),
     );
   }
 }

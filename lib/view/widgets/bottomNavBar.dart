@@ -1,5 +1,9 @@
+import 'package:capstonedesign/dataSource/discover_dataSource.dart';
+import 'package:capstonedesign/dataSource/fortune_dataSource.dart';
+import 'package:capstonedesign/dataSource/post_dataSource.dart';
 import 'package:capstonedesign/view/screens/discover/discoverPage.dart';
 import 'package:capstonedesign/view/screens/mypage/myPage.dart';
+import 'package:capstonedesign/viewModel/first/homePage_viewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/post/forumPage.dart';
 import 'package:capstonedesign/view/screens/chat/chattingListPage.dart';
@@ -26,7 +30,10 @@ class _BottomNavBarState extends State<BottomNavBar> {
     super.initState();
     // User 객체를 각 페이지에 전달
     _pages = <Widget>[
-      HomePage(user: widget.user),
+      ChangeNotifierProvider(
+        create: (_) => HomePageViewModel(discoverDatasource: DiscoverDatasource(), fortuneDataSource: FortuneDataSource(), postDataSource: PostDataSource()),
+        child: HomePage(user: widget.user),
+      ),
       DiscoverPage(),
       ForumPage(user: widget.user),
       ChangeNotifierProvider(

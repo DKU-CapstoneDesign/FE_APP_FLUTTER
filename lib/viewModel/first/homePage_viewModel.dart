@@ -31,8 +31,8 @@ class HomePageViewModel extends ChangeNotifier {
 
   // 오늘의 운세
   Future<void> getFortune(String birthMonth, String birthDay) async {
-    Fortune fortune = await fortuneDataSource.getFortune(birthMonth, birthDay);
-    fortuneToday = fortune.answer;
+    Fortune? fortune = await fortuneDataSource.getFortune(birthMonth, birthDay);
+    fortuneToday = fortune!.answer;
     notifyListeners();
   }
 
