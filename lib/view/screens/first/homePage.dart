@@ -279,8 +279,12 @@ class _HomePageState extends State<HomePage> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 const Text(
-                                  " 오늘의 운세 ",
-                                  style: TextStyle(fontSize: 20, fontFamily: 'SejonghospitalLight'),
+                                  "오늘의 운세",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontFamily: 'SejonghospitalBold',
+                                    color: Color(0xFF4A4A4A),
+                                  ),
                                 ),
                                 const SizedBox(height: 10),
                                 const Divider(

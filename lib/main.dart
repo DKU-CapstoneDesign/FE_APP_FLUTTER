@@ -16,6 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'First Logo Page',
+      debugShowCheckedModeBanner: false,
       home: FirstLogoPage(),
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,
