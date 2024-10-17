@@ -6,7 +6,7 @@ import '../model/discover_sight.dart';
 
 
 class DiscoverDatasource {
-  String baseUrl= 'http://144.24.81.41:8080'; // 예비 서버
+  String baseUrl= 'http://144.24.81.41:80'; // 예비 서버
 
   //////축제 가져오기
   Future<List<DiscoverFestival>?> getFestivals() async {

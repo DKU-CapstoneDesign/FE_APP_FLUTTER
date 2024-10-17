@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../../dataSource/discover_dataSource.dart';
 import '../../dataSource/fortune_dataSource.dart';
 import '../../dataSource/post_dataSource.dart';
-import '../../model/discover_sight.dart';
 import '../../model/fortune.dart';
 import '../../model/user.dart';
 
@@ -41,4 +40,6 @@ class HomePageViewModel extends ChangeNotifier {
     posts = (await postDataSource.getAllPost(user))!;
     notifyListeners();
   }
+
+
 }

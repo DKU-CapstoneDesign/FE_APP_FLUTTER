@@ -63,7 +63,15 @@ class _PostListViewState extends State<PostListView> {
                                 fontFamily: 'SejonghospitalBold',
                               ),
                             ),
-                            SizedBox(height: 10),
+                            SizedBox(height: 5),
+                            Text(
+                              widget.cardForms[index].period,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontFamily: 'SejonghospitalLight',
+                              ),
+                            ),
                             const Divider(
                               color: Colors.white,
                               thickness: 1,
@@ -99,7 +107,7 @@ class _PostListViewState extends State<PostListView> {
         initialPage: 0,
         enableInfiniteScroll: true, //무한 스크롤 활성화
         autoPlay: true, //자동 재생 활성화
-        autoPlayInterval: Duration(seconds: 6),
+        autoPlayInterval: Duration(seconds: 15),
         scrollDirection: Axis.horizontal,
       ),
     );

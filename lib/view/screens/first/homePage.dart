@@ -43,6 +43,7 @@ class _HomePageState extends State<HomePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final viewModel = Provider.of<HomePageViewModel>(context, listen: false);
       await viewModel.getFortune(birthMonth,birthDay);
+      await viewModel.fetchFestivals();
     });
   }
 
@@ -159,17 +160,17 @@ class _HomePageState extends State<HomePage> {
                             padding: const EdgeInsets.all(8.0),
                             child: isFestivalSelected
                                 ? PostListView(
-                              cardForms: //viewModel.festivals.isNotEmpty
-                                   //` ? viewModel.festivals.map((festival) {
-                               /* return DiscoverFestival(
-                                  name: festival?.name,
+                              cardForms: viewModel.festivals.isNotEmpty
+                                    ? viewModel.festivals.map((festival) {
+                               return DiscoverFestival(
+                                  name: festival!.name,
                                   image_url: festival.image_url,
                                   address: festival.address,
                                   period : festival.period,
                                   detail_info : festival.detail_info
-                                );*/
-                              //}).toList()
-                                   [errorPost],
+                                );
+                              }).toList()
+                                   : [errorPost],
                             )
 
                             //TODAY를 눌렀을 때
@@ -282,7 +283,7 @@ class _HomePageState extends State<HomePage> {
                                   "오늘의 운세",
                                   style: TextStyle(
                                     fontSize: 20,
-                                    fontFamily: 'SejonghospitalBold',
+                                    fontFamily: 'SejonghospitalLight',
                                     color: Color(0xFF4A4A4A),
                                   ),
                                 ),
