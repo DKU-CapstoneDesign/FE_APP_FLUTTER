@@ -73,7 +73,6 @@ class _PostListViewState extends State<PostListView> {
                         ),
                       ],
                     ),
-                    // White box below the image
                     Container(
                       width: double.infinity,
                       padding: const EdgeInsets.all(15.0),

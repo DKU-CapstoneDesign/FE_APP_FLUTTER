@@ -2,72 +2,56 @@ import 'package:flutter/material.dart';
 import '../../dataSource/discover_dataSource.dart';
 
 class DiscoverViewModel extends ChangeNotifier {
-  DiscoverDatasource datasource = DiscoverDatasource();
-  // 이미지만 들고 옴
-  List<String> allImage = [];
-  List<String> festivalImage = [];
-  List<String> sightImage = [];
-  List<String> advertiseImage = [];
+  DiscoverDatasource datasource;
+  bool loading = false;
 
-  DiscoverViewModel(DiscoverDatasource discoverDatasource);
+  List<dynamic> festivals = [];
+  List<dynamic> sights = [];
+  List<dynamic> advertises = [];
 
-  //// discover 이미지 들고오기
-  Future<void> fetchAllPosts() async {
-    final festivals = await datasource.getFestivals();
-    final sights = await datasource.getSights();
-    final advertises = await datasource.getAdvertise();
+  List<dynamic> allItems = []; // This will store all items (festivals, sights, advertises)
 
-    // image_url만 각 리스트에 저장
-    festivalImage = festivals!.map((item) => item.image_url).toList();
-    sightImage = sights!.map((item) => item.image_url).toList();
-    advertiseImage = advertises!.map((item) => item.image_url).toList();
+  DiscoverViewModel({required this.datasource});
 
-    // 모든 image_url을 합쳐서 allImage에 저장 후, 랜덤하게 섞음
-    allImage = [...festivalImage, ...sightImage, ...advertiseImage];
-    allImage.shuffle(); //랜덤
+  Future<void> getAllPosts() async {
+    loading = true;
+    notifyListeners();
+
+    festivals = (await datasource.getFestivals()) ?? [];
+    sights = (await datasource.getSights()) ?? [];
+    advertises = (await datasource.getAdvertise()) ?? [];
+
+    // Combine all items into a single list
+    allItems = [...festivals, ...sights, ...advertises];
+    allItems.shuffle(); // Optional: shuffle the items
+
+    loading = false;
     notifyListeners();
   }
 
-  // 토글 클릭 시 필터링
-  List<String> filteredDiscoverPosts(String category) {
+  /// Filter items by category
+  List<dynamic> filteredDiscoverPosts(String category) {
     if (category == 'festival') {
-      return festivalImage;
+      return festivals;
     } else if (category == 'sight') {
-      return sightImage;
+      return sights;
     } else if (category == 'advertise') {
-      return advertiseImage;
+      return advertises;
     } else {
-      return allImage;
+      return allItems;
     }
   }
 
   /// Get category of an image
-  String getImageCategory(String imageUrl) {
-    if (festivalImage.contains(imageUrl)) {
+  String getItemCategory(dynamic item) {
+    if (festivals.contains(item)) {
       return 'festival';
-    } else if (sightImage.contains(imageUrl)) {
+    } else if (sights.contains(item)) {
       return 'sight';
-    } else if (advertiseImage.contains(imageUrl)) {
+    } else if (advertises.contains(item)) {
       return 'advertise';
     } else {
-      return 'unknown'; // If not found
+      return 'unknown';
     }
-  }
-
-  //// 지역 검색
-  Future<void> searchDiscover() async {
-    final festivals = await datasource.getFestivals();
-    final sights = await datasource.getSights();
-    final advertises = await datasource.getAdvertise();
-
-    // image_url만 각 리스트에 저장
-    festivalImage = festivals!.map((item) => item.image_url).toList();
-    sightImage = sights!.map((item) => item.image_url).toList();
-    advertiseImage = advertises!.map((item) => item.image_url).toList();
-
-    // 모든 image_url을 합쳐서 allImage에 저장 후, 랜덤하게 섞음
-    allImage = [...festivalImage, ...sightImage, ...advertiseImage];
-    allImage.shuffle(); //랜덤
-    notifyListeners();
   }
 }

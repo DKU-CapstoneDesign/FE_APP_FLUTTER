@@ -8,6 +8,8 @@ import 'discoverDetailPage_advertisement.dart';
 import 'discoverDetailPage_festival.dart';
 import 'discoverDetailPage_sight.dart';
 
+enum DiscoverCategory { all, festival, sight, advertise }
+
 class DiscoverPage extends StatefulWidget {
   const DiscoverPage({Key? key}) : super(key: key);
 
@@ -16,13 +18,13 @@ class DiscoverPage extends StatefulWidget {
 }
 
 class _DiscoverPageState extends State<DiscoverPage> {
-  String selectedCategory = 'all'; // Initial category setting
+  DiscoverCategory selectedCategory = DiscoverCategory.all;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<DiscoverViewModel>(context, listen: false).fetchAllPosts();
+      Provider.of<DiscoverViewModel>(context, listen: false).getAllPosts();
     });
   }
 
@@ -64,18 +66,18 @@ class _DiscoverPageState extends State<DiscoverPage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _buildCategoryButton('🎡 축제', 'festival'),
+                  _buildCategoryButton('🎡 축제', DiscoverCategory.festival),
                   const SizedBox(width: 10),
-                  _buildCategoryButton('👀 주변 명소', 'sight'),
+                  _buildCategoryButton('👀 주변 명소', DiscoverCategory.sight),
                   const SizedBox(width: 10),
-                  _buildCategoryButton('🛍 쇼핑', 'advertise'),
+                  _buildCategoryButton('🛍 쇼핑', DiscoverCategory.advertise),
                 ],
               ),
 
               // Display the grid of posts
               Consumer<DiscoverViewModel>(
                 builder: (context, viewModel, child) {
-                  final posts = viewModel.filteredDiscoverPosts(selectedCategory);
+                  final posts = viewModel.filteredDiscoverPosts(selectedCategory.name);
                   return _buildGridView(posts, viewModel);
                 },
               ),
@@ -87,11 +89,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
   }
 
   // Build the category selection button
-  Widget _buildCategoryButton(String title, String category) {
+  Widget _buildCategoryButton(String title, DiscoverCategory category) {
     return ElevatedButton(
       onPressed: () {
         setState(() {
-          selectedCategory = selectedCategory == category ? 'all' : category;
+          selectedCategory = selectedCategory == category ? DiscoverCategory.all : category;
         });
       },
       style: ElevatedButton.styleFrom(
@@ -114,44 +116,47 @@ class _DiscoverPageState extends State<DiscoverPage> {
   }
 
   // Grid view for displaying posts
-  Widget _buildGridView(List<String> posts, DiscoverViewModel viewModel) {
+  Widget _buildGridView(List<dynamic> posts, DiscoverViewModel viewModel) {
     return GridView.builder(
       padding: const EdgeInsets.fromLTRB(0, 30, 0, 10),
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3, // Number of columns
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: (MediaQuery.of(context).size.width ~/ 120), // Responsive grid
         crossAxisSpacing: 5, // Horizontal spacing
         mainAxisSpacing: 5, // Vertical spacing
         childAspectRatio: 1, // 1:1 aspect ratio
       ),
       itemCount: posts.length,
       itemBuilder: (context, index) {
-        String imageUrl = posts[index];
+        final item = posts[index];
+        final imageUrl = item.image_url; // Extract image URL from the item
 
         return GestureDetector(
           onTap: () {
-            // Get the category of the tapped image
-            String category = viewModel.getImageCategory(imageUrl);
+            String category = viewModel.getItemCategory(item);
 
-           /* // Navigate based on the category
+            // Navigate based on the category and pass the relevant model
             if (category == 'festival') {
               Navigator.of(context).push(MaterialPageRoute(
-                //builder: (context) => DiscoverFestivalDetailPage(discover: DiscoverFestival()),
+                builder: (context) => DiscoverFestivalDetailPage(discover: item),
               ));
             } else if (category == 'sight') {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => DiscoverSightDetailPage(discover: viewModel.getSightByImageUrl(imageUrl)),
+                builder: (context) => DiscoverSightDetailPage(discover: item),
               ));
             } else if (category == 'advertise') {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => DiscoverAdvertisementDetailPage(discover: viewModel.getAdvertiseByImageUrl(imageUrl)),
+                builder: (context) => DiscoverAdvertisementDetailPage(discover: item),
               ));
-            }*/
+            }
           },
           child: Image.network(
             imageUrl, // Display image
             fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return const Icon(Icons.error); // Handle image load error
+            },
           ),
         );
       },
