@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/chat/chattingDetailPage.dart';
 import 'package:capstonedesign/view/widgets/infoBox.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
 import '../../../model/user.dart';
 import '../../../viewModel/chat/chattingListPage_viewModel.dart';
@@ -35,7 +36,7 @@ class _ChattingListPageState extends State<ChattingListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(92, 67, 239, 60),
+        backgroundColor: const Color.fromRGBO(92, 67, 239, 60),
         automaticallyImplyLeading: false,
         centerTitle: true,
         title: const Text(
@@ -47,104 +48,120 @@ class _ChattingListPageState extends State<ChattingListPage> {
           ),
         ),
       ),
-      body: Consumer<ChattingListViewModel>(
-        builder: (context, viewModel, child) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 20.0),
-            child: Column(
-              children: [
-                SizedBox(height: 10.0),
-                Infobox("채팅 페이지입니다", "1:1 대화로 친구를 만들어봐요"),
-                SizedBox(height: 35.0),
-                Expanded(
-                  child: viewModel.chatList.isEmpty
-                      ? Center(
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: const Text(
-                        "채팅방이 없습니다.\n게시판에서 채팅을 시작할 수 있어요!",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 16.0,
-                        ),
+      body: Column(
+        children: [
+          const SizedBox(height: 10.0),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
+            child: Infobox("채팅 페이지입니다", "1:1 대화로 친구를 만들어봐요"),
+          ),
+          const SizedBox(height: 35.0),
+          Expanded(
+            child: Consumer<ChattingListViewModel>(
+              builder: (context, viewModel, child) {
+                // Loading indicator
+                if (viewModel.loading) {
+                  return const Center(
+                    child: SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: LoadingIndicator(
+                        indicatorType: Indicator.ballPulseSync,
+                        colors: [
+                          Color.fromRGBO(92, 67, 239, 100),
+                          Color.fromRGBO(92, 67, 239, 60),
+                          Color.fromRGBO(92, 67, 239, 20),
+                        ],
                       ),
                     ),
-                  )
-                      : ListView.builder(
-                    itemCount: viewModel.chatList.length,
-                    itemBuilder: (context, index) {
-                      final chat = viewModel.chatList[index];
-                      final otherUserNickname = chat.members.firstWhere(
-                            (user) => user.nickname != widget.currentUserNickname,
-                      ).nickname;
+                  );
+                }
 
-                      return Column(
-                        children: [
-                          InkWell(
-                            onTap: () async {
-                              // 채팅방으로 이동
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ChattingDetailPage(
-                                    currentUserNickname: widget.currentUserNickname,
-                                    otherUserNickname: otherUserNickname,
-                                    user: widget.user,
+
+                return viewModel.chatList.isEmpty
+                    ? const Center(
+                  child: Text(
+                    "채팅방이 없습니다.\n게시판에서 채팅을 시작할 수 있어요!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16.0,
+                    ),
+                  ),
+                )
+                    : ListView.builder(
+                  itemCount: viewModel.chatList.length,
+                  itemBuilder: (context, index) {
+                    final chat = viewModel.chatList[index];
+                    final otherUserNickname = chat.members
+                        .firstWhere((user) => user.nickname != widget.currentUserNickname)
+                        .nickname;
+
+                    return Column(
+                      children: [
+                        InkWell(
+                          onTap: () async {
+                            // 채팅방으로 이동
+                            await Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ChattingDetailPage(
+                                  currentUserNickname: widget.currentUserNickname,
+                                  otherUserNickname: otherUserNickname,
+                                  user: widget.user,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 25.0, horizontal: 5.0),
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  child: Text(otherUserNickname[0]), // 유저 닉네임 첫 글자
+                                ),
+                                const SizedBox(width: 26.0),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        otherUserNickname,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.0,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4.0),
+                                      Text(
+                                        chat.lastMessage, // 마지막 메시지
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          color: Colors.grey,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 25.0, horizontal: 5.0),
-                              child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    child: Text(otherUserNickname[0]), // 유저 닉네임 첫 글자
+                                const SizedBox(width: 16.0),
+                                Text(
+                                  _formatTime(chat.updatedAt), // 마지막 시간
+                                  style: const TextStyle(
+                                    color: Colors.grey,
                                   ),
-                                  SizedBox(width: 26.0),
-                                  Expanded(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          otherUserNickname,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16.0,
-                                          ),
-                                        ),
-                                        SizedBox(height: 4.0),
-                                        Text(
-                                          chat.lastMessage, // 마지막 메시지
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            color: Colors.grey,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16.0),
-                                  Text(
-                                    _formatTime(chat.updatedAt), // 마지막 시간
-                                    style: const TextStyle(
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
-              ],
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }

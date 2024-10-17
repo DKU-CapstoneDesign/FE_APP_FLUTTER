@@ -10,6 +10,7 @@ import 'package:capstonedesign/view/screens/chat/chattingListPage.dart';
 import 'package:provider/provider.dart';
 import '../../model/user.dart';
 import '../../viewModel/chat/chattingListPage_viewModel.dart';
+import '../../viewModel/discover/discoverPage_viewModel.dart';
 import '../screens/chatBot/chatBotPage.dart';
 import '../screens/first/homePage.dart';
 
@@ -34,7 +35,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
         create: (_) => HomePageViewModel(discoverDatasource: DiscoverDatasource(), fortuneDataSource: FortuneDataSource(), postDataSource: PostDataSource()),
         child: HomePage(user: widget.user),
       ),
-      DiscoverPage(),
+
+      ChangeNotifierProvider(
+        create: (_) => DiscoverViewModel(DiscoverDatasource()),
+        child: DiscoverPage(),
+      ),
+
       ForumPage(user: widget.user),
       ChangeNotifierProvider(
           create: (_) => ChattingListViewModel(),

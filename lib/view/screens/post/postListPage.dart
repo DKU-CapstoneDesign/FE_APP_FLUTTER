@@ -3,6 +3,7 @@ import 'package:capstonedesign/viewModel/post/postListPage_viewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/post/postDetailPage.dart';
 import 'package:capstonedesign/view/screens/post/createPostPage.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
 import '../../../dataSource/post_dataSource.dart';
 import '../../../model/user.dart';
@@ -69,10 +70,26 @@ class _PostListPageState extends State<PostListPage> {
         => 상태 관리를 더 명확하게 하고, 특정 위젯들만 다시 빌드할 수 있기 때문*/
       body: Consumer<PostListViewModel>(
         builder: (context, viewModel, child) {
-          // 로딩 중이면 로딩 스피너를 표시
+
+          // 데이터 받아올 때까지 로딩 화면
+          // loading_indicator 패키지 이용
           if (viewModel.isLoading) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(
+              child: SizedBox(
+                width: 60,
+                height: 60,
+                child: LoadingIndicator(
+                  indicatorType: Indicator.ballPulseSync,
+                  colors: [
+                    Color.fromRGBO(92, 67, 239, 100),
+                    Color.fromRGBO(92, 67, 239, 60),
+                    Color.fromRGBO(92, 67, 239, 20),
+                  ],
+                ),
+              ),
+            );
           }
+
           // 게시물이 없을 경우 처리
           if (viewModel.posts.isEmpty) {
             return Center(child: Text('게시물이 없습니다.'));

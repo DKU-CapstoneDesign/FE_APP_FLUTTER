@@ -5,6 +5,7 @@ import '../../model/chattingList.dart';
 class ChattingListViewModel extends ChangeNotifier {
   final ChattingDataSource datasource = ChattingDataSource();
   List<ChattingList> chatList = [];
+  bool loading = true;
   ChattingListViewModel();
 
   // 채팅방 리스트 가져오기 ---sse
@@ -12,7 +13,9 @@ class ChattingListViewModel extends ChangeNotifier {
     final chatStream = datasource.getChatList(nickname);
     chatStream.listen((chatStream){
       chatList = chatStream!.cast<ChattingList>();
+      loading = false;
       notifyListeners();
     });
+
   }
 }

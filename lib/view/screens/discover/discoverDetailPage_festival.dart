@@ -2,19 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../model/discover_festival.dart';
 
-class DiscoverDetailPage extends StatefulWidget {
+class DiscoverFestivalDetailPage extends StatefulWidget {
   final DiscoverFestival discover;
 
-  const DiscoverDetailPage({
+  const DiscoverFestivalDetailPage({
     Key? key,
     required this.discover,
   }) : super(key: key);
 
   @override
-  State<DiscoverDetailPage> createState() => _DiscoverDetailPageState();
+  State<DiscoverFestivalDetailPage> createState() => _DiscoverDetailPageState();
 }
 
-class _DiscoverDetailPageState extends State<DiscoverDetailPage> {
+class _DiscoverDetailPageState extends State<DiscoverFestivalDetailPage> {
 
   @override
   Widget build(BuildContext context) {

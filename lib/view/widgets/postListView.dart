@@ -1,7 +1,7 @@
 import 'package:capstonedesign/model/discover_festival.dart';
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
-import '../screens/discover/discoverDetailPage.dart';
+import '../screens/discover/discoverDetailPage_festival.dart';
 
 class PostListView extends StatefulWidget {
   final List<DiscoverFestival> cardForms;
@@ -32,7 +32,7 @@ class _PostListViewState extends State<PostListView> {
               child: GestureDetector(
                 onTap: () {
                   Navigator.of(context).push(MaterialPageRoute(
-                    builder: (context) => DiscoverDetailPage(discover: widget.cardForms[index]),
+                    builder: (context) => DiscoverFestivalDetailPage(discover: widget.cardForms[index]),
                   ));
                 },
                 child: Column(
