@@ -135,7 +135,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     SizedBox(height: 20),
 
                     Container(
-                      height: 510,
+                      height: 450,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(8.0),

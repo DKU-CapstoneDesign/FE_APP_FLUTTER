@@ -132,7 +132,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                         physics: AlwaysScrollableScrollPhysics(),
                         padding: EdgeInsets.only(bottom: 20.0),
                         child: Padding(
-                          padding: const EdgeInsets.all(20.0),
+                          padding: const EdgeInsets.all(30.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -253,14 +253,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     Text(
                                       viewModel.post.title,
                                       style: const TextStyle(
-                                          fontSize: 22.0,
+                                          fontSize: 24.0,
                                           fontFamily: 'SejonghospitalBold'),
                                     ),
                                     const SizedBox(height: 20.0),
                                     Text(
                                       viewModel.post.contents,
                                       style: const TextStyle(
-                                          fontSize: 16.0,
+                                          fontSize: 20.0,
                                           fontFamily: 'SejonghospitalLight'),
                                     ),
                                   ],
@@ -386,7 +386,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                                             comment.contents,
                                                             style: const TextStyle(
                                                               fontFamily: 'SejonghospitalLight',
-                                                              fontSize: 14.0,
+                                                              fontSize: 18.0,
                                                             ),
                                                           ),
                                                           const SizedBox(height: 10.0),
@@ -489,7 +489,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                                                   reply.contents,
                                                                   style: const TextStyle(
                                                                     fontFamily: 'SejonghospitalLight',
-                                                                    fontSize: 14.0,
+                                                                    fontSize: 18.0,
                                                                   ),
                                                                 ),
                                                               ],

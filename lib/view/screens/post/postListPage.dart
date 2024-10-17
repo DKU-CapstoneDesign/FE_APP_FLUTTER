@@ -25,7 +25,7 @@ class _PostListPageState extends State<PostListPage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final viewModel = Provider.of<PostListViewModel>(context, listen: false);
-      await viewModel.getPostList(widget.user,widget.boardName);
+      await viewModel.getPostList(widget.user, widget.boardName);
     });
   }
 
@@ -48,7 +48,7 @@ class _PostListPageState extends State<PostListPage> {
   // 새로고침 시 호출할 함수
   Future<void> _refreshPosts(BuildContext context) async {
     final viewModel = Provider.of<PostListViewModel>(context, listen: false);
-    await viewModel.getPostList(widget.user,widget.boardName);
+    await viewModel.getPostList(widget.user, widget.boardName);
   }
 
   @override
@@ -60,147 +60,157 @@ class _PostListPageState extends State<PostListPage> {
           child: Text(
             widget.boardName,
             textAlign: TextAlign.center,
-            style: TextStyle(fontFamily: 'SejonghospitalBold', fontSize: 22),
+            style: const TextStyle(fontFamily: 'SejonghospitalBold', fontSize: 22),
           ),
         ),
         centerTitle: true,
       ),
-      //consumer를 이용한 상태 관리
-      /*provider 대신 consumer를 사용한 이유??
-        => 상태 관리를 더 명확하게 하고, 특정 위젯들만 다시 빌드할 수 있기 때문*/
-      body: Consumer<PostListViewModel>(
-        builder: (context, viewModel, child) {
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
 
-          // 데이터 받아올 때까지 로딩 화면
-          // loading_indicator 패키지 이용
-          if (viewModel.isLoading) {
-            return const Center(
-              child: SizedBox(
-                width: 60,
-                height: 60,
-                child: LoadingIndicator(
-                  indicatorType: Indicator.ballPulseSync,
-                  colors: [
-                    Color.fromRGBO(92, 67, 239, 100),
-                    Color.fromRGBO(92, 67, 239, 60),
-                    Color.fromRGBO(92, 67, 239, 20),
-                  ],
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Container(
+              width: 350,
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: Colors.grey[200],
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              child: Text(
+                _getBoardMessage(widget.boardName),
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 18,
+                  color: Colors.black,
                 ),
               ),
-            );
-          }
-
-          // 게시물이 없을 경우 처리
-          if (viewModel.posts.isEmpty) {
-            return Center(child: Text('게시물이 없습니다.'));
-          }
-
-          // 위로 당기면 새로고침할 수 있도록
-          return RefreshIndicator(
-            onRefresh: () => _refreshPosts(context),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 350,
-                    margin: EdgeInsets.only(bottom: 15.0),
-                    padding: EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.grey[200],
-                      borderRadius: BorderRadius.circular(10.0),
-                    ),
-                    child: Text(
-                      _getBoardMessage(widget.boardName),
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        color: Colors.black,
+            ),
+          ),
+          Expanded(
+            child: Consumer<PostListViewModel>(
+              builder: (context, viewModel, child) {
+                // 데이터 받아올 때까지 로딩 화면
+                if (viewModel.isLoading) {
+                  return const Center(
+                    child: SizedBox(
+                      width: 60,
+                      height: 60,
+                      child: LoadingIndicator(
+                        indicatorType: Indicator.ballPulseSync,
+                        colors: [
+                          Color.fromRGBO(92, 67, 239, 100),
+                          Color.fromRGBO(92, 67, 239, 60),
+                          Color.fromRGBO(92, 67, 239, 20),
+                        ],
                       ),
                     ),
-                  ),
-                  SizedBox(height: 20),
-                  Expanded(
-                    child: ListView.builder(
-                      //여기서 viewModel은 위에 initState에서 선언
-                      itemCount: viewModel.posts.length,
-                      itemBuilder: (context, index) {
-                        var post = viewModel.posts[index];
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            ListTile(
-                              title: Text(
-                                post['title'],
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                  );
+                }
+
+                // 게시물이 없을 경우 처리
+                if (viewModel.posts.isEmpty) {
+                  return const Center(
+                    child: Text('게시물이 없습니다.'),
+                  );
+                }
+
+                // 위로 당기면 새로고침할 수 있도록
+                return RefreshIndicator(
+                  onRefresh: () => _refreshPosts(context),
+                  child: ListView.builder(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+                    itemCount: viewModel.posts.length,
+                    itemBuilder: (context, index) {
+                      var post = viewModel.posts[index];
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          ListTile(
+                            title: Text(
+                              post['title'],
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
                               ),
-                              subtitle: Padding(
-                                padding: const EdgeInsets.only(top: 4.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Text(post['contents']),
-                                    ),
-                                    Text(
-                                      '좋아요 ${post['likeCount']}개',
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ChangeNotifierProvider(
-                                      create: (_) => PostDetailViewModel(PostDataSource(), widget.user, CommentDatasource()),
-                                      child: PostDetailPage(
-                                          postId: post['id'],
-                                          boardName: widget.boardName,
-                                          currentUserNickname: widget.user.nickname,
-                                          user: widget.user
-                                       ),
+                            ),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(top: 4.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      post['contents'],
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                      ),
                                     ),
                                   ),
-                                );
-                              },
+                                  Text(
+                                    '좋아요 ${post['likeCount']}개',
+                                    style: const TextStyle(color: Colors.grey),
+                                  ),
+                                ],
+                              ),
                             ),
-                            Divider(
-                              color: Colors.grey[300],
-                              height: 1,
-                              thickness: 1,
-                            ),
-                          ],
-                        );
-                      },
-                    ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => ChangeNotifierProvider(
+                                    create: (_) => PostDetailViewModel(
+                                      PostDataSource(),
+                                      widget.user,
+                                      CommentDatasource(),
+                                    ),
+                                    child: PostDetailPage(
+                                      postId: post['id'],
+                                      boardName: widget.boardName,
+                                      currentUserNickname: widget.user.nickname,
+                                      user: widget.user,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          Divider(
+                            color: Colors.grey[300],
+                            height: 1,
+                            thickness: 1,
+                          ),
+                        ],
+                      );
+                    },
                   ),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
-      //만약 HOT 게시판이면 글쓰기 버튼이 없도록
       floatingActionButton: widget.boardName != 'HOT게시판'
           ? FloatingActionButton.extended(
         onPressed: () async {
           final result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => CreatePostPage(user: widget.user, boardName: widget.boardName),
+              builder: (context) => CreatePostPage(
+                user: widget.user,
+                boardName: widget.boardName,
+              ),
             ),
           );
-          if (result == true) { //만약 새 글을 썼다면
-            _refreshPosts(context); //화면 새로고침
+          if (result == true) {
+            _refreshPosts(context); // 새 글을 썼다면 화면 새로고침
           }
         },
-        backgroundColor: Color.fromRGBO(92, 67, 239, 60),
+        backgroundColor: const Color.fromRGBO(92, 67, 239, 60),
         foregroundColor: Colors.white,
-        label: Text('글쓰기'),
-        icon: Icon(Icons.edit),
+        label: const Text('글쓰기'),
+        icon: const Icon(Icons.edit),
       )
           : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
