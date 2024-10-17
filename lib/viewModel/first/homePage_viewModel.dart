@@ -11,6 +11,7 @@ class HomePageViewModel extends ChangeNotifier {
   List<DiscoverFestival> festivals = [];
   String fortuneToday = '';
   List<dynamic> posts = [];
+  bool loading = true;
   final DiscoverDatasource discoverDatasource;
   final FortuneDataSource fortuneDataSource;
   final PostDataSource postDataSource;
@@ -24,20 +25,29 @@ class HomePageViewModel extends ChangeNotifier {
 
   // 축제 정보
   Future<void> getFestivals() async {
-    festivals = (await discoverDatasource.getFestivals())!;
+    loading = true;
     notifyListeners();
-  }
-
-  // 오늘의 운세
-  Future<void> getFortune(String birthMonth, String birthDay) async {
-    Fortune? fortune = await fortuneDataSource.getFortune(birthMonth, birthDay);
-    fortuneToday = fortune!.answer;
+    festivals = (await discoverDatasource.getFestivals())!;
+    loading = false;
     notifyListeners();
   }
 
   // 가장 최근 게시물
   Future<void> getPostList(User user) async {
+    loading = true;
+    notifyListeners();
     posts = (await postDataSource.getAllPost(user))!;
+    loading = false;
+    notifyListeners();
+  }
+
+  // 오늘의 운세
+  Future<void> getFortune(String birthMonth, String birthDay) async {
+    loading = true;
+    notifyListeners();
+    Fortune? fortune = await fortuneDataSource.getFortune(birthMonth, birthDay);
+    fortuneToday = fortune!.answer;
+    loading = false;
     notifyListeners();
   }
 
