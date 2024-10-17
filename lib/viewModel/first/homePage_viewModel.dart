@@ -23,7 +23,7 @@ class HomePageViewModel extends ChangeNotifier {
 
 
   // 축제 정보
-  Future<void> fetchFestivals() async {
+  Future<void> getFestivals() async {
     festivals = (await discoverDatasource.getFestivals())!;
     notifyListeners();
   }
