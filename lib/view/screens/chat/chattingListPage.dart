@@ -113,7 +113,7 @@ class _ChattingListPageState extends State<ChattingListPage> {
                             );
                           },
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 25.0, horizontal: 5.0),
+                            padding: const EdgeInsets.symmetric(vertical: 0.0, horizontal: 40.0),
                             child: Row(
                               children: [
                                 CircleAvatar(
@@ -128,7 +128,7 @@ class _ChattingListPageState extends State<ChattingListPage> {
                                         otherUserNickname,
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
-                                          fontSize: 16.0,
+                                          fontSize: 18.0,
                                         ),
                                       ),
                                       const SizedBox(height: 4.0),
@@ -138,8 +138,10 @@ class _ChattingListPageState extends State<ChattingListPage> {
                                         overflow: TextOverflow.ellipsis,
                                         style: const TextStyle(
                                           color: Colors.grey,
+                                          fontSize: 16.0,
                                         ),
                                       ),
+
                                     ],
                                   ),
                                 ),
@@ -148,6 +150,7 @@ class _ChattingListPageState extends State<ChattingListPage> {
                                   _formatTime(chat.updatedAt), // 마지막 시간
                                   style: const TextStyle(
                                     color: Colors.grey,
+                                    fontSize: 16.0,
                                   ),
                                 ),
                               ],

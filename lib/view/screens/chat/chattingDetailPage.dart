@@ -101,7 +101,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                                 margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                                 decoration: BoxDecoration(
                                   color: isCurrentUser
-                                      ? const Color.fromRGBO(92, 67, 239, 1)
+                                      ? const Color.fromRGBO(92, 67, 239, 50)
                                       : Colors.grey[300],
                                   borderRadius: isCurrentUser
                                       ? const BorderRadius.only(
