@@ -26,6 +26,12 @@ class _DiscoverPageState extends State<DiscoverPage> {
     });
   }
 
+  // 새로고침할 때 실행할 함수
+  Future<void> _refreshPosts(BuildContext context) async {
+    final viewModel = Provider.of<DiscoverViewModel>(context, listen: false);
+    await viewModel.getAllPosts(); // 모든 포스트 다시 불러오기
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,55 +39,58 @@ class _DiscoverPageState extends State<DiscoverPage> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 60, 0, 0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Row(
-                    children: [
-                      SizedBox(width: 30),
-                      SizedBox(
-                        width: 350,
-                        height: 45,
-                        child: TextField(
-                          decoration: InputDecoration(
-                            filled: true,
-                            fillColor: Color.fromRGBO(238, 238, 238, 1),
-                            contentPadding: EdgeInsets.symmetric(vertical: 10),
-                            prefixIcon: Icon(Icons.search, color: Colors.black54),
-                            hintText: '어디로 가세요?',
-                            hintStyle: TextStyle(color: Colors.black54),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(30)),
-                              borderSide: BorderSide.none,
+            child: RefreshIndicator(
+              onRefresh: () => _refreshPosts(context), // 위로 당기면 새로고침
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Row(
+                      children: [
+                        SizedBox(width: 30),
+                        SizedBox(
+                          width: 350,
+                          height: 45,
+                          child: TextField(
+                            decoration: InputDecoration(
+                              filled: true,
+                              fillColor: Color.fromRGBO(238, 238, 238, 1),
+                              contentPadding: EdgeInsets.symmetric(vertical: 10),
+                              prefixIcon: Icon(Icons.search, color: Colors.black54),
+                              hintText: '어디로 가세요?',
+                              hintStyle: TextStyle(color: Colors.black54),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(30)),
+                                borderSide: BorderSide.none,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
+                      ],
+                    ),
+                    const SizedBox(height: 10),
 
-                  // 필터링 버튼
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _buildCategoryButton('🎡 축제', DiscoverCategory.festival),
-                      const SizedBox(width: 10),
-                      _buildCategoryButton('👀 주변 명소', DiscoverCategory.sight),
-                      const SizedBox(width: 10),
-                      _buildCategoryButton('🛍 쇼핑', DiscoverCategory.advertise),
-                    ],
-                  ),
+                    // 필터링 버튼
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _buildCategoryButton('🎡 축제', DiscoverCategory.festival),
+                        const SizedBox(width: 10),
+                        _buildCategoryButton('👀 주변 명소', DiscoverCategory.sight),
+                        const SizedBox(width: 10),
+                        _buildCategoryButton('🛍 쇼핑', DiscoverCategory.advertise),
+                      ],
+                    ),
 
-                  // 내용 (grid 형식으로)
-                  Consumer<DiscoverViewModel>(
-                    builder: (context, viewModel, child) {
-                      final posts = viewModel.filteredDiscoverPosts(selectedCategory.name);
-                      return _buildGridView(posts, viewModel);
-                    },
-                  ),
-                ],
+                    // 내용 (grid 형식으로)
+                    Consumer<DiscoverViewModel>(
+                      builder: (context, viewModel, child) {
+                        final posts = viewModel.filteredDiscoverPosts(selectedCategory.name);
+                        return _buildGridView(posts, viewModel);
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -161,7 +170,6 @@ class _DiscoverPageState extends State<DiscoverPage> {
         return GestureDetector(
           onTap: () {
             String category = viewModel.getItemCategory(item);
-
 
             if (category == 'festival') {
               Navigator.of(context).push(MaterialPageRoute(
