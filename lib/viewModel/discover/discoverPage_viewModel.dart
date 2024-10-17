@@ -8,8 +8,7 @@ class DiscoverViewModel extends ChangeNotifier {
   List<dynamic> festivals = [];
   List<dynamic> sights = [];
   List<dynamic> advertises = [];
-
-  List<dynamic> allItems = []; // This will store all items (festivals, sights, advertises)
+  List<dynamic> allItems = [];  // 다 보여주는 리스트
 
   DiscoverViewModel({required this.datasource});
 
@@ -21,15 +20,15 @@ class DiscoverViewModel extends ChangeNotifier {
     sights = (await datasource.getSights()) ?? [];
     advertises = (await datasource.getAdvertise()) ?? [];
 
-    // Combine all items into a single list
+    //가져온 것들 합쳐서 리스트에 넣기
     allItems = [...festivals, ...sights, ...advertises];
-    allItems.shuffle(); // Optional: shuffle the items
+    allItems.shuffle(); // 랜덤하게 (shuffle)
 
     loading = false;
     notifyListeners();
   }
 
-  /// Filter items by category
+  // 보여주는 것 필터링
   List<dynamic> filteredDiscoverPosts(String category) {
     if (category == 'festival') {
       return festivals;
@@ -42,7 +41,7 @@ class DiscoverViewModel extends ChangeNotifier {
     }
   }
 
-  /// Get category of an image
+  // 보여주는 것 필터링
   String getItemCategory(dynamic item) {
     if (festivals.contains(item)) {
       return 'festival';

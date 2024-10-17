@@ -63,7 +63,7 @@ class _DiscoverDetailPageState extends State<DiscoverAdvertisementDetailPage> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
-                            widget.discover.price,
+                            "${widget.discover.price} ₩",
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               fontSize: 16,
