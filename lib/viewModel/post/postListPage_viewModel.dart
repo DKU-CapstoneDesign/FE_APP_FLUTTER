@@ -31,8 +31,9 @@ class PostListViewModel extends ChangeNotifier {
     List<dynamic>? allPosts = await dataSource.getAllPost(user);
 
     if (boardName == "최신게시판") {
-      // 최신게시판일 경우 필터링 없이 모든 글을 가져오기
-      posts = allPosts ?? [];
+      allPosts?.sort((a, b) => b['createdAt'].compareTo(a['createdAt']));
+      // 상위 10개의 게시물만 가져옴
+      posts = allPosts!.take(10).toList();
     } else {
       // boardName과 같은 category만 필터링
       posts = allPosts?.where((post) => post['category'] == boardName).toList() ?? [];

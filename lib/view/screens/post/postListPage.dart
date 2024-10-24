@@ -68,7 +68,6 @@ class _PostListPageState extends State<PostListPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Container(
@@ -124,10 +123,25 @@ class _PostListPageState extends State<PostListPage> {
                     itemCount: viewModel.posts.length,
                     itemBuilder: (context, index) {
                       var post = viewModel.posts[index];
+
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ListTile(
+                            leading: post['attachments'] != null && post['attachments'].isNotEmpty
+                                ? Container(
+                              width: 60.0,
+                              height: 60.0,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                              child: Image.network(
+                                post['attachments'][0]['filePath'] ?? '',
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                                : null,
+
                             title: Text(
                               post['title'],
                               style: const TextStyle(
@@ -148,6 +162,8 @@ class _PostListPageState extends State<PostListPage> {
                                         fontFamily: 'Sejonghospital',
                                         fontSize: 16,
                                       ),
+                                      maxLines: 2, // 내용이 길어지면 두 줄까지만 표시
+                                      overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                   Text(
@@ -155,7 +171,16 @@ class _PostListPageState extends State<PostListPage> {
                                     style: const TextStyle(
                                       color: Colors.grey,
                                       fontFamily: 'SejonghospitalLight',
-                                      fontSize: 16,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 15),
+                                  Text(
+                                    '댓글 ${post['commentList'].length}개',
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontFamily: 'SejonghospitalLight',
+                                      fontSize: 13,
                                     ),
                                   ),
                                 ],
@@ -182,15 +207,13 @@ class _PostListPageState extends State<PostListPage> {
                               );
                             },
                           ),
-                          SizedBox(height: 10),
-
+                          const SizedBox(height: 10),
                           Divider(
                             color: Colors.grey[300],
                             height: 1,
                             thickness: 1,
                           ),
-
-                          SizedBox(height: 10),
+                          const SizedBox(height: 25),
                         ],
                       );
                     },

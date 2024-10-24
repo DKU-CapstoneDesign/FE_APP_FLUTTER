@@ -205,6 +205,11 @@ class _HomePageState extends State<HomePage> {
                                                           '좋아요 ${post['likeCount']}개',
                                                           style: TextStyle(color: Colors.grey),
                                                         ),
+                                                        SizedBox(width: 10),
+                                                        Text(
+                                                          '댓글 ${post['commentList'].length}개',
+                                                          style: TextStyle(color: Colors.grey),
+                                                        ),
                                                       ],
                                                     ),
                                                   ),

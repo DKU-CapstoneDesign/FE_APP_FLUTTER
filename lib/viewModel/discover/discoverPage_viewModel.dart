@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../../dataSource/discover_dataSource.dart';
 
 class DiscoverViewModel extends ChangeNotifier {
-  DiscoverDatasource datasource;
+  final DiscoverDatasource datasource;
   bool loading = false;
 
   List<dynamic> festivals = [];
@@ -21,7 +21,7 @@ class DiscoverViewModel extends ChangeNotifier {
     sights = (await datasource.getSights()) ?? [];
     advertises = (await datasource.getAdvertise()) ?? [];
 
-    //가져온 것들 합쳐서 리스트에 넣기
+    // 가져온 것들 합쳐서 리스트에 넣기
     allItems = [...festivals, ...sights, ...advertises];
     allItems.shuffle(); // 랜덤하게 (shuffle)
 
@@ -30,7 +30,7 @@ class DiscoverViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  // 보여주는 것 필터링
+  // 카테고리별로 게시물 필터링
   List<dynamic> filteredDiscoverPosts(String category) {
     if (category == 'festival') {
       return festivals;
@@ -55,18 +55,25 @@ class DiscoverViewModel extends ChangeNotifier {
     }
   }
 
-  // 검색
+  // 검색 기능
   Future<void> searchDiscover(String region, BuildContext context) async {
-    final response = await datasource.searchDiscover(region);
-    searchResults = response??[];
-    if (searchResults.isEmpty) {
-      _showNoResultsDialog(context);
+    loading = true;
+    notifyListeners();
+
+    final searchResult = await datasource.searchDiscover(region);
+
+    if (searchResult != null && searchResult.isNotEmpty) {
+      searchResults = searchResult;
+    } else {
+      searchResults = [];
+      _showNoResultsDialog(context); // 검색 결과가 없으면 다이얼로그 표시
     }
+
+    loading = false;
     notifyListeners();
   }
 
-
-  // 검색 후 결과 값이 비어있을 때
+  // 검색 후 결과가 없을 때 보여주는 다이얼로그
   void _showNoResultsDialog(BuildContext context) {
     showDialog(
       context: context,
