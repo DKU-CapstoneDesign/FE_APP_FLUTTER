@@ -110,7 +110,7 @@ class _ChangePWState extends State<ChangePWPage> {
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color.fromRGBO(92, 67, 239, 50),
                           foregroundColor: Colors.white,
-                          padding: const EdgeInsets.fromLTRB(75, 15, 75, 15),
+                          padding: const EdgeInsets.fromLTRB(70, 15, 70, 15),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
@@ -118,7 +118,7 @@ class _ChangePWState extends State<ChangePWPage> {
                         child: const Text(
                           "비밀번호 변경하기",
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 18,
                             fontFamily: "SejonghospitalBold",
                           ),
                         ),

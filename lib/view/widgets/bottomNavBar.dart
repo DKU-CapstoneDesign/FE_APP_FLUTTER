@@ -67,7 +67,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
           hoverColor: Colors.transparent,
         ),
         child: Container(
-          height: 70.0,
+          height: 80.0,
           decoration: const BoxDecoration(
             boxShadow: [
               BoxShadow(

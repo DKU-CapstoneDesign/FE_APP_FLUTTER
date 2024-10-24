@@ -132,6 +132,7 @@ class _PostListPageState extends State<PostListPage> {
                               post['title'],
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
+                                fontFamily: 'SejonghospitalBold',
                                 fontSize: 18,
                               ),
                             ),
@@ -144,13 +145,18 @@ class _PostListPageState extends State<PostListPage> {
                                     child: Text(
                                       post['contents'],
                                       style: const TextStyle(
+                                        fontFamily: 'Sejonghospital',
                                         fontSize: 16,
                                       ),
                                     ),
                                   ),
                                   Text(
                                     '좋아요 ${post['likeCount']}개',
-                                    style: const TextStyle(color: Colors.grey),
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                      fontFamily: 'SejonghospitalLight',
+                                      fontSize: 16,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -176,11 +182,15 @@ class _PostListPageState extends State<PostListPage> {
                               );
                             },
                           ),
+                          SizedBox(height: 10),
+
                           Divider(
                             color: Colors.grey[300],
                             height: 1,
                             thickness: 1,
                           ),
+
+                          SizedBox(height: 10),
                         ],
                       );
                     },
@@ -191,7 +201,7 @@ class _PostListPageState extends State<PostListPage> {
           ),
         ],
       ),
-      floatingActionButton: widget.boardName != 'HOT게시판'
+      floatingActionButton: widget.boardName != '최신게시판'
           ? FloatingActionButton.extended(
         onPressed: () async {
           final result = await Navigator.push(

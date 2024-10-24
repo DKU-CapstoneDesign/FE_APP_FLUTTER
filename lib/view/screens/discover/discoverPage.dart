@@ -146,7 +146,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
         foregroundColor: selectedCategory == category
             ? const Color.fromRGBO(245, 245, 245, 20)
             : Colors.black,
-        side: const BorderSide(color: Colors.white54, width: 1),
+        side: BorderSide.none,
       ),
       child: Text(
         title,
@@ -166,8 +166,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
       physics: const NeverScrollableScrollPhysics(),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: (MediaQuery.of(context).size.width ~/ 120),
-        crossAxisSpacing: 5,
-        mainAxisSpacing: 5,
+        crossAxisSpacing: 0,
+        mainAxisSpacing: 0,
         childAspectRatio: 1,
       ),
       itemCount: posts.length,

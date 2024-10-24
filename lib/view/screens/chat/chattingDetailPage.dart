@@ -136,7 +136,7 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
 
                 // 메시지 입력 창
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
                   color: const Color.fromRGBO(211, 211, 211, 40),
                   child: Row(
                     children: <Widget>[

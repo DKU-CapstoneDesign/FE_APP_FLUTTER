@@ -164,7 +164,10 @@ class PostDataSource {
     try {
       final response = await http.put(
         Uri.parse('$baseUrl/api/post/$postId'),
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Cookie': user.cookie
+        },
         body: formData,
       );
 

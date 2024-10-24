@@ -157,6 +157,7 @@ class _ChattingListPageState extends State<ChattingListPage> {
                             ),
                           ),
                         ),
+                        SizedBox(height: 30),
                       ],
                     );
                   },

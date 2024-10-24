@@ -29,9 +29,16 @@ class PostListViewModel extends ChangeNotifier {
     notifyListeners();
 
     List<dynamic>? allPosts = await dataSource.getAllPost(user);
-    // boardName과 같은 category만 필터링
-    posts = allPosts?.where((post) => post['category'] == boardName).toList() ?? [];
-    isLoading = false; //데이터를 받아왔다면 로딩 끄기
+
+    if (boardName == "최신게시판") {
+      // 최신게시판일 경우 필터링 없이 모든 글을 가져오기
+      posts = allPosts ?? [];
+    } else {
+      // boardName과 같은 category만 필터링
+      posts = allPosts?.where((post) => post['category'] == boardName).toList() ?? [];
+    }
+
+    isLoading = false; // 데이터를 받아왔다면 로딩 끄기
     notifyListeners();
   }
 }

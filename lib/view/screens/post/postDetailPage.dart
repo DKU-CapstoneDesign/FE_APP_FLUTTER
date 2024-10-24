@@ -131,13 +131,13 @@ class _PostDetailPageState extends State<PostDetailPage> {
                       child: SingleChildScrollView(
                         physics: AlwaysScrollableScrollPhysics(),
                         padding: EdgeInsets.only(bottom: 20.0),
-                        child: Padding(
-                          padding: const EdgeInsets.all(30.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // 작성자 정보
-                              Row(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // 작성자 정보
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
@@ -215,12 +215,14 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     ),
                                 ],
                               ),
-                              const SizedBox(height: 20.0),
+                            ),
 
-                              // 첨부 파일 표시
-                              if (viewModel.post.attachments != null && viewModel.post.attachments!.isNotEmpty)
-                                Container(
-                                  margin: const EdgeInsets.symmetric(horizontal: 20),
+                            // 첨부 파일 표시
+                            if (viewModel.post.attachments != null && viewModel.post.attachments!.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(horizontal: 5),
                                   height: 200,
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
@@ -242,34 +244,37 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     },
                                   ),
                                 ),
-                              const SizedBox(height: 30),
-
-                              // 게시글 내용
-                              Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      viewModel.post.title,
-                                      style: const TextStyle(
-                                          fontSize: 24.0,
-                                          fontFamily: 'SejonghospitalBold'),
-                                    ),
-                                    const SizedBox(height: 20.0),
-                                    Text(
-                                      viewModel.post.contents,
-                                      style: const TextStyle(
-                                          fontSize: 20.0,
-                                          fontFamily: 'SejonghospitalLight'),
-                                    ),
-                                  ],
-                                ),
                               ),
-                              const SizedBox(height: 30.0),
+                            const SizedBox(height: 30),
 
-                              // 좋아요와 댓글 수
-                              Row(
+                            // 게시글 내용
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 30.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    viewModel.post.title,
+                                    style: const TextStyle(
+                                        fontSize: 24.0,
+                                        fontFamily: 'SejonghospitalBold'),
+                                  ),
+                                  const SizedBox(height: 20.0),
+                                  Text(
+                                    viewModel.post.contents,
+                                    style: const TextStyle(
+                                        fontSize: 20.0,
+                                        fontFamily: 'SejonghospitalLight'),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 30.0),
+
+                            // 좋아요와 댓글 수
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                              child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
@@ -310,16 +315,21 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 24.0),
-                              Container(
-                                height: 17,
-                                width: double.infinity,
-                                color: Color.fromRGBO(245, 245, 245, 20),
-                              ),
+                            ),
+                            const SizedBox(height: 24.0),
 
-                              // 댓글 리스트
-                              if (viewModel.post.commentList.isNotEmpty)
-                                ListView.builder(
+
+                            Container(
+                              height: 13,
+                              width: double.infinity,
+                              color: Color.fromRGBO(245, 245, 245, 1),
+                            ),
+
+                            // 댓글 리스트
+                            if (viewModel.post.commentList.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.all(20.0),
+                                child: ListView.builder(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
                                   reverse: true, // 댓글을 거꾸로 표시
@@ -520,9 +530,9 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                     );
                                   },
                                 ),
-                              const SizedBox(height: 16.0),
-                            ],
-                          ),
+                              ),
+                            const SizedBox(height: 16.0),
+                          ],
                         ),
                       ),
                     ),
