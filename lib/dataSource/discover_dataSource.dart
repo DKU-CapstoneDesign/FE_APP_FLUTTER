@@ -80,8 +80,8 @@ class DiscoverDatasource {
   //////지역 검색하기
   List<Map<String, dynamic>> festivalResult = [];
   List<Map<String, dynamic>> sightResult = [];
-
-  Future<void> searchDiscover(String region) async {
+  List<dynamic> combinedResults = [];
+  Future<List<dynamic>?> searchDiscover(String region) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/search/get-region-data/'),
@@ -90,6 +90,7 @@ class DiscoverDatasource {
       );
 
       if (response.statusCode == 200) {
+        print("검색 성공");
         final jsonResponse = jsonDecode(response.body);
 
         List<dynamic> searchResult = jsonResponse['answer']; // 전체 결과를 저장
@@ -97,13 +98,16 @@ class DiscoverDatasource {
         sightResult.clear();
 
         // 검색 결과를 분류하여 festivalResult와 sightResult에 추가
-        searchResult.forEach((eachResult) {
+        for (var eachResult in searchResult) {
           if (eachResult['type'] == 'festival') {
             festivalResult.add(eachResult);
           } else if (eachResult['type'] == 'sight') {
             sightResult.add(eachResult);
           }
-        });
+        }
+        // 합쳐셔 리스트로 반환
+        combinedResults = [...festivalResult, ...sightResult];
+        return combinedResults;
       } else {
         print("검색 실패: ${response.body}");
       }

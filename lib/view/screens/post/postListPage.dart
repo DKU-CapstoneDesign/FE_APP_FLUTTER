@@ -32,8 +32,8 @@ class _PostListPageState extends State<PostListPage> {
   // 게시판 설명 메시지
   String _getBoardMessage(String boardName) {
     switch (boardName) {
-      case 'HOT게시판':
-        return '좋아요 10개 이상인 게시물을 보여줘요!';
+      case '최신게시판':
+        return '가장 최신 글만 모아모아';
       case '자유게시판':
         return '자유로운 주제에 대해 이야기해요!';
       case '도움게시판':

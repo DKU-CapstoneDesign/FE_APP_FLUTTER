@@ -17,6 +17,7 @@ class DiscoverPage extends StatefulWidget {
 
 class _DiscoverPageState extends State<DiscoverPage> {
   DiscoverCategory selectedCategory = DiscoverCategory.all;
+  TextEditingController searchController = TextEditingController(); // 검색 입력 필드용 컨트롤러
 
   @override
   void initState() {
@@ -45,28 +46,35 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Row(
-                      children: [
-                        SizedBox(width: 30),
-                        SizedBox(
-                          width: 350,
-                          height: 45,
-                          child: TextField(
-                            decoration: InputDecoration(
-                              filled: true,
-                              fillColor: Color.fromRGBO(238, 238, 238, 1),
-                              contentPadding: EdgeInsets.symmetric(vertical: 10),
-                              prefixIcon: Icon(Icons.search, color: Colors.black54),
-                              hintText: '어디로 가세요?',
-                              hintStyle: TextStyle(color: Colors.black54),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.all(Radius.circular(30)),
-                                borderSide: BorderSide.none,
-                              ),
+                    // 검색 필드
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 30),
+                      child: SizedBox(
+                        height: 45,
+                        child: TextField(
+                          controller: searchController, // 검색 필드 컨트롤러
+                          decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color.fromRGBO(238, 238, 238, 1),
+                            contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                            prefixIcon: GestureDetector(
+                              onTap: () {
+                                final region = searchController.text.trim();
+                                if (region.isNotEmpty) {
+                                  Provider.of<DiscoverViewModel>(context, listen: false).searchDiscover(region, context);
+                                }
+                              },
+                              child: const Icon(Icons.search, color: Colors.black54),
+                            ),
+                            hintText: '어디로 가세요?',
+                            hintStyle: const TextStyle(color: Colors.black54),
+                            border: const OutlineInputBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(30)),
+                              borderSide: BorderSide.none,
                             ),
                           ),
                         ),
-                      ],
+                      ),
                     ),
                     const SizedBox(height: 10),
 

@@ -9,6 +9,7 @@ class DiscoverViewModel extends ChangeNotifier {
   List<dynamic> sights = [];
   List<dynamic> advertises = [];
   List<dynamic> allItems = [];  // 다 보여주는 리스트
+  List<dynamic> searchResults = []; // 검색 결과 리스트
 
   DiscoverViewModel({required this.datasource});
 
@@ -24,6 +25,7 @@ class DiscoverViewModel extends ChangeNotifier {
     allItems = [...festivals, ...sights, ...advertises];
     allItems.shuffle(); // 랜덤하게 (shuffle)
 
+    searchResults = allItems; // 검색 결과 초기화
     loading = false;
     notifyListeners();
   }
@@ -37,11 +39,10 @@ class DiscoverViewModel extends ChangeNotifier {
     } else if (category == 'advertise') {
       return advertises;
     } else {
-      return allItems;
+      return searchResults.isNotEmpty ? searchResults : allItems; // 검색 결과가 있으면 그걸 보여줌
     }
   }
 
-  // 보여주는 것 필터링
   String getItemCategory(dynamic item) {
     if (festivals.contains(item)) {
       return 'festival';
@@ -52,5 +53,37 @@ class DiscoverViewModel extends ChangeNotifier {
     } else {
       return 'unknown';
     }
+  }
+
+  // 검색
+  Future<void> searchDiscover(String region, BuildContext context) async {
+    final response = await datasource.searchDiscover(region);
+    searchResults = response??[];
+    if (searchResults.isEmpty) {
+      _showNoResultsDialog(context);
+    }
+    notifyListeners();
+  }
+
+
+  // 검색 후 결과 값이 비어있을 때
+  void _showNoResultsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('죄송합니다'),
+          content: const Text('찾으시는 정보가 없습니다!'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('확인'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

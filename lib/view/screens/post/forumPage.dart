@@ -15,7 +15,7 @@ class ForumPage extends StatefulWidget {
 
 class _ForumPageState extends State<ForumPage> {
   final Map<String, bool> _buttonTappedStates = {
-    'HOT\n게시판': false,
+    '최신\n게시판': false,
     '자유\n게시판': false,
     '도움\n게시판': false,
     '여행\n게시판': false,
