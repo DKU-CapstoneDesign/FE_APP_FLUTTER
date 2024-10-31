@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../dataSource/discover_dataSource.dart';
+import '../../view/screens/discover/discoverPage.dart';
 
 class DiscoverViewModel extends ChangeNotifier {
   final DiscoverDatasource datasource;
@@ -25,21 +26,27 @@ class DiscoverViewModel extends ChangeNotifier {
     allItems = [...festivals, ...sights, ...advertises];
     allItems.shuffle(); // 랜덤하게 (shuffle)
 
-    searchResults = allItems; // 검색 결과 초기화
+    searchResults = [];// 검색 결과 초기화
     loading = false;
     notifyListeners();
   }
 
   // 카테고리별로 게시물 필터링
-  List<dynamic> filteredDiscoverPosts(String category) {
-    if (category == 'festival') {
-      return festivals;
-    } else if (category == 'sight') {
-      return sights;
-    } else if (category == 'advertise') {
-      return advertises;
+  List<dynamic> filteredDiscoverPosts(DiscoverCategory category) {
+    if (searchResults.isNotEmpty) {
+      return allItems; // 검색 결과가 있는 경우 전체 목록 반환
     } else {
-      return searchResults.isNotEmpty ? searchResults : allItems; // 검색 결과가 있으면 그걸 보여줌
+      // 검색 결과가 없을 때만 카테고리 필터링 적용
+      switch (category) {
+        case DiscoverCategory.festival:
+          return festivals;
+        case DiscoverCategory.sight:
+          return sights;
+        case DiscoverCategory.advertise:
+          return advertises;
+        case DiscoverCategory.all:
+          return allItems;
+      }
     }
   }
 

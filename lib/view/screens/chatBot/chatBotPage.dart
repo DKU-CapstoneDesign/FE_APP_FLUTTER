@@ -75,7 +75,7 @@ class _ChatBotPageState extends State<ChatBotPage> {
                                 margin: const EdgeInsets.symmetric(horizontal: 10),
                                 decoration: BoxDecoration(
                                   color: isUserMessage
-                                      ? const Color.fromRGBO(92, 67, 239, 1)
+                                      ? const Color.fromRGBO(92, 67, 239, 50)
                                       : Colors.white,
                                   borderRadius: isUserMessage
                                       ? const BorderRadius.only(

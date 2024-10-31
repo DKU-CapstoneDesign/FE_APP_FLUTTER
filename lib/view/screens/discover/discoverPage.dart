@@ -95,7 +95,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       builder: (context, viewModel, child) {
                         final posts = viewModel.searchResults.isNotEmpty
                             ? viewModel.searchResults
-                            : viewModel.filteredDiscoverPosts(selectedCategory.name);
+                            : viewModel.filteredDiscoverPosts(selectedCategory);
                         return _buildGridView(posts, viewModel);
                       },
                     ),
