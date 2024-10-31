@@ -61,15 +61,14 @@ class DiscoverViewModel extends ChangeNotifier {
     notifyListeners();
 
     List<dynamic> filteredFestivals = festivals.where((item) {
-      return item['address']?.contains(region) ?? false;
+      return item.address?.contains(region) ?? false;
     }).toList();
 
     List<dynamic> filteredSights = sights.where((item) {
-      return item['address']?.contains(region) ?? false;
+      return item.address?.contains(region) ?? false;
     }).toList();
 
     searchResults = [...filteredFestivals, ...filteredSights];
-
 
     if (searchResults.isEmpty) {
       _showNoResultsDialog(context);

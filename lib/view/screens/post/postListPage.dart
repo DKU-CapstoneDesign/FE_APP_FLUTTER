@@ -162,7 +162,7 @@ class _PostListPageState extends State<PostListPage> {
                                         fontFamily: 'Sejonghospital',
                                         fontSize: 16,
                                       ),
-                                      maxLines: 2, // 내용이 길어지면 두 줄까지만 표시
+                                      maxLines: 1, // 내용이 길어지면 한 줄까지만 표시
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                   ),

@@ -3,6 +3,7 @@ import 'package:capstonedesign/dataSource/post_dataSource.dart';
 import 'package:capstonedesign/model/discover_festival.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../dataSource/comment_dataSource.dart';
 import '../../../model/user.dart';
 import '../../../viewModel/first/homePage_viewModel.dart';
@@ -20,20 +21,42 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  //만약 정보를 가져오지 못했을 경우 에러를 표시함
   DiscoverFestival errorPost = DiscoverFestival(
     name: '정보를 불러오지 못했습니다.',
-    image_url:
-    "https://img.freepik.com/free-vector/error-404-concept-for-landing-page_23-2148237748.jpg?w=1380&t=st=1725265497~exp=1725266097~hmac=d7a95048d969f691ccefe06c9d42eadd35021b0542f025271d0ca609a3945969",
+    image_url: "https://img.freepik.com/free-vector/error-404-concept-for-landing-page.jpg",
     address: "",
     period: "",
     detail_info: '관리자에게 연락해주세요',
   );
 
+  int notificationCount = 0; // 알림 갯수 변수
+
   @override
   void initState() {
     super.initState();
-    // 운세용
+    _loadNotificationCount(); // 초기 알림 갯수 로드
+    _initializeData(); // 기타 초기 데이터 로드
+  }
+
+  // 알림 갯수 로드
+  Future<void> _loadNotificationCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      notificationCount = prefs.getInt('notification_count') ?? 0;
+    });
+  }
+
+  // 알림 갯수 초기화
+  Future<void> _resetNotificationCount() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('notification_count', 0);
+    setState(() {
+      notificationCount = 0;
+    });
+  }
+
+  // 초기 데이터 로드 메소드
+  void _initializeData() async {
     String birthMonth = widget.user.birthDate.substring(5, 7);
     String birthDay = widget.user.birthDate.substring(8, 10);
 
@@ -64,14 +87,11 @@ class _HomePageState extends State<HomePage> {
                         width: 60,
                         height: 60,
                       ),
-
-                      //// 로고 글자에 애니메이션 넣기
-                      //animated_text_kit 패키지 사용
                       DefaultTextStyle(
                         style: const TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.bold,
-                          color: Color.fromRGBO(92, 67, 239, 60),
+                          color: Color.fromRGBO(92, 67, 239, 5),
                         ),
                         child: AnimatedTextKit(
                           animatedTexts: [
@@ -87,16 +107,37 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
 
-                      IconButton(
-                        icon: const Icon(Icons.notifications, color: Colors.grey, size: 30),
-                        onPressed: () {
-                          // 알림
-                        },
+                      // 알림 아이콘에 갯수 뱃지 표시
+                      Stack(
+                        alignment: Alignment.topRight,
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.notifications),
+                            onPressed: () async {
+                              await _resetNotificationCount();
+                            },
+                          ),
+                          if (notificationCount > 0)
+                            Positioned(
+                              right: 8,
+                              top: 8,
+                              child: Container(
+                                padding: EdgeInsets.all(4),
+                                decoration: BoxDecoration(
+                                  color: Colors.red,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: Text(
+                                  '$notificationCount',
+                                  style: TextStyle(color: Colors.white, fontSize: 12),
+                                ),
+                              ),
+                            ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-
                 Expanded(
                   child: Consumer<HomePageViewModel>(
                     builder: (context, viewModel, child) {
@@ -199,7 +240,14 @@ class _HomePageState extends State<HomePage> {
                                                       MainAxisAlignment.spaceBetween,
                                                       children: [
                                                         Expanded(
-                                                          child: Text(post['contents']),
+                                                          child: Text(post['contents'],
+                                                          style: const TextStyle(
+                                                          fontFamily: 'Sejonghospital',
+                                                            fontSize: 16,
+                                                          ),
+                                                          maxLines: 1, // 내용이 길어지면 한 줄까지만 표시
+                                                          overflow: TextOverflow.ellipsis,
+                                                          ),
                                                         ),
                                                         Text(
                                                           '좋아요 ${post['likeCount']}개',

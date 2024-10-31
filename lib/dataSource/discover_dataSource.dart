@@ -42,6 +42,7 @@ class DiscoverDatasource {
       );
       if (response.statusCode == 200) {
         final List<dynamic> sightJson = jsonDecode(utf8.decode(response.bodyBytes));
+        print(sightJson);
         // Sights 객체로 변환하여 반환;
         return sightJson.map((json) => DiscoverSight.fromJson(json)).toList();
       } else {

@@ -17,7 +17,7 @@ class DiscoverPage extends StatefulWidget {
 
 class _DiscoverPageState extends State<DiscoverPage> {
   DiscoverCategory selectedCategory = DiscoverCategory.all;
-  TextEditingController searchController = TextEditingController(); // 검색 입력 필드용 컨트롤러
+  TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
@@ -27,10 +27,9 @@ class _DiscoverPageState extends State<DiscoverPage> {
     });
   }
 
-  // 새로고침할 때 실행할 함수
   Future<void> _refreshPosts(BuildContext context) async {
     final viewModel = Provider.of<DiscoverViewModel>(context, listen: false);
-    await viewModel.getAllPosts(); // 모든 포스트 다시 불러오기
+    await viewModel.getAllPosts();
   }
 
   @override
@@ -41,7 +40,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
           Padding(
             padding: const EdgeInsets.fromLTRB(0, 60, 0, 0),
             child: RefreshIndicator(
-              onRefresh: () => _refreshPosts(context), // 위로 당기면 새로고침
+              onRefresh: () => _refreshPosts(context),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -52,7 +51,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       child: SizedBox(
                         height: 45,
                         child: TextField(
-                          controller: searchController, // 검색 필드 컨트롤러
+                          controller: searchController,
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: const Color.fromRGBO(238, 238, 238, 1),
@@ -61,7 +60,8 @@ class _DiscoverPageState extends State<DiscoverPage> {
                               onTap: () {
                                 final region = searchController.text.trim();
                                 if (region.isNotEmpty) {
-                                  Provider.of<DiscoverViewModel>(context, listen: false).searchDiscover(region, context);
+                                  Provider.of<DiscoverViewModel>(context, listen: false)
+                                      .searchDiscover(region, context);
                                 }
                               },
                               child: const Icon(Icons.search, color: Colors.black54),
@@ -90,10 +90,12 @@ class _DiscoverPageState extends State<DiscoverPage> {
                       ],
                     ),
 
-                    // 내용 (grid 형식으로)
+                    // 그리드 뷰 (검색 결과가 있을 경우 검색 결과만, 없을 경우 전체 리스트)
                     Consumer<DiscoverViewModel>(
                       builder: (context, viewModel, child) {
-                        final posts = viewModel.filteredDiscoverPosts(selectedCategory.name);
+                        final posts = viewModel.searchResults.isNotEmpty
+                            ? viewModel.searchResults
+                            : viewModel.filteredDiscoverPosts(selectedCategory.name);
                         return _buildGridView(posts, viewModel);
                       },
                     ),
@@ -103,8 +105,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
             ),
           ),
 
-          // 데이터 받아올 때까지 로딩 화면
-          // loading_indicator 패키지 이용
+          // 로딩 화면
           Consumer<DiscoverViewModel>(
             builder: (context, viewModel, child) {
               if (viewModel.loading) {
@@ -123,7 +124,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                   ),
                 );
               }
-              return const SizedBox.shrink(); // 로딩 아니면 없어지도록
+              return const SizedBox.shrink();
             },
           ),
         ],
@@ -143,17 +144,13 @@ class _DiscoverPageState extends State<DiscoverPage> {
         backgroundColor: selectedCategory == category
             ? const Color.fromRGBO(92, 67, 239, 60)
             : const Color(0xFFEDE7F6),
-        foregroundColor: selectedCategory == category
-            ? const Color.fromRGBO(245, 245, 245, 20)
-            : Colors.black,
+        foregroundColor: selectedCategory == category ? Colors.white : Colors.black,
         side: BorderSide.none,
+        elevation: 0,
       ),
       child: Text(
         title,
-        style: const TextStyle(
-          fontSize: 15,
-          fontFamily: 'SejonghospitalLight',
-        ),
+        style: const TextStyle(fontSize: 15, fontFamily: 'SejonghospitalLight'),
       ),
     );
   }
@@ -173,7 +170,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
       itemCount: posts.length,
       itemBuilder: (context, index) {
         final item = posts[index];
-        final imageUrl = item.image_url; // 내용에서 이미지만 가져와서 보여주도록
+        final imageUrl = item.image_url;
 
         return GestureDetector(
           onTap: () {

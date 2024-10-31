@@ -1,22 +1,36 @@
 import 'dart:convert';
 import 'package:capstonedesign/model/user.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
-
 import '../model/chatting.dart';
 import '../model/chattingList.dart';
 
 class ChattingDataSource {
-  String baseUrl =  'http://152.69.230.42:8080';
-      // 'http://144.24.81.41:8080';
-      //'http://158.180.86.243:8080';
+  String baseUrl = 'http://152.69.230.42:8080';
 
-  //////채팅방 생성 (게시판에서 상대방의 프로필을 통해 채팅방 생성)
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+  /////// 알림 초기화 메소드
+  Future<void> initializeNotifications() async {
+    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const iosSettings = IOSInitializationSettings(
+      requestAlertPermission: true,
+      requestBadgePermission: true,
+      requestSoundPermission: true,
+    );
+    const settings = InitializationSettings(android: androidSettings, iOS: iosSettings);
+
+    await flutterLocalNotificationsPlugin.initialize(settings);
+  }
+
+
+  ////// 채팅방 생성 (게시판에서 상대방의 프로필을 통해 채팅방 생성)
   Future<ChattingList?> createChat(String sender, String receiver) async {
     try {
       final response = await http.post(
         Uri.parse('$baseUrl/api/chat/creating'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({ //유저들의 닉네임을 통해 채팅방 생성
+        body: jsonEncode({ // 유저들의 닉네임을 통해 채팅방 생성
           "members": [
             {"nickname": sender},
             {"nickname": receiver}
@@ -25,7 +39,7 @@ class ChattingDataSource {
       );
       if (response.statusCode == 200) {
         print("채팅방 생성 성공");
-        //model의 ChattingList에 값을 넣기
+        // model의 ChattingList에 값을 넣기
         return ChattingList.fromJson(jsonDecode(response.body));
       } else {
         print("채팅방 생성 실패: ${response.statusCode}, ${response.body}");
@@ -36,8 +50,7 @@ class ChattingDataSource {
     }
   }
 
-
-  //////채팅 보내기
+  ////// 채팅 보내기
   Future<Chatting?> sendChat(String sender, String receiver, String message, User user) async {
     try {
       final response = await http.post(
@@ -58,7 +71,7 @@ class ChattingDataSource {
 
       if (response.statusCode == 200) {
         print("채팅 보내기 성공");
-        //model의 Chatting에 값을 넣기
+        // model의 Chatting에 값을 넣기
         return Chatting.fromJson(jsonDecode(response.body));
       } else {
         print('채팅 보내기 실패: ${response.statusCode}, ${response.body}');
@@ -69,15 +82,12 @@ class ChattingDataSource {
     }
   }
 
-
-
-  //////채팅방 목록 (sse)
+  ////// 채팅방 목록 (sse) ---- 알림 보내기
   Stream<List<ChattingList>?> getChatList(String nickname) async* {
     List<ChattingList> chattingList = [];
     try {
       final request = http.Request('GET', Uri.parse('$baseUrl/api/chat/list/nickname/$nickname'));
       request.headers['Accept'] = 'text/event-stream';
-      request.headers['Content-Type'] = 'text/event-stream';
       final response = await request.send();
 
       if (response.statusCode == 200) {
@@ -91,10 +101,25 @@ class ChattingDataSource {
         // 각 이벤트를 처리
         await for (String event in stream) {
           if (event.startsWith('data:')) {
-            final jsonData = event.substring(5); // 'data: ' 이후의 데이터 파싱
+            final jsonData = event.substring(5).trim(); // 'data: ' 이후의 데이터 파싱
             final decodedData = jsonDecode(jsonData);
-            chattingList.add(ChattingList.fromJson(decodedData));  // 파싱된 데이터로 ChattingList 객체 생성
-            yield List.from(chattingList);   // 현재까지의 채팅방 목록을 스트림으로 반환
+            final newChat = ChattingList.fromJson(decodedData);  // 파싱된 데이터로 ChattingList 객체 생성
+            chattingList.add(newChat); // 채팅방 목록에 새 항목 추가
+            yield List.from(chattingList); // 현재까지의 채팅방 목록을 스트림으로 반환
+
+
+            /////////////// 알림 보내기
+            String? otherNickname;
+            for (var member in newChat.members) {
+              if (member.nickname != 'currentUserNickname') {
+                otherNickname = member.nickname;
+                break;
+              }
+            }
+            // 새로운 채팅방 이벤트 수신 시 알림 표시
+            if (otherNickname != null) {
+              _showNotification(otherNickname, newChat.lastMessage);
+            }
           }
         }
       } else {
@@ -107,7 +132,7 @@ class ChattingDataSource {
     }
   }
 
-  //////채팅방 읽음 상태 목록 (sse)
+  ////// 채팅방 읽음 상태 목록 (sse)
   Future<Chatting?> getChatReadStatusList(String nickname) async {
     try {
       final response = await http.get(
@@ -125,9 +150,10 @@ class ChattingDataSource {
       return null;
     }
   }
-  //////채팅방 읽음 처리
-  //여기서 nickname은 reciever의 nickname
-  Future<bool> setChatReadStatus(String roomNum,String nickname) async {
+
+  ////// 채팅방 읽음 처리
+  // 여기서 nickname은 reciever의 nickname
+  Future<bool> setChatReadStatus(String roomNum, String nickname) async {
     try {
       final response = await http.put(
         Uri.parse('$baseUrl/api/chat/$roomNum/user/$nickname'),
@@ -148,17 +174,12 @@ class ChattingDataSource {
     }
   }
 
-
-
-
-
-  //////대화 내역(방 번호 기반)(sse)
+  ////// 대화 내역(방 번호 기반)(sse)
   Stream<List<Chatting>?> chatListByRoomNum(String roomNum) async* {
     List<Chatting> chatting = [];
     try {
       final request = http.Request('GET', Uri.parse('$baseUrl/api/chat/roomNum/$roomNum'));
       request.headers['Accept'] = 'text/event-stream';
-      request.headers['Content-Type'] = 'text/event-stream';
       final response = await request.send();
 
       if (response.statusCode == 200) {
@@ -188,22 +209,27 @@ class ChattingDataSource {
     }
   }
 
+  //////////// 알림 표시 메소드
+  Future<void> _showNotification(String? title, String? message) async {
+    const androidDetails = AndroidNotificationDetails(
+        'chat_channel',
+        'Chat Notifications',
+        'Channel for chat notifications',
+        importance: Importance.max,
+        priority: Priority.max,
+        showWhen: false
+    );
 
-  //////대화 내역 (송수신자 이름 기반) (sse)
-  /*Future<List<ChattingList>?> chatListByNickName(String sender, String receiver) async {
-    try {
-      final response = await http.get(
-          Uri.parse('$baseUrl/api/sender/$sender/receiver/$receiver'));
-      if (response.statusCode == 200) {
-        final List<dynamic> responseData = jsonDecode(response.body);
-        return responseData.map((chat) => ChattingList.fromJson(chat)).toList();
-      } else {
-        print("대화 내역 가져오기 실패: ${response.body}");
-        return null;
-      }
-    } catch (e) {
-      print('오류 발생: $e');
-      return null;
-    }
-  }*/
+    const NotificationDetails notificationDetails = NotificationDetails(
+      android: androidDetails,
+      iOS: IOSNotificationDetails()
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      0, // 알림 ID
+      title ?? '새로운 메시지', // 알림 제목
+      message ?? '메시지가 도착했습니다.', // 알림 내용
+      notificationDetails,
+    );
+  }
 }
