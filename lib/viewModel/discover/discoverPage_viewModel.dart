@@ -60,13 +60,19 @@ class DiscoverViewModel extends ChangeNotifier {
     loading = true;
     notifyListeners();
 
-    final searchResult = await datasource.searchDiscover(region);
+    List<dynamic> filteredFestivals = festivals.where((item) {
+      return item['address']?.contains(region) ?? false;
+    }).toList();
 
-    if (searchResult != null && searchResult.isNotEmpty) {
-      searchResults = searchResult;
-    } else {
-      searchResults = [];
-      _showNoResultsDialog(context); // 검색 결과가 없으면 다이얼로그 표시
+    List<dynamic> filteredSights = sights.where((item) {
+      return item['address']?.contains(region) ?? false;
+    }).toList();
+
+    searchResults = [...filteredFestivals, ...filteredSights];
+
+
+    if (searchResults.isEmpty) {
+      _showNoResultsDialog(context);
     }
 
     loading = false;
