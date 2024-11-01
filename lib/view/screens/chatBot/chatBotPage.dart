@@ -12,6 +12,20 @@ class ChatBotPage extends StatefulWidget {
 
 class _ChatBotPageState extends State<ChatBotPage> {
   late ChatBotViewModel viewModel;
+  final ScrollController _scrollController = ScrollController();
+
+  void _scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_scrollController.hasClients) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +51,9 @@ class _ChatBotPageState extends State<ChatBotPage> {
             Expanded(
               child: Consumer<ChatBotViewModel>(
                 builder: (context, viewModel, child) {
+                  _scrollToBottom();
                   return ListView.builder(
+                    controller: _scrollController,
                     reverse: false, // 최신 메시지를 아래에 표시
                     itemCount: viewModel.messages.length,
                     itemBuilder: (context, index) {
