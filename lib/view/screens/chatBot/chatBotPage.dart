@@ -13,7 +13,6 @@ class ChatBotPage extends StatefulWidget {
 class _ChatBotPageState extends State<ChatBotPage> {
   late ChatBotViewModel viewModel;
   final ScrollController _scrollController = ScrollController();
-
   void _scrollToBottom() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_scrollController.hasClients) {
