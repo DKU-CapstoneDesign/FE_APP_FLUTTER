@@ -9,6 +9,7 @@ class CreatePostViewModel extends ChangeNotifier {
   late PostDataSource datasource;
   final User user;
   final ImagePicker picker = ImagePicker();
+  bool isPosting = false;
 
   CreatePostViewModel(this.datasource, this.user);
 
@@ -34,6 +35,7 @@ class CreatePostViewModel extends ChangeNotifier {
 
   // 글 생성하기 로직 (form 데이터 형식으로 post)
   Future<void> createPost(BuildContext context) async {
+    isPosting = true;
     // 카테고리 설정
     switch (category) {
       case "자유게시판":
@@ -83,6 +85,7 @@ class CreatePostViewModel extends ChangeNotifier {
       print("에러 발생: $e");
       _showErrorDialog(context);
     }
+    isPosting = false;
   }
 
   // 글 생성 실패 시 실패 다이얼로그 띄우기
