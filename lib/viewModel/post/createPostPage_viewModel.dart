@@ -36,7 +36,7 @@ class CreatePostViewModel extends ChangeNotifier {
   // 글 생성하기 로직 (form 데이터 형식으로 post)
   Future<void> createPost(BuildContext context) async {
     isPosting = true;
-    // 카테고리 설정
+    // 카테고리 설
     switch (category) {
       case "자유게시판":
         category = "ANY";
@@ -85,6 +85,7 @@ class CreatePostViewModel extends ChangeNotifier {
       print("에러 발생: $e");
       _showErrorDialog(context);
     }
+    isPosting = false;
   }
 
   // 글 생성 실패 시 실패 다이얼로그 띄우기

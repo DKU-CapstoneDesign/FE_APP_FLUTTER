@@ -154,8 +154,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     SizedBox(height: 16.0),
                     ElevatedButton(
                       onPressed: viewModel.isPosting
-                          ? null
-                          : () {
+                        ? null
+                        : () {
                         viewModel.createPost(context);
                       },
                       style: ButtonStyle(
