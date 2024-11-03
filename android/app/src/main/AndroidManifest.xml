@@ -4,6 +4,11 @@
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
+        <!-- 알림 채널 설정 추가 -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="chat_channel" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -4,6 +4,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'dataSource/chatting_dataSource.dart';
+
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
@@ -17,6 +19,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
 
   @override
   Widget build(BuildContext context) {
@@ -84,18 +87,7 @@ Future<void> _requestPermissions() async {
   }
 }
 
-// 알림 카운트 관리 기능 추가
-Future<int> _getNotificationCount() async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getInt('notification_count') ?? 0;
-}
-
-Future<void> _incrementNotificationCount() async {
-  final prefs = await SharedPreferences.getInstance();
-  int currentCount = prefs.getInt('notification_count') ?? 0;
-  await prefs.setInt('notification_count', currentCount + 1);
-}
-
+// 알림 갯수 초기화
 Future<void> _resetNotificationCount() async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.setInt('notification_count', 0);

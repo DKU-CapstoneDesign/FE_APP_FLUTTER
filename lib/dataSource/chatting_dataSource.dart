@@ -1,28 +1,11 @@
 import 'dart:convert';
 import 'package:capstonedesign/model/user.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
 import '../model/chatting.dart';
 import '../model/chattingList.dart';
 
 class ChattingDataSource {
   String baseUrl = 'http://152.69.230.42:8080';
-
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
-  /////// 알림 초기화 메소드
-  Future<void> initializeNotifications() async {
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const iosSettings = IOSInitializationSettings(
-      requestAlertPermission: true,
-      requestBadgePermission: true,
-      requestSoundPermission: true,
-    );
-    const settings = InitializationSettings(android: androidSettings, iOS: iosSettings);
-
-    await flutterLocalNotificationsPlugin.initialize(settings);
-  }
-
 
   ////// 채팅방 생성 (게시판에서 상대방의 프로필을 통해 채팅방 생성)
   Future<ChattingList?> createChat(String sender, String receiver) async {
@@ -82,7 +65,7 @@ class ChattingDataSource {
     }
   }
 
-  ////// 채팅방 목록 (sse) ---- 알림 보내기
+  ////// 채팅방 목록 (sse)
   Stream<List<ChattingList>?> getChatList(String nickname) async* {
     List<ChattingList> chattingList = [];
     try {
@@ -106,20 +89,6 @@ class ChattingDataSource {
             final newChat = ChattingList.fromJson(decodedData);  // 파싱된 데이터로 ChattingList 객체 생성
             chattingList.add(newChat); // 채팅방 목록에 새 항목 추가
             yield List.from(chattingList); // 현재까지의 채팅방 목록을 스트림으로 반환
-
-
-            /////////////// 알림 보내기
-            String? otherNickname;
-            for (var member in newChat.members) {
-              if (member.nickname != 'currentUserNickname') {
-                otherNickname = member.nickname;
-                break;
-              }
-            }
-            // 새로운 채팅방 이벤트 수신 시 알림 표시
-            if (otherNickname != null) {
-              _showNotification(otherNickname, newChat.lastMessage);
-            }
           }
         }
       } else {
@@ -174,7 +143,7 @@ class ChattingDataSource {
     }
   }
 
-  ////// 대화 내역(방 번호 기반)(sse)
+  ////// 대화 내역(방 번호 기반)(sse) --- 알림
   Stream<List<Chatting>?> chatListByRoomNum(String roomNum) async* {
     List<Chatting> chatting = [];
     try {
@@ -195,7 +164,8 @@ class ChattingDataSource {
           if (event.startsWith('data:')) {
             final jsonData = event.substring(5); // 'data: ' 이후의 데이터 파싱
             final decodedData = jsonDecode(jsonData);
-            chatting.add(Chatting.fromJson(decodedData)); // 파싱된 데이터로 Chatting 객체 생성
+            final newChat = Chatting.fromJson(decodedData); //파싱된 데이터로 Chatting 객체 생성
+            chatting.add(newChat);
             yield List.from(chatting); // 현재까지의 메시지 목록을 스트림으로 반환
           }
         }
@@ -207,29 +177,5 @@ class ChattingDataSource {
       print('오류 발생: $e');
       yield null;
     }
-  }
-
-  //////////// 알림 표시 메소드
-  Future<void> _showNotification(String? title, String? message) async {
-    const androidDetails = AndroidNotificationDetails(
-        'chat_channel',
-        'Chat Notifications',
-        'Channel for chat notifications',
-        importance: Importance.max,
-        priority: Priority.max,
-        showWhen: false
-    );
-
-    const NotificationDetails notificationDetails = NotificationDetails(
-      android: androidDetails,
-      iOS: IOSNotificationDetails()
-    );
-
-    await flutterLocalNotificationsPlugin.show(
-      0, // 알림 ID
-      title ?? '새로운 메시지', // 알림 제목
-      message ?? '메시지가 도착했습니다.', // 알림 내용
-      notificationDetails,
-    );
   }
 }

@@ -4,6 +4,7 @@ import 'package:capstonedesign/model/discover_festival.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../dataSource/chatting_dataSource.dart';
 import '../../../dataSource/comment_dataSource.dart';
 import '../../../model/user.dart';
 import '../../../viewModel/first/homePage_viewModel.dart';
@@ -21,6 +22,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final ChattingDataSource datasource = ChattingDataSource();
   DiscoverFestival errorPost = DiscoverFestival(
     name: '정보를 불러오지 못했습니다.',
     image_url: "https://img.freepik.com/free-vector/error-404-concept-for-landing-page.jpg",
@@ -34,6 +36,9 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<HomePageViewModel>(context, listen: false).fetchMessage(widget.user.nickname);
+    });
     _loadNotificationCount(); // 초기 알림 갯수 로드
     _initializeData(); // 기타 초기 데이터 로드
   }
@@ -67,6 +72,7 @@ class _HomePageState extends State<HomePage> {
       await viewModel.getPostList(widget.user);
     });
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                         alignment: Alignment.topRight,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.notifications),
+                            icon: const Icon(Icons.notifications),
                             onPressed: () async {
                               await _resetNotificationCount();
                             },
@@ -123,7 +129,7 @@ class _HomePageState extends State<HomePage> {
                               top: 8,
                               child: Container(
                                 padding: EdgeInsets.all(4),
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   color: Colors.red,
                                   shape: BoxShape.circle,
                                 ),
@@ -138,6 +144,7 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
+
                 Expanded(
                   child: Consumer<HomePageViewModel>(
                     builder: (context, viewModel, child) {

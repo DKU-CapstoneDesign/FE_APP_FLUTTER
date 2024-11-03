@@ -1,3 +1,5 @@
+import 'package:capstonedesign/model/chatting.dart';
+import 'package:capstonedesign/model/chattingList.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/model/user.dart';
 import 'package:capstonedesign/dataSource/user_dataSource.dart';

@@ -29,7 +29,7 @@ class ChattingDetailPageViewModel extends ChangeNotifier {
 
   // 메시지 불러오기 ---sse
   Future<void> fetchMessage() async {
-    final messageStream = dataSource.chatListByRoomNum(chattingList!.id.toString(),);
+    final messageStream = dataSource.chatListByRoomNum(chattingList!.id.toString());
     messageStream.listen((chatList) {
       messages = chatList!.cast<Chatting>();
       notifyListeners();
