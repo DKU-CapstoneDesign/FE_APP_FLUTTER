@@ -73,7 +73,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -173,7 +172,7 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             const SizedBox(height: 30),
 
-                            //// 축제
+                            // 축제 목록
                             PostListView(
                               cardForms: viewModel.festivals.isNotEmpty
                                   ? viewModel.festivals.map((festival) {
@@ -187,7 +186,7 @@ class _HomePageState extends State<HomePage> {
                                   : [errorPost],
                             ),
 
-                            //// 최신 글
+                            // 최신 글
                             const Padding(
                               padding: EdgeInsets.fromLTRB(40, 40, 0, 20),
                               child: Text(
@@ -210,89 +209,87 @@ class _HomePageState extends State<HomePage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Expanded(
-                                      child: ListView.builder(
-                                        itemCount: (viewModel?.posts.length ?? 0) > 3
-                                            ? 3
-                                            : viewModel.posts.length,
-                                        itemBuilder: (context, index) {
-                                          var post = viewModel.posts[index];
-                                          return Padding(
-                                            padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
-                                            child: Container(
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                borderRadius: BorderRadius.circular(14.0),
-                                                boxShadow: [
-                                                  BoxShadow(
-                                                    color: Colors.grey.withOpacity(0.2),
-                                                    spreadRadius: 2,
-                                                    blurRadius: 5,
-                                                  ),
-                                                ],
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
-                                                child: ListTile(
-                                                  title: Text(
-                                                    post['title'],
-                                                    style: const TextStyle(
-                                                      fontSize: 20,
-                                                      fontFamily: 'Sejonghospitallight',
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          for (int index = 0;
+                                          index < (viewModel?.posts.length ?? 0) && index < 3;
+                                          index++)
+                                            Padding(
+                                              padding: const EdgeInsets.fromLTRB(10, 0, 10, 20),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  borderRadius: BorderRadius.circular(14.0),
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                      color: Colors.grey.withOpacity(0.2),
+                                                      spreadRadius: 2,
+                                                      blurRadius: 5,
                                                     ),
-                                                  ),
-                                                  subtitle: Padding(
-                                                    padding: const EdgeInsets.only(top: 4.0),
-                                                    child: Row(
-                                                      mainAxisAlignment:
-                                                      MainAxisAlignment.spaceBetween,
-                                                      children: [
-                                                        Expanded(
-                                                          child: Text(post['contents'],
-                                                          style: const TextStyle(
-                                                          fontFamily: 'Sejonghospital',
-                                                            fontSize: 16,
-                                                          ),
-                                                          maxLines: 1, // 내용이 길어지면 한 줄까지만 표시
-                                                          overflow: TextOverflow.ellipsis,
-                                                          ),
-                                                        ),
-                                                        Text(
-                                                          '좋아요 ${post['likeCount']}개',
-                                                          style: TextStyle(color: Colors.grey),
-                                                        ),
-                                                        SizedBox(width: 10),
-                                                        Text(
-                                                          '댓글 ${post['commentList'].length}개',
-                                                          style: TextStyle(color: Colors.grey),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ChangeNotifierProvider(
-                                                              create: (_) => PostDetailViewModel(
-                                                                  PostDataSource(),
-                                                                  widget.user,
-                                                                  CommentDatasource()),
-                                                              child: PostDetailPage(
-                                                                  postId: post['id'],
-                                                                  boardName: "HOT 게시판",
-                                                                  currentUserNickname:
-                                                                  widget.user.nickname,
-                                                                  user: widget.user),
-                                                            ),
+                                                  ],
+                                                ),
+                                                child: Padding(
+                                                  padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
+                                                  child: ListTile(
+                                                    title: Text(
+                                                      viewModel.posts[index]['title'],
+                                                      style: const TextStyle(
+                                                        fontSize: 20,
+                                                        fontFamily: 'Sejonghospitallight',
                                                       ),
-                                                    );
-                                                  },
+                                                    ),
+                                                    subtitle: Padding(
+                                                      padding: const EdgeInsets.only(top: 4.0),
+                                                      child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              viewModel.posts[index]['contents'],
+                                                              style: const TextStyle(
+                                                                fontFamily: 'Sejonghospital',
+                                                                fontSize: 16,
+                                                              ),
+                                                              maxLines: 1,
+                                                              overflow: TextOverflow.ellipsis,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            '좋아요 ${viewModel.posts[index]['likeCount']}개',
+                                                            style: TextStyle(color: Colors.grey),
+                                                          ),
+                                                          SizedBox(width: 10),
+                                                          Text(
+                                                            '댓글 ${viewModel.posts[index]['commentList'].length}개',
+                                                            style: TextStyle(color: Colors.grey),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) => ChangeNotifierProvider(
+                                                            create: (_) => PostDetailViewModel(
+                                                                PostDataSource(),
+                                                                widget.user,
+                                                                CommentDatasource()),
+                                                            child: PostDetailPage(
+                                                                postId: viewModel.posts[index]['id'],
+                                                                boardName: "HOT 게시판",
+                                                                currentUserNickname: widget.user.nickname,
+                                                                user: widget.user),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          );
-                                        },
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -300,9 +297,9 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
 
-                            //// 운세
+                            // 운세
                             const Padding(
-                              padding: EdgeInsets.fromLTRB(40, 70, 0, 20),
+                              padding: EdgeInsets.fromLTRB(40, 40, 0, 20),
                               child: Text(
                                 "오늘의 운세",
                                 style: TextStyle(
@@ -312,41 +309,19 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  const SizedBox(height: 10),
-                                  Padding(
-                                    padding: const EdgeInsets.fromLTRB(50, 0, 50, 0),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          '❝',
-                                          style: TextStyle(fontSize: 20, fontFamily: 'Sejonghospitallight'),
-                                        ),
-                                        Text(
-                                          '${viewModel.fortuneToday}',
-                                          style: const TextStyle(fontSize: 20, fontFamily: 'Sejonghospitallight'),
-                                          textAlign: TextAlign.center,
-                                        ),
-                                        const Row(
-                                          mainAxisAlignment: MainAxisAlignment.end,
-                                          children: [
-                                            Text(
-                                              '❞',
-                                              style: TextStyle(fontSize: 20, fontFamily: 'Sejonghospitallight'),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                child: Text(
+                                  '"${viewModel.fortuneToday}"',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: 'Sejonghospital',
                                   ),
-                                  const SizedBox(height: 100),
-                                ],
+                                ),
                               ),
-                            )
+                            ),
+                            const SizedBox(height: 50),
                           ],
                         ),
                       );

@@ -60,9 +60,9 @@ class _MiddlePageState extends State<MiddlePage>{
               ),
               SizedBox(height: 150),
               ElevatedButton(
-                  onPressed: () {
+                  onPressed: (){
                     Navigator.push(
-                        context, MaterialPageRoute(builder: (context)=> SignUpPage())
+                        context, MaterialPageRoute(builder: (context)=> LoginPage(welcomeMessage: "돌아오셨군요!\n 다시 만나 반가워요 :)"))
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -82,12 +82,12 @@ class _MiddlePageState extends State<MiddlePage>{
               ),
               SizedBox(height: 10),
               TextButton(
-                  onPressed: (){
+                  onPressed: () {
                     Navigator.push(
-                        context, MaterialPageRoute(builder: (context)=> LoginPage(welcomeMessage: "돌아오셨군요!\n 다시 만나 반가워요 :)"))
+                        context, MaterialPageRoute(builder: (context)=> SignUpPage())
                     );
                   },
-                  child: const Text("이미 계정이 있으신가요?",
+                  child: const Text("아직 회원이 아니라면?",
                     style: TextStyle(
                         fontSize: 15,
                         color: Colors.grey,

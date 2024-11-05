@@ -240,7 +240,7 @@ class _PostListPageState extends State<PostListPage> {
             _refreshPosts(context); // 새 글을 썼다면 화면 새로고침
           }
         },
-        backgroundColor: const Color.fromRGBO(92, 67, 239, 60),
+        backgroundColor: Color.fromRGBO(118, 95, 239, 1),
         foregroundColor: Colors.white,
         label: const Text('글쓰기'),
         icon: const Icon(Icons.edit),

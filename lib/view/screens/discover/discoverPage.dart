@@ -52,6 +52,13 @@ class _DiscoverPageState extends State<DiscoverPage> {
                         height: 45,
                         child: TextField(
                           controller: searchController,
+                          onSubmitted: (region) {
+                            final trimmedRegion = region.trim();
+                            if (trimmedRegion.isNotEmpty) {
+                              Provider.of<DiscoverViewModel>(context, listen: false)
+                                  .searchDiscover(trimmedRegion, context);
+                            }
+                          },
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: const Color.fromRGBO(238, 238, 238, 1),
