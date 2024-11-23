@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../dataSource/post_dataSource.dart';
@@ -103,14 +104,14 @@ class EditPostViewModel extends ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text("글 수정에 실패하였습니다"),
-          content: const Text("다시 시도해 주세요."),
+          title: Text(tr("edit_post_error_title")),
+          content: Text(tr("edit_post_error_content")),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: const Text("확인"),
+              child: Text(tr("confirm")),
             ),
           ],
         );

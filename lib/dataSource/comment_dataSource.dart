@@ -5,7 +5,7 @@ import 'dart:convert';
 import '../model/user.dart';
 
 class CommentDatasource{
-  String baseUrl = 'http://152.69.230.42:8080';
+  String baseUrl = 'https://api.koreigner.o-r.kr';
 
   //// 댓글 생성
   Future<Comment?> createComment(String comment, int postId, User user, int parentCommentId) async {

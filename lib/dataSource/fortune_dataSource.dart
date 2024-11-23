@@ -4,7 +4,7 @@ import '../model/fortune.dart';
 
 
 class FortuneDataSource {
-  final String baseUrl= 'http://144.24.81.41:80'; // 예비 서버
+  final String baseUrl= 'http://144.24.81.41:80';
 
   Future<Fortune?> getFortune(String birthMonth, String birthDay) async{
     try{

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/chat/chattingDetailPage.dart';
@@ -39,8 +40,8 @@ class _ChattingListPageState extends State<ChattingListPage> {
         backgroundColor: const Color.fromRGBO(92, 67, 239, 60),
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: const Text(
-          "채팅하기",
+        title: Text(
+          tr("chatting_title"),
           style: TextStyle(
             fontSize: 22,
             color: Colors.white,
@@ -53,13 +54,16 @@ class _ChattingListPageState extends State<ChattingListPage> {
           const SizedBox(height: 10.0),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 40.0),
-            child: Infobox("채팅 페이지입니다", "1:1 대화로 친구를 만들어봐요"),
+            child: Infobox(
+              tr("chatting_info_title"),
+              tr("chatting_info_message"),
+            ),
           ),
           const SizedBox(height: 35.0),
           Expanded(
             child: Consumer<ChattingListViewModel>(
               builder: (context, viewModel, child) {
-                // Loading indicator
+                // 로딩
                 if (viewModel.loading) {
                   return const Center(
                     child: SizedBox(
@@ -79,9 +83,9 @@ class _ChattingListPageState extends State<ChattingListPage> {
 
 
                 return viewModel.chatList.isEmpty
-                    ? const Center(
+                    ?  Center(
                   child: Text(
-                    "채팅방이 없습니다.\n게시판에서 채팅을 시작할 수 있어요!",
+                    tr("no_chat_room"),
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 16.0,

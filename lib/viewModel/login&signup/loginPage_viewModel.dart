@@ -1,5 +1,6 @@
 import 'package:capstonedesign/model/chatting.dart';
 import 'package:capstonedesign/model/chattingList.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/model/user.dart';
 import 'package:capstonedesign/dataSource/user_dataSource.dart';
@@ -37,14 +38,14 @@ class LoginViewModel extends ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("로그인에 실패하셨습니다"),
-          content: Text("확인 후 다시 시도하세요"),
+          title:  Text(tr('failure_title')),
+          content: Text(tr('failure_message')),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("확인"),
+              child: Text(tr('confirm')),
             ),
           ],
         );

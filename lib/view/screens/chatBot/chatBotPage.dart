@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../dataSource/chatBot_dataSource.dart';
@@ -35,8 +36,8 @@ class _ChatBotPageState extends State<ChatBotPage> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           centerTitle: true,
-          title: const Text(
-            "코리 박사",
+          title: Text(
+            tr("chatbot_title"),
             style: TextStyle(
               fontSize: 20,
               color: Colors.black,
@@ -73,8 +74,8 @@ class _ChatBotPageState extends State<ChatBotPage> {
                                   children: [
                                     Image.asset('assets/img/chatBot.png', width: 35, height: 35),
                                     const SizedBox(width: 10),
-                                    const Text(
-                                      '코리 박사',
+                                    Text(
+                                      tr("chatbot_name"),
                                       style: TextStyle(
                                       fontSize: 14,
                                       color: Colors.black,
@@ -160,8 +161,8 @@ class _ChatInputFieldState extends State<ChatInputField> {
             child: TextField(
               controller: _textController,
               focusNode: _focusNode,
-              decoration: const InputDecoration.collapsed(
-                hintText: '메시지 입력...',
+              decoration: InputDecoration.collapsed(
+                hintText: tr("chatbot_input_hint"),
               ),
             ),
           ),

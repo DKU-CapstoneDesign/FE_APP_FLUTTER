@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:provider/provider.dart';
@@ -73,7 +74,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                               },
                               child: const Icon(Icons.search, color: Colors.black54),
                             ),
-                            hintText: '어디로 가세요?',
+                            hintText: tr("search_hint"),
                             hintStyle: const TextStyle(color: Colors.black54),
                             border: const OutlineInputBorder(
                               borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -89,11 +90,11 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildCategoryButton('🎡 축제', DiscoverCategory.festival),
+                        _buildCategoryButton(tr("category_festival"), DiscoverCategory.festival),
                         const SizedBox(width: 10),
-                        _buildCategoryButton('👀 주변 명소', DiscoverCategory.sight),
+                        _buildCategoryButton(tr("category_sight"), DiscoverCategory.sight),
                         const SizedBox(width: 10),
-                        _buildCategoryButton('🛍 쇼핑', DiscoverCategory.advertise),
+                        _buildCategoryButton(tr("category_advertise"), DiscoverCategory.advertise),
                       ],
                     ),
 

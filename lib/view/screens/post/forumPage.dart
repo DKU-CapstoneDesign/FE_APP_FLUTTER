@@ -1,4 +1,5 @@
 import 'package:capstonedesign/view/screens/post/postListPage.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/widgets/infoBox.dart';
 import 'package:provider/provider.dart';
@@ -15,10 +16,10 @@ class ForumPage extends StatefulWidget {
 
 class _ForumPageState extends State<ForumPage> {
   final Map<String, bool> _buttonTappedStates = {
-    '최신\n게시판': false,
-    '자유\n게시판': false,
-    '도움\n게시판': false,
-    '여행\n게시판': false,
+    tr('latest_board'): false,
+    tr('free_board'): false,
+    tr('help_board'): false,
+    tr('travel_board'): false,
   };
 
   @override
@@ -28,8 +29,8 @@ class _ForumPageState extends State<ForumPage> {
         backgroundColor: Color.fromRGBO(92, 67, 239, 60),
         automaticallyImplyLeading: false,
         centerTitle: true,
-        title: const Text(
-          "게시판",
+        title: Text(
+          tr("forum_title"),
           style: TextStyle(
             fontSize: 22,
             color: Colors.white,
@@ -42,7 +43,7 @@ class _ForumPageState extends State<ForumPage> {
         child: Column(
           children: [
             SizedBox(height: 10.0),
-            Infobox("환영해요! 게시판입니다.", "사람들과 자유롭게 소통해보세요"),
+            Infobox(tr("forum_info_title"), tr("forum_info_subtitle")),
             SizedBox(height: 60.0),
             Expanded(
               child: GridView.count(

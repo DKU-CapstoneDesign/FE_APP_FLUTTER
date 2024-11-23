@@ -1,6 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:capstonedesign/dataSource/post_dataSource.dart';
 import 'package:capstonedesign/model/discover_festival.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,11 +25,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final ChattingDataSource datasource = ChattingDataSource();
   DiscoverFestival errorPost = DiscoverFestival(
-    name: '정보를 불러오지 못했습니다.',
+    name: tr("home_no_data"),
     image_url: "https://img.freepik.com/free-vector/error-404-concept-for-landing-page.jpg",
     address: "",
     period: "",
-    detail_info: '관리자에게 연락해주세요',
+    detail_info: tr("home_contact_admin"),
   );
 
   int notificationCount = 0; // 알림 갯수 변수
@@ -187,10 +188,10 @@ class _HomePageState extends State<HomePage> {
                             ),
 
                             // 최신 글
-                            const Padding(
+                            Padding(
                               padding: EdgeInsets.fromLTRB(40, 40, 0, 20),
                               child: Text(
-                                "최신 글, 지금 바로 확인하세요!",
+                                tr("home_latest_posts"),
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontFamily: 'Sejonghospitalbold',
@@ -256,12 +257,22 @@ class _HomePageState extends State<HomePage> {
                                                             ),
                                                           ),
                                                           Text(
-                                                            '좋아요 ${viewModel.posts[index]['likeCount']}개',
+                                                              tr(
+                                                                "home_like_count", // 좋아요 텍스트
+                                                                namedArgs: {
+                                                                  "likeCount": viewModel.posts[index]['likeCount'].toString()
+                                                                },
+                                                              ),
                                                             style: TextStyle(color: Colors.grey),
                                                           ),
                                                           SizedBox(width: 10),
                                                           Text(
-                                                            '댓글 ${viewModel.posts[index]['commentList'].length}개',
+                                                            tr(
+                                                            "home_comment_count", // 댓글 텍스트
+                                                            namedArgs: {
+                                                              "commentCount": viewModel.posts[index]['commentList'].length
+                                                            },
+                                                          ),
                                                             style: TextStyle(color: Colors.grey),
                                                           ),
                                                         ],
@@ -298,10 +309,10 @@ class _HomePageState extends State<HomePage> {
                             ),
 
                             // 운세
-                            const Padding(
+                            Padding(
                               padding: EdgeInsets.fromLTRB(40, 40, 0, 20),
                               child: Text(
-                                "오늘의 운세",
+                                tr("home_today_fortune"),
                                 style: TextStyle(
                                   fontSize: 20,
                                   fontFamily: 'Sejonghospitalbold',

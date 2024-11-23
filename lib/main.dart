@@ -1,4 +1,5 @@
 import 'package:capstonedesign/view/screens/first/firstLogoPage.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -12,9 +13,17 @@ FlutterLocalNotificationsPlugin();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized(); // EasyLocalization 초기화
   await _initializeNotifications(); // 알림 초기화 및 권한 요청
   await _requestPermissions(); // 갤러리 및 알림 접근 권한 요청
-  runApp(MyApp());
+  runApp(
+    EasyLocalization(
+      supportedLocales: [Locale('en', 'US'), Locale('ko', 'KR')],
+      path: 'assets/translations',
+      fallbackLocale: Locale('ko', 'KR'), // 기본 언어
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -26,6 +35,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'First Logo Page',
       debugShowCheckedModeBanner: false,
+      locale: context.locale, // EasyLocalization에서 로케일 가져오기
+      supportedLocales: context.supportedLocales, // 지원하는 로케일 설정
+      localizationsDelegates: context.localizationDelegates, // 번역 정보 설정
       home: FirstLogoPage(),
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.white,

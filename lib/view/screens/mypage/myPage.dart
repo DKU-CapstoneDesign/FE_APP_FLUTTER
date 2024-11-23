@@ -1,7 +1,12 @@
 import 'package:capstonedesign/dataSource/user_dataSource.dart';
 import 'package:capstonedesign/view/screens/mypage/changePWPage.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../model/translate/LanguageProvider.dart';
 import '../../../model/user.dart';
+import '../../../viewModel/discover/discoverPage_viewModel.dart';
 import '../../../viewModel/mypage/myPage_viewModel.dart';
 
 class MyPage extends StatefulWidget {
@@ -13,6 +18,41 @@ class MyPage extends StatefulWidget {
 }
 
 class _MyPageState extends State<MyPage> {
+
+  // 언어 설정을 클릭했을 때 한국어 & 영어
+  void _selectLanguage(BuildContext context) {
+    showCupertinoModalPopup<void>(
+      context: context,
+      builder: (BuildContext context) => CupertinoActionSheet(
+        actions: <CupertinoActionSheetAction>[
+          CupertinoActionSheetAction(
+            child: const Text("한국어"),
+            onPressed: () {
+              context.setLocale(Locale('ko', 'KR')); // 한국어 로케일 설정
+              Provider.of<DiscoverViewModel>(context, listen: false).getAllPosts();
+              Navigator.pop(context);
+            },
+          ),
+          CupertinoActionSheetAction(
+            child: const Text('English'),
+            onPressed: () {
+              context.setLocale(Locale('en', 'US')); // 영어 로케일 설정
+              Provider.of<DiscoverViewModel>(context, listen: false).getAllPosts();
+              Navigator.pop(context);
+            },
+          ),
+        ],
+        cancelButton: CupertinoActionSheetAction(
+          child: Text(tr('cancel')),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     final viewModel = MypageViewModel(UserDataSource());
@@ -73,8 +113,8 @@ class _MyPageState extends State<MyPage> {
                       child: TextButton.icon(
                         icon: Icon(Icons.logout_rounded, color: Colors.black38),
                         onPressed: () => viewModel.logout(context),
-                        label: const Text(
-                          "로그아웃",
+                        label: Text(
+                          tr("logout"),
                           style: TextStyle(
                             fontSize: 15,
                             fontFamily: "SejonghospitalLight",
@@ -97,8 +137,8 @@ class _MyPageState extends State<MyPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "나의 기록",
+                   Text(
+                      tr("my_records"),
                       style: TextStyle(
                         fontSize: 24,
                         fontFamily: 'SejonghospitalBold',
@@ -108,8 +148,8 @@ class _MyPageState extends State<MyPage> {
                     TextButton.icon(
                       onPressed: () => null,
                       icon: Icon(Icons.favorite_outline, color: Colors.black38),
-                      label: const Text(
-                        "좋아요 누른 글               >",
+                      label: Text(
+                        tr("liked_posts"),
                         style: TextStyle(
                           fontSize: 20,
                           fontFamily: "SejonghospitalLight",
@@ -121,8 +161,8 @@ class _MyPageState extends State<MyPage> {
                     TextButton.icon(
                       onPressed: () => null,
                       icon: Icon(Icons.ballot, color: Colors.black38),
-                      label: const Text(
-                        "내가 작성한 글               >",
+                      label: Text(
+                        tr("my_posts"),
                         style: TextStyle(
                           fontSize: 20,
                           fontFamily: "SejonghospitalLight",
@@ -132,10 +172,10 @@ class _MyPageState extends State<MyPage> {
                     ),
                     SizedBox(height: 20),
                     TextButton.icon(
-                      onPressed: () => null,
+                      onPressed:  () =>  null,
                       icon: Icon(Icons.bookmark_border_rounded, color: Colors.black38),
-                      label: const Text(
-                        "스크랩한 축제               >",
+                      label: Text(
+                        tr("scrapped_festivals"),
                         style: TextStyle(
                           fontSize: 20,
                           fontFamily: "SejonghospitalLight",
@@ -156,8 +196,8 @@ class _MyPageState extends State<MyPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      "설정",
+                    Text(
+                      tr("settings"),
                       style: TextStyle(
                         fontSize: 24,
                         fontFamily: 'SejonghospitalBold',
@@ -165,9 +205,10 @@ class _MyPageState extends State<MyPage> {
                     ),
                     SizedBox(height: 30),
                     TextButton.icon(
-                        onPressed: () => null,
+                       onPressed: ()=> _selectLanguage(context),
                         icon: Icon(Icons.language, color: Colors.black38),
-                        label: const Text("언어 설정",
+                        label: Text(
+                          tr("language_settings"),
                           style: TextStyle(
                             fontSize: 20,
                             fontFamily: "SejonghospitalLight",
@@ -181,7 +222,8 @@ class _MyPageState extends State<MyPage> {
                           Navigator.push(context, MaterialPageRoute(builder: (context)=> ChangePWPage(user: widget.user)));
                         },
                         icon: Icon(Icons.key_sharp, color: Colors.black38),
-                        label: const Text("비밀번호 변경하기",
+                        label: Text(
+                          tr("change_password"),
                           style: TextStyle(
                             fontSize: 20,
                             fontFamily: "SejonghospitalLight",

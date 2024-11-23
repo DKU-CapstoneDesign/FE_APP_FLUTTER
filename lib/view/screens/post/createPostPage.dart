@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../dataSource/post_dataSource.dart';
@@ -45,8 +46,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         viewModel.title = value;
                         viewModel.category = widget.boardName; //카테고리 설정
                       },
-                      decoration: const InputDecoration(
-                        hintText: '글 제목',
+                      decoration: InputDecoration(
+                        hintText: tr("title_hint"),
                       ),
                     ),
                     SizedBox(height: 30.0),
@@ -144,8 +145,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         onChanged: (value) => viewModel.contents = value,
                         maxLines: null,
                         keyboardType: TextInputType.multiline,
-                        decoration: const InputDecoration(
-                          hintText: '게시판에 올릴 게시글 내용을 작성해주세요 \n건강한 게시판 문화를 지향합니다:)',
+                        decoration : InputDecoration(
+                          hintText: tr("post_content_hint"),
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.all(16.0),
                         ),
@@ -170,7 +171,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           ),
                         ),
                       ),
-                      child: Text('완료'),
+                      child: Text(tr("complete")),
                     ),
                   ],
                 ),

@@ -9,6 +9,8 @@ import 'package:capstonedesign/view/screens/post/forumPage.dart';
 import 'package:capstonedesign/view/screens/chat/chattingListPage.dart';
 import 'package:provider/provider.dart';
 import '../../model/chattingList.dart';
+import '../../model/translate/LanguageProvider.dart';
+import '../../model/translate/translationService.dart';
 import '../../model/user.dart';
 import '../../viewModel/chat/chattingListPage_viewModel.dart';
 import '../../viewModel/discover/discoverPage_viewModel.dart';
@@ -38,7 +40,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       ),
 
       ChangeNotifierProvider(
-        create: (_) => DiscoverViewModel(datasource: DiscoverDatasource()),
+        create: (_) => DiscoverViewModel(TranslationService() ,LanguageProvider(), datasource:DiscoverDatasource()),
         child: DiscoverPage(),
       ),
 

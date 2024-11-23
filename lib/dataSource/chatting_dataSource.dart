@@ -5,7 +5,7 @@ import '../model/chatting.dart';
 import '../model/chattingList.dart';
 
 class ChattingDataSource {
-  String baseUrl = 'http://152.69.230.42:8080';
+  String baseUrl = 'https://api.koreigner.o-r.kr';
 
   ////// 채팅방 생성 (게시판에서 상대방의 프로필을 통해 채팅방 생성)
   Future<ChattingList?> createChat(String sender, String receiver) async {

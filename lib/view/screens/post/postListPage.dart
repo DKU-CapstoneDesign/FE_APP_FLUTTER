@@ -1,5 +1,6 @@
 import 'package:capstonedesign/dataSource/comment_dataSource.dart';
 import 'package:capstonedesign/viewModel/post/postListPage_viewModel.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:capstonedesign/view/screens/post/postDetailPage.dart';
 import 'package:capstonedesign/view/screens/post/createPostPage.dart';
@@ -33,13 +34,17 @@ class _PostListPageState extends State<PostListPage> {
   String _getBoardMessage(String boardName) {
     switch (boardName) {
       case '최신게시판':
-        return '가장 최신 글만 모아모아';
+      case 'LatestBoard' :
+        return tr('board_latest_description');
       case '자유게시판':
-        return '자유로운 주제에 대해 이야기해요!';
+      case "FreeBoard":
+        return tr('board_free_description');
       case '도움게시판':
-        return '사람들에게 도움을 요청할 수 있어요!';
+      case "HelpBoard":
+        return tr('board_help_description');
       case '여행게시판':
-        return '여행과 관련된 정보를 공유해요!';
+      case "TravelBoard":
+        return tr('board_travel_description');
       default:
         return '';
     }
@@ -110,8 +115,8 @@ class _PostListPageState extends State<PostListPage> {
 
                 // 게시물이 없을 경우 처리
                 if (viewModel.posts.isEmpty) {
-                  return const Center(
-                    child: Text('게시물이 없습니다.'),
+                  return Center(
+                    child: Text(tr('no_posts_available')),
                   );
                 }
 
@@ -167,7 +172,12 @@ class _PostListPageState extends State<PostListPage> {
                                     ),
                                   ),
                                   Text(
-                                    '좋아요 ${post['likeCount']}개',
+                                    tr(
+                                      "home_like_count", // 좋아요 텍스트
+                                      namedArgs: {
+                                        "likeCount": post['likeCount'].toString(),
+                                      },
+                                    ),
                                     style: const TextStyle(
                                       color: Colors.grey,
                                       fontFamily: 'SejonghospitalLight',
@@ -176,7 +186,12 @@ class _PostListPageState extends State<PostListPage> {
                                   ),
                                   const SizedBox(width: 15),
                                   Text(
-                                    '댓글 ${post['commentList'].length}개',
+                                    tr(
+                                      "home_comment_count", // 댓글 텍스트
+                                      namedArgs: {
+                                        "commentCount": post['commentList']?.length.toString() ?? "0",
+                                      },
+                                    ),
                                     style: const TextStyle(
                                       color: Colors.grey,
                                       fontFamily: 'SejonghospitalLight',
@@ -242,7 +257,7 @@ class _PostListPageState extends State<PostListPage> {
         },
         backgroundColor: Color.fromRGBO(118, 95, 239, 1),
         foregroundColor: Colors.white,
-        label: const Text('글쓰기'),
+        label: Text(tr('create_post')),
         icon: const Icon(Icons.edit),
       )
           : null,

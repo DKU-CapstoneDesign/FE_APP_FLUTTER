@@ -1,9 +1,8 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../model/user.dart';
 import '../../../viewModel/chat/chattingDetailPage_viewModel.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ChattingDetailPage extends StatefulWidget {
   final String currentUserNickname; // sender
@@ -143,8 +142,8 @@ class _ChattingDetailPageState extends State<ChattingDetailPage> {
                       Expanded(
                         child: TextField(
                           controller: viewModel.textController,
-                          decoration: const InputDecoration.collapsed(
-                            hintText: '메시지 입력...',
+                          decoration: InputDecoration.collapsed(
+                            hintText: tr('message_hint'),
                           ),
                         ),
                       ),

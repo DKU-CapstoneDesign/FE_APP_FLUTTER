@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../dataSource/post_dataSource.dart';
@@ -39,12 +40,15 @@ class CreatePostViewModel extends ChangeNotifier {
     // 카테고리 설
     switch (category) {
       case "자유게시판":
+      case "FreeBoard":
         category = "ANY";
         break;
       case "도움게시판":
+      case "HelpBoard":
         category = "HELPING";
         break;
       case "여행게시판":
+      case "TravelBoard":
         category = "TRAVELING";
         break;
     }
@@ -94,14 +98,14 @@ class CreatePostViewModel extends ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("글 생성에 실패하셨습니다"),
-          content: Text("확인 후 다시 시도하세요"),
+          title: Text(tr("create_post_error_title")),
+          content: Text(tr("create_post_error_content")),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("확인"),
+              child: Text(tr("confirm")),
             ),
           ],
         );

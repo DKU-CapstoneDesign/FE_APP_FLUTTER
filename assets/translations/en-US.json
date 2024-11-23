@@ -1,0 +1,120 @@
+{
+  "message_hint": "Type a message...",
+
+  "chatting_title": "Chat",
+  "chatting_info_title": "Chatting Page",
+  "chatting_info_message": "Make friends through 1:1 chats",
+  "no_chat_room": "No chat rooms available.\nStart a chat from the bulletin board!",
+
+  "chatbot_title": "Dr. Cory",
+  "chatbot_input_hint": "Type a message...",
+  "chatbot_name": "Dr. Cory",
+
+  "search_hint": "Where are you going?",
+  "category_festival": "🎡 Festival",
+  "category_sight": "👀 Sight",
+  "category_advertise": "🛍 Shop",
+  "no_results": "No results found.",
+
+  "home_today_fortune": "Today's Fortune",
+  "home_latest_posts": "Check out the latest posts now!",
+  "home_no_data": "Failed to load information.",
+  "home_contact_admin": "Please contact the administrator.",
+  "home_like_count": "{likeCount} Likes",
+  "home_comment_count": "{commentCount} Comments",
+
+  "change_password_title": "Change Password",
+  "current_password_label": "Current Password",
+  "check_button": "Check",
+  "new_password_label": "New Password",
+  "change_password_button": "Change Password",
+
+  "logout": "Logout",
+  "my_records": "My Records",
+  "liked_posts": "Liked Posts               >",
+  "my_posts": "My Posts               >",
+  "scrapped_festivals": "Scrapped Festivals   >",
+  "settings": "Settings",
+  "language_settings": "Language Settings",
+  "change_password": "Change Password",
+  "cancel": "Cancel",
+
+  "title_hint": "Post Title",
+  "post_content_hint": "Write the content you want to post on the board. \nLet's aim for a healthy board culture :)",
+  "complete": "Complete",
+
+  "edit_post_title": "Edit Post",
+  "edit_button": "Edit",
+
+  "forum_title": "Forum",
+  "forum_info_title": "Welcome to the forum!",
+  "forum_info_subtitle": "Communicate with others.",
+  "latest_board": "Latest\nBoard",
+  "free_board": "Free\nBoard",
+  "help_board": "Help\nBoard",
+  "travel_board": "Travel\nBoard",
+
+  "chat_with": "Chat",
+  "cancel": "Cancel",
+  "reply": "Reply",
+  "write_comment_hint": "Write a comment.",
+
+  "board_latest_description": "The most recent posts",
+  "board_free_description": "Talk freely on any topic!",
+  "board_help_description": "Request help from others!",
+  "board_travel_description": "Share information related to travel!",
+  "no_posts_available": "No posts available.",
+  "create_post": "Create Post",
+
+
+  "email_label": "Email",
+  "password_label": "Password",
+  "login_button": "Login",
+  "error_empty_fields": "Please fill out all fields.",
+  "error_invalid_credentials": "Invalid email or password.",
+
+  "subtitle": "The easiest connection",
+  "start_button": "Get Started",
+  "sign_up_prompt": "Not a member yet?",
+
+
+  "signup_subtitle": "Join Koreigner and \n connect with others!",
+  "check_duplicate": "Check",
+  "email_not_available": "Email is not available.",
+  "email_available": "Email is available.",
+  "nickname_not_available": "Nickname is not available.",
+  "nickname_available": "Nickname is available.",
+  "select_country": "Click to select a country",
+  "signup": "Sign Up",
+
+
+  "welcome_message": "Hello :) I'm Dr. Kori here to assist you with your life in Korea! Feel free to ask me anything!",
+  "error_message": "An error occurred while fetching the chatbot's response.",
+
+  "sorry": "Sorry",
+  "no_info_found": "No information found!",
+  "confirm": "Confirm",
+
+  "failure_title": "Login Failed",
+  "failure_message": "Please check and try again.",
+
+  "signup_failure": "Sign Up Failed",
+  "signup_fill_all_fields": "Please fill in all fields.",
+  "signup_check_duplicates": "Please check email or nickname duplication.",
+  "signup_retry": "Sign up failed.\nPlease try again.",
+  "signup_success": "Sign Up Success",
+  "signup_success_message": "You have successfully signed up.",
+  "welcome_message_signup": "Welcome!\nNice to meet you :)",
+
+  "logout_success": "Welcome back!\nGood to see you again :)",
+  "password_confirmed": "Password confirmed.",
+  "password_check_failed": "Please check again.",
+  "password_change_failed": "Failed to change the password.",
+  "password_change_success": "Your password has been successfully changed.",
+
+  "create_post_error_title": "Failed to create the post",
+  "create_post_error_content": "Please check and try again.",
+
+  "edit_post_error_title": "Failed to edit the post",
+  "edit_post_error_content": "Please try again."
+}

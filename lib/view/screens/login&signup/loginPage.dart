@@ -1,5 +1,6 @@
 import 'package:capstonedesign/dataSource/user_dataSource.dart';
 import 'package:capstonedesign/view/screens/login&signup/middlePage.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../viewModel/login&signup/loginPage_viewModel.dart';
@@ -54,9 +55,9 @@ class _LoginPageState extends State<LoginPage> {
                 // 이메일 입력칸, viewModel을 통해 입력 값이 model에 저장
                 TextField(
                   onChanged: (value) => viewModel.email = value,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     icon: Icon(Icons.email),
-                    labelText: 'Email',
+                    labelText: "Email",
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: Color.fromRGBO(92, 67, 239, 50),
@@ -70,9 +71,9 @@ class _LoginPageState extends State<LoginPage> {
                 TextField(
                   onChanged: (value) => viewModel.password = value,
                   obscureText: true,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     icon: Icon(Icons.lock),
-                    labelText: 'Password',
+                    labelText: "Password",
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: Color.fromRGBO(92, 67, 239, 50),
@@ -98,8 +99,8 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  child: const Text(
-                    "로그인",
+                  child: Text(
+                    tr("login_button"),
                     style: TextStyle(
                       fontSize: 20,
                       fontFamily: "SejonghospitalBold",

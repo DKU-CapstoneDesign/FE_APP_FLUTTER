@@ -1,5 +1,6 @@
 import 'package:capstonedesign/dataSource/user_dataSource.dart';
 import 'package:capstonedesign/viewModel/mypage/myPage_viewModel.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../model/user.dart';
@@ -19,8 +20,8 @@ class _ChangePWState extends State<ChangePWPage> {
       create: (_) => MypageViewModel(UserDataSource()),
       child: Scaffold(
         appBar: AppBar(
-          title: const Text(
-            '비밀번호 변경하기',
+          title: Text(
+            tr("change_password_title"),
             style: TextStyle(
               fontFamily: 'SejonghospitalLight',
             ),
@@ -44,8 +45,8 @@ class _ChangePWState extends State<ChangePWPage> {
                           child: TextField(
                             onChanged: (value) => viewModel.nowPassword = value,
                             obscureText: true, // 비밀번호 숨기기
-                            decoration: const InputDecoration(
-                              labelText: '현재 비밀번호',
+                            decoration: InputDecoration(
+                              labelText: tr("current_password_label"),
                               border: UnderlineInputBorder(
                                 borderSide: BorderSide(
                                   color: Color.fromRGBO(92, 67, 239, 50),
@@ -71,8 +72,8 @@ class _ChangePWState extends State<ChangePWPage> {
                               width: 2.0,
                             ),
                           ),
-                          child: const Text(
-                            '확인',
+                          child: Text(
+                            tr("check_button"),
                             style: TextStyle(
                               color: Color.fromRGBO(92, 67, 239, 50),
                               fontFamily: "SejonghospitalBold",
@@ -88,8 +89,8 @@ class _ChangePWState extends State<ChangePWPage> {
                     TextField(
                       onChanged: (value) => viewModel.newPassword = value,
                       obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: '새로운 비밀번호',
+                      decoration: InputDecoration(
+                        labelText: tr("new_password_label"),
                         border: UnderlineInputBorder(
                           borderSide: BorderSide(
                             color: Color.fromRGBO(92, 67, 239, 50),
@@ -115,8 +116,8 @@ class _ChangePWState extends State<ChangePWPage> {
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        child: const Text(
-                          "비밀번호 변경하기",
+                        child: Text(
+                          tr("change_password_button"),
                           style: TextStyle(
                             fontSize: 18,
                             fontFamily: "SejonghospitalBold",

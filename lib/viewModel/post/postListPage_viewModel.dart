@@ -13,15 +13,18 @@ class PostListViewModel extends ChangeNotifier {
   PostListViewModel(this.dataSource);
 
   // 게시물 목록 가져오기
-  Future<void> getPostList(User user,String boardName) async {
+  Future<void> getPostList(User user, String boardName) async {
     switch (boardName) {
       case "자유게시판":
+      case "FreeBoard":
         boardName = "ANY";
         break;
       case "도움게시판":
+      case "HelpBoard":
         boardName = "HELPING";
         break;
       case "여행게시판":
+      case "TravelBoard":
         boardName = "TRAVELING";
         break;
     }
@@ -30,7 +33,7 @@ class PostListViewModel extends ChangeNotifier {
 
     List<dynamic>? allPosts = await dataSource.getAllPost(user);
 
-    if (boardName == "최신게시판") {
+    if (boardName == "최신게시판" || boardName == "LatestBoard") {
       allPosts?.sort((a, b) => b['createdAt'].compareTo(a['createdAt']));
       // 상위 10개의 게시물만 가져옴
       posts = allPosts!.take(10).toList();

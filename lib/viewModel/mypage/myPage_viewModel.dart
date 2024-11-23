@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../dataSource/user_dataSource.dart';
 import '../../model/user.dart';
@@ -18,7 +19,7 @@ class MypageViewModel extends ChangeNotifier {
           context,
           MaterialPageRoute(
               builder: (context) => LoginPage(
-                  welcomeMessage: "돌아오셨군요!\n 다시 만나 반가워요 :)")
+                  welcomeMessage: tr("logout_success"),)
           )
       );
     }
@@ -29,9 +30,9 @@ class MypageViewModel extends ChangeNotifier {
   Future<void> checkPassword(BuildContext context, int userId) async {
     isCorrect = await dataSource.checkPassword(userId, nowPassword);
     if (isCorrect) {
-      _showSnackBar(context, "확인 되었습니다.");
+      _showSnackBar(context, tr("password_confirmed"));
     } else {
-      _showSnackBar(context, "다시 확인해주세요.");
+      _showSnackBar(context, tr("password_check_failed"));
     }
   }
 
@@ -41,7 +42,7 @@ class MypageViewModel extends ChangeNotifier {
     if (updatedUser != null && isCorrect) { //현재 비밀번호 확인 체크
       _showDialog(context);
     } else {
-      _showSnackBar(context, "비밀번호 변경에 실패했습니다.");
+      _showSnackBar(context, tr("password_change_failed"));
     }
   }
 
@@ -62,13 +63,13 @@ class MypageViewModel extends ChangeNotifier {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text("비밀번호가 변경되었습니다."),
+          title: Text(tr("password_change_success")),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text("확인"),
+              child: Text(tr("confirm")),
             ),
           ],
         );

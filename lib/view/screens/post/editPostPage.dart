@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../dataSource/post_dataSource.dart';
@@ -48,7 +49,7 @@ class _EditPostPageState extends State<EditPostPage> {
             },
             icon: Icon(Icons.close),
           ),
-          title: Text('게시글 수정하기'),
+          title:  Text(tr("edit_post_title"))
         ),
         body: Consumer<EditPostViewModel>(
           builder: (context, viewModel, child) {
@@ -60,8 +61,8 @@ class _EditPostPageState extends State<EditPostPage> {
                   children: [
                     TextField(
                       controller: _titleController,
-                      decoration: const InputDecoration(
-                        hintText: '글 제목',
+                      decoration:  InputDecoration(
+                        hintText: tr("title_hint"),
                       ),
                     ),
                     SizedBox(height: 30.0),
@@ -164,10 +165,10 @@ class _EditPostPageState extends State<EditPostPage> {
                         controller: _contentController,
                         maxLines: null,
                         keyboardType: TextInputType.multiline,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           border: InputBorder.none,
                           contentPadding: EdgeInsets.all(16.0),
-                          hintText: '게시판에 올릴 게시글 내용을 작성해주세요 \n건강한 게시판 문화를 지향합니다:)',
+                          hintText: tr("post_content_hint"),
                         ),
                       ),
                     ),
@@ -190,7 +191,7 @@ class _EditPostPageState extends State<EditPostPage> {
                           ),
                         ),
                       ),
-                      child: Text('수정'),
+                      child: Text(tr("edit_button")),
                     ),
                   ],
                 ),

@@ -4,7 +4,7 @@ import 'package:http/http.dart' as http;
 import '../model/post.dart';
 
 class PostDataSource {
-  String baseUrl = 'http://152.69.230.42:8080';
+  String baseUrl = 'https://api.koreigner.o-r.kr';
       //'http://152.69.230.42:8080';
       //'http://144.24.81.41:8080';
       // 'http://158.180.86.243:8080';

@@ -1,4 +1,5 @@
 import 'package:capstonedesign/view/screens/post/editPostPage.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -73,7 +74,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
       builder: (BuildContext context) => CupertinoActionSheet(
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
-            child: const Text('채팅하기'),
+            child:  Text(tr('chat_with')),
             onPressed: () async {
               Navigator.push(
                 context,
@@ -89,7 +90,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
           ),
         ],
         cancelButton: CupertinoActionSheetAction(
-          child: const Text('취소'),
+          child: Text(tr('cancel')),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -409,8 +410,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                                                 _focusNode.requestFocus(); // 키보드 올리기
                                                               });
                                                             },
-                                                            child: const Text(
-                                                              '답글 달기',
+                                                            child: Text(
+                                                              tr("reply"),
                                                               style: TextStyle(
                                                                 color: Colors.grey,
                                                                 fontSize: 14.0,
@@ -550,7 +551,7 @@ class _PostDetailPageState extends State<PostDetailPage> {
                                 prefixIcon: parentCommentId != null // 대댓글일 경우 화살표 표시
                                     ? const Icon(Icons.reply, color: Color.fromRGBO(92, 67, 239, 50))
                                     : null,
-                                hintText: '댓글을 입력하세요.',
+                                hintText: tr('write_comment_hint'),
                                 contentPadding: const EdgeInsets.symmetric(
                                     vertical: 10.0, horizontal: 20.0),
                                 border: OutlineInputBorder(

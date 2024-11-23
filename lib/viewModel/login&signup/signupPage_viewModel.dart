@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../dataSource/user_dataSource.dart';
 import '../../model/user.dart';
@@ -32,12 +33,12 @@ class SignUpViewModel extends ChangeNotifier {
         user.nickname.isEmpty ||
         user.country.isEmpty ||
         user.birthDate.isEmpty) {
-      _showDialog(context, '회원가입 실패', '모든 입력을 채워주세요.');
+      _showDialog(context, tr('signup_failure'), tr('signup_fill_all_fields'));
       return;
     }
 
     if (!emailCheck || !nicknameCheck) {
-      _showDialog(context, '회원가입 실패', '이메일 또는 닉네임 중복 확인을 해주세요.');
+      _showDialog(context,  tr('signup_failure'), tr('signup_check_duplicates'));
       return;
     }
 
@@ -50,9 +51,9 @@ class SignUpViewModel extends ChangeNotifier {
     );
 
     if (signupUser != null) {
-      _showDialog(context, '회원가입 성공', '회원가입에 성공하였습니다.');
+      _showDialog(context,  tr('signup_success'), tr('signup_success_message'));
     } else {
-      _showDialog(context, '회원가입 실패', '회원가입에 실패하였습니다.\n다시 시도하세요.');
+      _showDialog(context, tr('signup_failure'), tr('signup_retry'));
     }
   }
 
@@ -66,8 +67,8 @@ class SignUpViewModel extends ChangeNotifier {
         actions: <Widget>[
           TextButton(
             onPressed: () =>
-            title == "회원가입 성공" ? _navigateToLoginPage(context) : Navigator.of(context).pop(),
-            child: const Text('확인'),
+            title == tr('signup_success') ? _navigateToLoginPage(context) : Navigator.of(context).pop(),
+            child:Text(tr('confirm')),
           ),
         ],
       ),
@@ -77,7 +78,7 @@ class SignUpViewModel extends ChangeNotifier {
   void _navigateToLoginPage(BuildContext context) {
     Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginPage(welcomeMessage: "환영해요!\n만나서 반갑습니다 :)"))
+        MaterialPageRoute(builder: (context) => LoginPage(welcomeMessage: tr("welcome_message_signup")))
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:capstonedesign/model/chatBot.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../dataSource/chatBot_dataSource.dart';
 
@@ -6,7 +7,7 @@ class ChatBotViewModel extends ChangeNotifier {
   final ChatBotDataSource _dataSource;
   final List<Chatbot> _messages = [
     Chatbot(
-        text: "안녕하세요 :)\n여러분의 한국 생활을 도와주는 코리박사입니다! 궁금하신걸 뭐든지 물어봐주세요!",
+        text: tr("welcome_message"),
         isUserMessage: false
     )
   ];
@@ -23,10 +24,11 @@ class ChatBotViewModel extends ChangeNotifier {
 
       try {
         final chatBotResponse = await _dataSource.getChatBotResponse(message);
-        _messages.add(Chatbot(text: chatBotResponse ?? "챗봇 응답을 가져오는 중 오류가 발생했습니다.", isUserMessage: false));
+        _messages.add(Chatbot(text: chatBotResponse ??
+            tr("error_message"), isUserMessage: false));
         notifyListeners();
       } catch (e) {
-        _messages.add(Chatbot(text: "챗봇 응답을 가져오는 중 오류가 발생했습니다.", isUserMessage: false));
+        _messages.add(Chatbot(text: tr("error_message"), isUserMessage: false));
         notifyListeners();
       }
     }
