@@ -5,6 +5,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../first/onBoardingPage.dart';
+
 
 class MiddlePage extends StatefulWidget {
   @override
@@ -87,7 +89,7 @@ class _MiddlePageState extends State<MiddlePage>{
               TextButton(
                   onPressed: () {
                     Navigator.push(
-                        context, MaterialPageRoute(builder: (context)=> SignUpPage())
+                        context, MaterialPageRoute(builder: (context)=> OnBoardingPage())
                     );
                   },
                   child:

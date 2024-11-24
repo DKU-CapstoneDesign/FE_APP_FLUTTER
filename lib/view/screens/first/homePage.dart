@@ -289,7 +289,7 @@ class _HomePageState extends State<HomePage> {
                                                                 CommentDatasource()),
                                                             child: PostDetailPage(
                                                                 postId: viewModel.posts[index]['id'],
-                                                                boardName: "HOT 게시판",
+                                                                boardName: "최신 게시판",
                                                                 currentUserNickname: widget.user.nickname,
                                                                 user: widget.user),
                                                           ),

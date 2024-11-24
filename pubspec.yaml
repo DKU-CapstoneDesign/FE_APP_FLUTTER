@@ -78,6 +78,7 @@ flutter:
     - assets/img/chatBot.png
     - assets/img/board.png
     - assets/img/chat.png
+    - assets/img/globe.png
     - assets/translations/
 
   uses-material-design: true
