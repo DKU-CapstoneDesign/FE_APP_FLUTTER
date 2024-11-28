@@ -40,7 +40,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       ),
 
       ChangeNotifierProvider(
-        create: (_) => DiscoverViewModel(TranslationService() ,LanguageProvider(), datasource:DiscoverDatasource()),
+        create: (_) => DiscoverViewModel(datasource:DiscoverDatasource()),
         child: DiscoverPage(),
       ),
 

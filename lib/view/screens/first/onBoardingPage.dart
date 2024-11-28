@@ -15,7 +15,7 @@ class OnBoardingPage extends StatelessWidget {
             child: Column(
               children: [
                 const Text(
-                  "어떤 언어가 편하세요?",
+                  "어떤 언어가 편하신가요?",
                   style: TextStyle(
                     fontSize: 30,
                     fontFamily: 'SejonghospitalLight',

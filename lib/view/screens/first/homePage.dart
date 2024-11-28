@@ -270,7 +270,7 @@ class _HomePageState extends State<HomePage> {
                                                             tr(
                                                             "home_comment_count", // 댓글 텍스트
                                                             namedArgs: {
-                                                              "commentCount": viewModel.posts[index]['commentList'].length
+                                                              "commentCount": viewModel.posts[index]['commentList'].length.toString()
                                                             },
                                                           ),
                                                             style: TextStyle(color: Colors.grey),
